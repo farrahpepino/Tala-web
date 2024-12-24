@@ -36,7 +36,7 @@ exports.loginUser = async (req, res) => {
                 active: true,
             },
         });
-        console.log(user.bio)
+        console.log('Logged in successfully');
     } catch (error) {
         console.error(error);
         res.status(500).send({ message: 'Internal Server Error' });

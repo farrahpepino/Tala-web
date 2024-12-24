@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "https://tala-web-peach.vercel.app"
+  status = 200
+  force = true
