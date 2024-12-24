@@ -21,7 +21,7 @@ app.use(cors());
 
 
  app.use(cors({
-   origin: '*',
+   origin: process.env.CLIENT_URL,
    methods: ['GET', 'POST', 'PUT', 'DELETE'],
  }));
 
