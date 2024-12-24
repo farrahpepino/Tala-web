@@ -7,7 +7,6 @@ const Login = () => {
   const [data, setData] = useState({ password: '', email: '' });
   const [error, setError] = useState('');
 
-
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -15,18 +14,18 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data: res } = await axios({
-        method: 'POST',
-        url: '/api/auth/login',
-        data: {
-            email: data.email,
+      const { data: res } = await axios.post(
+        '/api/auth/login',
+        {
+            email: data.email, 
             password: data.password,
         },
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
       storeUserData(res.token, res.user)
       window.location.href = 'home'
 

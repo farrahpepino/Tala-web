@@ -3,6 +3,7 @@ import TalaLogo from '../assets/tala/tala-darkbg.png';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { storeUserData } from '../utils/User/storeUserData';
+import { handleReload } from '../utils/HandleReload';
 const Register = () => {
 
   const [data, setData] = useState({
@@ -21,11 +22,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
       e.preventDefault();
       try{
-        const { data: res } = await axios({
-          method: 'POST',
-          url: '/api/auth/register',
-          data: data,
-      });
+        const { data: res } = await axios.post('/api/auth/register', data); 
         storeUserData(res.token, res.user)
         window.location.href = '/home'; 
         console.log(res.message);
