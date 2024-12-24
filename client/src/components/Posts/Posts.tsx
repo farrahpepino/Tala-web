@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaHeart, FaComment } from 'react-icons/fa';
 import { Post } from './PostType';
-// import api from '../../utils/api';
 import axios from 'axios';
 import Loading from '../../utils/loading';
 import { User } from '../../utils/User/UserType';
@@ -21,7 +20,10 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
     
     let fetchUserData = async () => {
       try {
-        const response = await axios.get(`/api/users/${userId}`);
+        const response = await axios({
+          method: 'GET',
+          url: `/api/users/${userId}`,
+        });
         setUser(response.data); 
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -30,8 +32,12 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchUserPosts = async () => {
       try {
-        let response = await axios.get(`/api/post/user/${userId}/posts` ,{
-          withCredentials: true}); 
+        let response = await axios({
+          method: 'GET',
+          url: `/api/post/user/${userId}/posts` ,
+          withCredentials: true
+        });
+       
         setPosts(response.data); 
         console.log('Fetched user posts:', response.data);
       } catch (error) {

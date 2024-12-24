@@ -3,7 +3,6 @@ import { FaImage } from 'react-icons/fa';
 import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
-// import api from '../../utils/api';
 import axios from 'axios';
 const AddPost = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -43,18 +42,18 @@ const AddPost = () => {
       formData.append('description', description);
       formData.append('postedBy', user?.userId || '');
       console.log('Posted by:', user?.userId || '');
-      const response = await axios.post(
-        'http://localhost:5003/api/post/createPost',
-        {
-          description,
-          postedBy: user?.userId || '',
+      const response = await axios({
+        method: 'POST',
+        url: '/api/post/createPost',
+        data: {
+            description,
+            postedBy: user?.userId || '',
         },
-        {
-          headers: {
+        headers: {
             Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        },
+    });
+    
       console.log('Response:', formData);
       
     
