@@ -21,7 +21,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
     
     let fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5003/api/users/${userId}`);
+        const response = await axios.get(`/api/users/${userId}`);
         setUser(response.data); 
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -30,7 +30,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchUserPosts = async () => {
       try {
-        let response = await axios.get(`http://localhost:5003/api/post/user/${userId}/posts` ,{
+        let response = await axios.get(`/api/post/user/${userId}/posts` ,{
           withCredentials: true}); 
         setPosts(response.data); 
         console.log('Fetched user posts:', response.data);

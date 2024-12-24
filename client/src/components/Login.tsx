@@ -17,7 +17,7 @@ const Login = () => {
       const { data: res } = await axios.post(
         '/api/auth/login',
         {
-            email: data.email, // Ensure correct fields
+            email: data.email, 
             password: data.password,
         },
         {
