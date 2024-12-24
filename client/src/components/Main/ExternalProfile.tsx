@@ -8,7 +8,6 @@ import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
-// import api from '../../utils/api';
 import axios from 'axios';
 const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +15,7 @@ const ExternalProfile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [friendStatus, setFriendStatus] = useState<'not_friends' | 'request_sent' | 'friends'>('not_friends');
   const navigate = useNavigate();
-
+  console.log('User ID for external profile:', userId);
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -40,7 +39,7 @@ const ExternalProfile = () => {
 
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`/api/friend-request/${userId}`);
+      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friend-request/${userId}`);
       console.log('Friend request sent:', response.data);
       setFriendStatus('request_sent');
     } catch (err: any) {
@@ -93,7 +92,7 @@ const ExternalProfile = () => {
       </main>
 
         <div className="mt-8 w-full max-w-4xl">
-        <Posts userId={user?._id}/>
+        <Posts userId={userId}/>
         </div>
 
 
