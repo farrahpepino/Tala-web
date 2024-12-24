@@ -8,7 +8,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:5005'     
+      '/api': 'https://tala-web-kohl.vercel.app/'     
     },
   }
 });
