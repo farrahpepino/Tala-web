@@ -41,7 +41,6 @@ export default function NavBar() {
   const handleSearch = async (searchQuery) => {
   if (!searchQuery) {
       setResults([]); }
-    console.log('meow',searchQuery)
     try {
       const response = await axios.get('/api/users/search', {
         params: { query: searchQuery },
@@ -55,6 +54,7 @@ export default function NavBar() {
   };
 
   const handleResultClick = (userId) => {
+    console.log(`Clicked on user with ID: ${userId}`); 
     navigate(`/external-profile/${userId}`);
     setResults([]); 
   };
@@ -133,7 +133,9 @@ export default function NavBar() {
         <li
           key={user.userId || user._id}
           className="cursor-pointer text-left ml-3 hover:text-gray-500 hover:bg-gray-100 p-2 text-gray-700"
-          onClick={() => handleResultClick(user.userId || user._id)}
+          onClick={() => {
+            console.log(`Clicked on user with ID: ${user.userId || user._id}`);
+            handleResultClick(user.userId || user._id)}}
         >
           {user.firstName} {user.lastName} 
         </li>
