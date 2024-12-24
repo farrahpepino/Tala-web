@@ -35,7 +35,7 @@ app.use('/api/users', userRoutes);
 app.get("/", (request, response) => {
   console.log("GET request received at /");
   response.json({
-      message: "Server is running on port " + PORT,
+      message: "Server is running on port " + port
   });
 });
 // Start the server
