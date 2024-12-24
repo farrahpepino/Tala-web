@@ -3,7 +3,6 @@ import TalaLogo from '../assets/tala/tala-darkbg.png';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { storeUserData } from '../utils/User/storeUserData';
-import { handleReload } from '../utils/HandleReload';
 const Register = () => {
 
   const [data, setData] = useState({
