@@ -25,11 +25,18 @@ app.use(cors());
    methods: ['GET', 'POST', 'PUT', 'DELETE'],
  }));
 
+ const port = process.env.PORT || 5005;
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/users', userRoutes);
 
+app.get("/", (request, response) => {
+  console.log("GET request received at /");
+  response.json({
+      message: "Server is running on port " + PORT,
+  });
+});
 // Start the server
-const port = process.env.PORT || 5005;
 app.listen(port, () => console.log(`Server running on port ${port}`));
