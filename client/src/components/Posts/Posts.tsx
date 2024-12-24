@@ -22,7 +22,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
       try {
         const response = await axios({
           method: 'GET',
-          url: `/api/users/${userId}`,
+          url: `https://tala-web-kohl.vercel.app/api/users/${userId}`,
         });
         setUser(response.data); 
       } catch (error) {
@@ -34,7 +34,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
       try {
         let response = await axios({
           method: 'GET',
-          url: `/api/post/user/${userId}/posts` ,
+          url: `https://tala-web-kohl.vercel.app/post/user/${userId}/posts` ,
           withCredentials: true
         });
        

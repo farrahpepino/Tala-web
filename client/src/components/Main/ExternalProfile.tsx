@@ -20,12 +20,12 @@ const ExternalProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
         console.log('Response:', response);
         setUser(response.data);
         console.log('Fetched user:', response.data);
 
-        const friendResponse = await axios.get(`/api/friend-status/${userId}`);
+        const friendResponse = await axios.get(`https://tala-web-kohl.vercel.app/api/friend-status/${userId}`);
         setFriendStatus(friendResponse.data.status);
       } catch (err: any) {
         console.error('Fetch error:', err);

@@ -44,7 +44,7 @@ const AddPost = () => {
       console.log('Posted by:', user?.userId || '');
       const response = await axios({
         method: 'POST',
-        url: '/api/post/createPost',
+        url: 'https://tala-web-kohl.vercel.app/api/post/createPost',
         data: {
             description,
             postedBy: user?.userId || '',

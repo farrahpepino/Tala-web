@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data: res } = await axios.post(
-        '/api/auth/login',
+        'https://tala-web-kohl.vercel.app/api/auth/login',
         {
             email: data.email, 
             password: data.password,
