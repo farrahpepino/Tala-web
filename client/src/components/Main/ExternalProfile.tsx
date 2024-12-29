@@ -43,7 +43,7 @@ const ExternalProfile = () => {
   //request_sent,request_received, request_accepted, request_declined
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/${senderId}/${receiverId}`);
+      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/sendRequest/${senderId}/${receiverId}`);
       console.log('Friend request sent:', response.data);
       setFriendStatus('request_sent');
     } catch (err: any) {

@@ -1,18 +1,42 @@
-const { User, validate } = require('../../models/userModel');
+const Friends = require('../../models/friendsModel'); 
+const { User } = require('../../models/userModel');
 
 const declineRequest = async (req, res) => {
     try {
         const { senderId, receiverId } = req.params;
-        const user = await User.findById(receiverId);
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
+
+        const receiver = await User.findById(receiverId);
+        const sender = await User.findById(senderId);
+
+        if (!receiver || !sender) {
+            return res.status(404).send({ message: 'One of the users not found' });
         }
 
-        user.friendRequests.pull(senderId);
-        await user.save();
+        const friendRequest = await Friends.findOne({
+            sender: senderId,
+            receiver: receiverId,
+            status: 'pending'
+        });
 
-        res.status(200).send({ message: 'Friend request declined successfully' });  
+        if (!friendRequest) {
+            return res.status(404).send({ message: 'Friend request not found or already processed' });
+        }
+
+        friendRequest.status = 'declined';
+        await friendRequest.save();
+
+        receiver.friendRequests.pull(senderId);
+        receiver.friends.pull(senderId);
+        sender.friends.pull(receiverId);
+
+        await receiver.save();
+        await sender.save();
+
+        res.status(200).send({ message: 'Friend request accepted successfully' });
     } catch (error) {
-        console.error('Error declining friend request:', error);
+        console.error('Error accepting friend request:', error);
         res.status(500).send({ message: 'Internal Server Error' });
     }
+};
+
+module.exports = {declineRequest};

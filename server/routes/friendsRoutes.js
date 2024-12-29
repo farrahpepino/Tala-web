@@ -7,8 +7,8 @@ const { acceptRequest } = require('../controllers/Friends/acceptRequest');
 const { declineRequest } = require('../controllers/Friends/declineRequest');
 
 router.get('/getRequests/:senderId/:receiverId', getRequests);
-router.post('/addRequest/:senderId/:receiverId', sendRequest);
-router.post('/acceptRequest/:senderId/:receiverId', acceptRequest);
-router.post('/declineRequest/:senderId/:receiverId', declineRequest);
+router.post('/sendRequest/:senderId/:receiverId', sendRequest);
+router.post('/accept/:senderId/:receiverId', acceptRequest);
+router.post('/decline/:senderId/:receiverId', declineRequest);
 
 module.exports = router;
