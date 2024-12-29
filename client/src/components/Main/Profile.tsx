@@ -6,6 +6,8 @@ import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
+import DefaultUserIcon from '../../assets/tala/user.png';
+
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -27,14 +29,14 @@ const Profile = () => {
         <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
           <img
-            src="https://i.pinimg.com/564x/6b/1e/58/6b1e58e2f70b14528111ee7c1dd0f855.jpg"
+            src = {DefaultUserIcon}
             alt="user-avatar"
             className="w-32 h-32 mt-20 border-4 border-white rounded-full"
           />
-        <h3 className="text-xl font-bold text-secondary mt-3">
+        <h3 className="text-2xl font-bold text-gray-300 mt-4">
           {user?.firstName} {user?.lastName}
         </h3>
-        <p className="text-muted text-center">{user?.bio}</p>
+        <p className="text-sm text-gray-400 text-center">{user?.bio}</p>
         
         <div className="flex gap-2 mt-3" style={{ maxWidth: '290px', width: '100%' }}>
           <button

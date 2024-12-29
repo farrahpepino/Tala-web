@@ -6,6 +6,7 @@ import NavBar from '../NavBar';
 import axios from 'axios';
 import { storeUserData } from '../../utils/User/storeUserData';
 import { useNavigate } from 'react-router-dom';
+import DefaultUserIcon from '../../assets/tala/user.png';
 
 const EditProfile = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -79,9 +80,9 @@ const EditProfile = () => {
         <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
             <img
-              src="https://i.pinimg.com/564x/6b/1e/58/6b1e58e2f70b14528111ee7c1dd0f855.jpg"
+              src={DefaultUserIcon}
               alt="user-avatar"
-              className="w-32 h-32 mt-20 border-4 border-white rounded-full"
+              className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
             />
 
             <div className="w-100 px-6 ">
@@ -91,7 +92,7 @@ const EditProfile = () => {
                 value={firstName}
                 onChange={handleInputChange}
                 placeholder="First Name"
-                className="form-control my-3 rounded p-2 border border-dark bg-transparent"
+                className="form-control my-3 rounded p-2 border border-dark bg-transparent text-gray-300"
               />
               <input
                 type="text"
@@ -99,7 +100,7 @@ const EditProfile = () => {
                 value={lastName}
                 onChange={handleInputChange}
                 placeholder="Last Name"
-                className="form-control my-3 rounded p-2 border border-dark bg-transparent"
+                className="form-control my-3 rounded p-2 border border-dark bg-transparent text-gray-300"
               />
               <textarea
                 name="bio"
@@ -107,7 +108,7 @@ const EditProfile = () => {
                 onChange={handleInputChange}
                 placeholder="Write a short bio..."
                 rows={3}
-                className="form-control my-3 border-round border border-dark bg-transparent"
+                className="form-control my-3 border-round border border-dark bg-transparent text-gray-300"
               />
             </div>
             <div className="w-100 px-4">

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Button, Disclosure, Menu, Transition } from '@headlessui/react';
 import { HomeIcon, ChatBubbleLeftIcon, UserPlusIcon, BellIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import TalaLogo from '../assets/tala/tala-darkbg.png'; 
 import { clearUserData } from '../utils/User/ClearUserData';
@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { User } from '../utils/User/UserType';
 import { handleReload } from '../utils/HandleReload';
 import Loading from '../utils/loading';
+import DefaultUserIcon from '../assets/tala/user.png';
 import axios from 'axios';
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
@@ -96,7 +97,9 @@ export default function NavBar() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {!isSearchOpen ? (
                   <div className="flex flex-shrink-0 items-center">
+                    <Button className="bg-transparent m-0 p-0" onClick={() => navigate('/home')}>
                     <img className="h-8 w-auto" src={TalaLogo} alt="Tala" />
+                    </Button>
                   </div>
                 ) : (
                   <form className="relative w-80 px-4 sm:hidden -ml-20 mr-5" onSubmit={(e) => { e.preventDefault(); handleSearch(searchQuery); }}>
@@ -242,7 +245,7 @@ export default function NavBar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://i.pinimg.com/564x/6b/1e/58/6b1e58e2f70b14528111ee7c1dd0f855.jpg"
+                        src= {DefaultUserIcon}
                         alt="user-avatar"
                       />
                     </Menu.Button>

@@ -8,6 +8,7 @@ const connection = require('./db');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
+const friendRoutes = require('./routes/friendsRoutes');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/friends', friendRoutes);
 
 app.get("/", (request, response) => {
   console.log("GET request received at /");

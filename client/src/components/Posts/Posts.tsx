@@ -3,6 +3,7 @@ import { FaHeart, FaComment } from 'react-icons/fa';
 import { Post } from './PostType';
 import axios from 'axios';
 import Loading from '../../utils/loading';
+import DefaultUserIcon from '../../assets/tala/user.png';
 import { User } from '../../utils/User/UserType';
 interface PostsProps {
   userId?: string; 
@@ -75,7 +76,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
             <div className="flex space-x-3 mb-1">
               <img
                 className="h-10 w-10 rounded-full object-cover"
-                src="https://i.pinimg.com/564x/6b/1e/58/6b1e58e2f70b14528111ee7c1dd0f855.jpg"
+                src= {DefaultUserIcon}
                 alt={`${post.userName}'s avatar`}
               />
               <div className="text-left">

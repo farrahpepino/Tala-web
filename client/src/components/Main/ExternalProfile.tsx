@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
-import { handleReload } from '../../utils/HandleReload';
 import { useParams } from 'react-router-dom';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DefaultUserIcon from '../../assets/tala/user.png';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
 import axios from 'axios';
@@ -14,8 +14,11 @@ const ExternalProfile = () => {
   const { userId } = useParams(); 
   const [user, setUser] = useState<User | null>(null);
   const [friendStatus, setFriendStatus] = useState<'not_friends' | 'request_sent' | 'friends'>('not_friends');
+
   const navigate = useNavigate();
   console.log('User ID for external profile:', userId);
+  const senderId = getUserData()?.userId || getUserData()?._id;
+  const receiverId = userId;
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -37,9 +40,10 @@ const ExternalProfile = () => {
     }
   }, [userId]);
 
+  //request_sent,request_received, request_accepted, request_declined
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friend-request/${userId}`);
+      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/${senderId}/${receiverId}`);
       console.log('Friend request sent:', response.data);
       setFriendStatus('request_sent');
     } catch (err: any) {
@@ -55,7 +59,7 @@ const ExternalProfile = () => {
         <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
             <img
-              src="https://i.pinimg.com/564x/6b/1e/58/6b1e58e2f70b14528111ee7c1dd0f855.jpg"
+              src= {DefaultUserIcon}
               alt="user-avatar"
               className="w-32 h-32 mt-20 border-4 border-white rounded-full"
             />
