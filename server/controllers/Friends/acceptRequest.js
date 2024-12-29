@@ -3,7 +3,7 @@ const { User } = require('../../models/userModel');
 
 const acceptRequest = async (req, res) => {
     try {
-        const { senderId, receiverId } = req.params;
+        const { senderId, receiverId } = req.body;
 
         const receiver = await User.findById(receiverId);
         const sender = await User.findById(senderId);

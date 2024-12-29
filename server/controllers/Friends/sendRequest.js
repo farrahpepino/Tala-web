@@ -3,17 +3,17 @@ const Friends = require('../../models/friendsModel');
 
 const sendRequest = async (req, res) => {
     try {
-        const { senderId, receiverId } = req.params;
+        const { sender, receiver, status } = req.body;
 
-        const user = await User.findById(receiverId);
+        const user = await User.findById(receiver);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
 
         const existingRequest = await Friends.findOne({
-            sender: senderId,
-            receiver: receiverId,
-            status: 'pending'
+            sender: sender,
+            receiver: receiver,
+            status: status
         });
 
         if (existingRequest) {
@@ -21,9 +21,9 @@ const sendRequest = async (req, res) => {
         }
 
         const friendRequest = new Friends({
-            sender: senderId,
-            receiver: receiverId,
-            status: 'pending'
+            sender: sender,
+            receiver: receiver,
+            status: status
         });
 
         await friendRequest.save();

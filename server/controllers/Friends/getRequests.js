@@ -2,7 +2,7 @@ const Friends = require('../../models/friendsModel');
 const { User } = require('../../models/userModel');
 
 const getRequests = async (req, res) => {
-    const { senderId, receiverId } = req.params;
+    const { senderId, receiverId } = req.body;
 
     try {
         const user = await User.findById(receiverId);
