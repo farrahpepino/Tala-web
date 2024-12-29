@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     profile:{
     profilePicture: {type: String},
     active: {type: Boolean}
-    }
+    },
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
 })
 
 const complexityOptions = {

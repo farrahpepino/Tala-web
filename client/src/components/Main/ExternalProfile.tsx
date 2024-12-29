@@ -13,44 +13,80 @@ const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams(); 
   const [user, setUser] = useState<User | null>(null);
-  const [friendStatus, setFriendStatus] = useState<'not_friends' | 'request_sent' | 'friends'>('not_friends');
-
+  const [friendStatus, setFriendStatus] = useState<'NF' | 'pending' | 'accepted' | 'pending-req' | 'cancel-req'>('NF');
+  
   const navigate = useNavigate();
   console.log('User ID for external profile:', userId);
   const senderId = getUserData()?.userId || getUserData()?._id;
   const receiverId = userId;
+
+
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await axios.get(`http://localhost:5005/api/users/${userId}`);
         console.log('Response:', response);
         setUser(response.data);
         console.log('Fetched user:', response.data);
 
-        const friendResponse = await axios.get(`https://tala-web-kohl.vercel.app/api/friend-status/${userId}`);
-        setFriendStatus(friendResponse.data.status);
       } catch (err: any) {
         console.error('Fetch error:', err);
         setError(err.response ? err.response.data : 'Internal Server Error');
       }
     };
+    const fetchFriendsId = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5005/api/friends/getFriendsId/${senderId}/${userId}`);
+        return response.data.friendsId;
+      } catch (err: any) {
+        console.error('Error fetching friendsId:', err.response?.data || 'Internal Server Error');
+        setError(err.response?.data || 'Internal Server Error');
+        return null;
+      }
+    };
+
+    const fetchFriendStatus = async () => {
+      const friendsId = await fetchFriendsId();
+      if (!friendsId) return;
+      try {
+        const response = await axios.get(`http://localhost:5005/api/friends/friend-status/${friendsId}`);
+        console.log(response.data.status)
+
+        if (response.data.status === 'pending') {
+          setFriendStatus(senderId !== response.data.sender ? 'pending-req' : 'pending');
+        } else {
+          setFriendStatus(response.data.status);
+        }
+
+      } catch (err: any) {
+        console.error('Error fetching friendship status:', err.response?.data || 'Internal Server Error');
+        setError(err.response?.data || 'Internal Server Error');
+      }
+    };
 
     if (userId) {
       fetchUser();
+      fetchFriendStatus();
     }
-  }, [userId]);
+  }, [userId, senderId]);
 
-  //request_sent,request_received, request_accepted, request_declined
+  
+ 
+
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/sendRequest`, {sender: senderId, receiver: receiverId, status: 'pending'});
-      console.log('Friend request sent:', response.data);
-      setFriendStatus('request_sent');
+   
+        const response = 
+        await axios.post(`http://localhost:5005/api/friends/sendRequest/${senderId}/${receiverId}`, {status: 'pending'});
+        console.log('Friend request sent:', response.data);
+        setFriendStatus('pending');
     } catch (err: any) {
-      console.error('Add Friend Error:', err);
-      setError(err.response ? err.response.data : 'Unable to send friend request');
+        console.error('Add Friend Error:', err);
+        setError(err.response?.data || 'Unable to send friend request');
     }
-  };
+};
+
 
   return (
     <div className="min-h-screen">
@@ -69,20 +105,30 @@ const ExternalProfile = () => {
             <p className="text-sm text-gray-400 text-center">{user?.bio}</p>
             
             <div className="flex gap-2 mt-3" style={{ maxWidth: '290px', width: '100%' }}>
-              {friendStatus === 'not_friends' && (
-                <button 
-                  className="btn btn-dark flex-grow px-6 py-2 rounded-pill" 
-                  onClick={handleAddFriend}
-                >     
-                  <FontAwesomeIcon icon={faUserPlus} /> Add Friend
-                </button>
+            {friendStatus === 'pending-req' && (
+                <div className="flex gap-2">
+                  <button className="btn btn-success flex-grow px-6 py-2 rounded-pill">Accept</button>
+                  <button className="btn btn-danger flex-grow px-6 py-2 rounded-pill">Decline</button>
+                </div>
               )}
-              {friendStatus === 'request_sent' && (
+               {friendStatus === 'pending' && (
                 <button className="btn btn-warning flex-grow px-6 py-2 rounded-pill" disabled>
                   Request Sent
                 </button>
               )}
-              {friendStatus === 'friends' && (
+              {friendStatus === 'NF' && (
+                <button 
+                  className="btn btn-dark flex-grow px-6 py-2 rounded-pill" 
+                  onClick={()=>{
+                    handleAddFriend()
+                  }}
+                >     
+                  <FontAwesomeIcon icon={faUserPlus} /> Add Friend
+                </button>
+              )}
+             
+              
+              {friendStatus === 'accepted' && (
                 <button className="btn btn-success flex-grow px-6 py-2 rounded-pill" disabled>
                   Friends
                 </button>

@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const { getRequests } = require('../controllers/Friends/getRequests');
 const { sendRequest } = require('../controllers/Friends/sendRequest');
 const { acceptRequest } = require('../controllers/Friends/acceptRequest');
 const { declineRequest } = require('../controllers/Friends/declineRequest');
-
-router.get('/getRequests/:senderId/:receiverId', getRequests);
-router.post('/sendRequest', sendRequest);
-router.post('/accept/:senderId/:receiverId', acceptRequest);
-router.post('/decline/:senderId/:receiverId', declineRequest);
-
+const { getStatus } = require('../controllers/Friends/getStatus')
+const {getFriendsId} = require('../controllers/Friends/getFriendsId')
+router.get('/friend-status/:friendsId', getStatus);
+router.post('/sendRequest/:sender/:receiver', sendRequest);
+router.post('/accept', acceptRequest);
+router.post('/decline', declineRequest);
+router.get('/getFriendsId/:senderId/:receiverId', getFriendsId);
 module.exports = router;

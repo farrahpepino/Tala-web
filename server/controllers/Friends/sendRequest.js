@@ -1,38 +1,37 @@
-const { User } = require('../../models/userModel');
-const Friends = require('../../models/friendsModel'); 
+const Friends = require('../../models/friendsModel');
 
 const sendRequest = async (req, res) => {
+    const { sender, receiver } = req.params;
+    const { status } = req.body;
+
     try {
-        const { sender, receiver, status } = req.body;
-
-        const user = await User.findById(receiver);
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
-        }
-
+        // Check if a request already exists between the sender and receiver
         const existingRequest = await Friends.findOne({
-            sender: sender,
-            receiver: receiver,
-            status: status
+            $or: [
+                { sender, receiver },
+                { sender: receiver, receiver: sender },
+            ],
         });
 
         if (existingRequest) {
-            return res.status(400).send({ message: 'Friend request already sent' });
+            // Prevent new request if an existing one is already in progress
+            if (existingRequest.status === 'pending') {
+                return res.status(409).send({ message: 'Friend request already pending.' });
+            }
+            if (existingRequest.status === 'accepted') {
+                return res.status(409).send({ message: 'Users are already friends.' });
+            }
         }
 
-        const friendRequest = new Friends({
-            sender: sender,
-            receiver: receiver,
-            status: status
-        });
-
+        // Create a new friend request
+        const friendRequest = new Friends({ sender, receiver, status: 'pending' });
         await friendRequest.save();
-        res.status(200).send({ message: 'Friend request sent successfully' });
 
+        res.status(200).send({ message: 'Friend request sent successfully.' });
     } catch (error) {
-        console.error('Error sending friend request:', error);
-        res.status(500).send({ message: 'Internal Server Error' });
+        console.error('Error in sendRequest controller:', error);
+        res.status(500).send({ message: 'Internal Server Error', error: error.message });
     }
 };
 
-module.exports = {sendRequest};
+module.exports = { sendRequest };
