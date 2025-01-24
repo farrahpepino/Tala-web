@@ -10,19 +10,33 @@ interface PostsProps {
   postedBy?: string;
 
 }
+const formatNumber = (num: number): string => {
+  if (num >= 1_000_000_000_000) {
+    return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; // Zillion
+  }
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; // Billion
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; // Million
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).slice(0, 3) + 'k'; // Thousand
+  }
+  return num.toString().slice(0, 3); 
+};
 
 let Posts: React.FC<PostsProps> = ({ userId }) => {
-  console.log('Received userId for post:', userId)
-  let [user, setUser] = useState<User | null>(null); 
-  let [posts, setPosts] = useState<Post[]>([]); 
+  console.log('Received userId for post:', userId);
+  let [user, setUser] = useState<User | null>(null);
+  let [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    
     let fetchUserData = async () => {
       try {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
-        setUser(response.data); 
+        setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -30,8 +44,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchUserPosts = async () => {
       try {
-        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/user/${userId}/posts`); 
-        setPosts(response.data); 
+        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/user/${userId}/posts`);
+        setPosts(response.data);
         console.log('Fetched user posts:', response.data);
       } catch (error) {
         console.error('Error fetching user posts:', error);
@@ -51,20 +65,17 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
     const date = new Date(dateString);
     const formatter = new Intl.DateTimeFormat(undefined, {
       year: 'numeric',
-      month: 'short', 
+      month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
     });
-  
     return formatter.format(date);
   };
-  
 
   if (loading) {
     return <Loading />;
   }
-  
 
   return (
     <div className="space-y-8">
@@ -76,18 +87,16 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
             <div className="flex space-x-3 mb-1">
               <img
                 className="h-10 w-10 rounded-full object-cover"
-                src= {DefaultUserIcon}
+                src={DefaultUserIcon}
                 alt={`${post.userName}'s avatar`}
               />
               <div className="text-left">
-              <p className="font-semibold">
-              {typeof post.postedBy !== 'string'
-                ? `${post.postedBy.firstName} ${post.postedBy.lastName}`
-                : 'Unknown User'}
-            </p>
-            <p className="text-sm text-gray-400">
-            {formatDate(post.createdAt)}
-            </p>
+                <p className="font-semibold">
+                  {typeof post.postedBy !== 'string'
+                    ? `${post.postedBy.firstName} ${post.postedBy.lastName}`
+                    : 'Unknown User'}
+                </p>
+                <p className="text-sm text-gray-400">{formatDate(post.createdAt)}</p>
               </div>
             </div>
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
@@ -103,7 +112,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                 }
               >
                 <FaHeart size={16} />
-                <span>{post.likes}</span>
+                <span>{formatNumber(post.likes)}</span>
               </button>
               <button className="flex items-center space-x-1 text-gray-400 bg-transparent">
                 <FaComment size={16} />

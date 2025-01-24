@@ -9,6 +9,7 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
 import axios from 'axios';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams(); 
@@ -123,7 +124,7 @@ const ExternalProfile = () => {
                     handleAddFriend()
                   }}
                 >     
-                  <FontAwesomeIcon icon={faUserPlus} /> Add Friend
+                  <FontAwesomeIcon icon={faUserPlus as IconProp} /> Add Friend
                 </button>
               )}
              

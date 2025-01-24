@@ -10,10 +10,11 @@ import { handleReload } from '../utils/HandleReload';
 import Loading from '../utils/loading';
 import DefaultUserIcon from '../assets/tala/user.png';
 import axios from 'axios';
+import Notification from './Main/Notification';
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
   { name: 'Messages', href: '/messages', icon: ChatBubbleLeftIcon },
-  { name: 'Requests', href: '/requests', icon: UserPlusIcon },
+  // { name: 'Requests', href: '/requests', icon: UserPlusIcon },
 ];
 
 function classNames(...classes) {
@@ -26,6 +27,12 @@ export default function NavBar() {
   const [results, setResults] = useState<User[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
+
+  const [showNotification, setShowNotification] = useState(false);
+
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
+  };
 
   const userData = getUserData();
   if (!userData) {
@@ -56,7 +63,12 @@ export default function NavBar() {
 
   const handleResultClick = (userId) => {
     console.log(`Clicked on user with ID: ${userId}`); 
+    if(userData.userId === userId){
+    navigate(`/profile`);
+    }
+    else{
     navigate(`/external-profile/${userId}`);
+    }
     setResults([]); 
   };
 
@@ -76,8 +88,8 @@ export default function NavBar() {
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {isSearchOpen ? (
                   <button
-                    className="p-2 bg-transparent text-gray-400 hover:text-white rounded-md"
-                    onClick={() => setIsSearchOpen(false)}
+                  className="absolute top-3 left-0 p-2 bg-transparent text-gray-400 hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 active:bg-gray-200 z-10"
+                  onClick={() => setIsSearchOpen(false)}
                   >
                     <ArrowLeftIcon className="h-5 w-5" aria-hidden="true" />
                   </button>
@@ -102,15 +114,17 @@ export default function NavBar() {
                     </Button>
                   </div>
                 ) : (
-                  <form className="relative w-80 px-4 sm:hidden -ml-20 mr-5" onSubmit={(e) => { e.preventDefault(); handleSearch(searchQuery); }}>
+                  <form className="relative w-[65%] px-4 sm:hidden -ml-20 mr-5" onSubmit={(e) => { e.preventDefault(); handleSearch(searchQuery); }}>
                   
 <div className='w-full'>
   {!searchQuery ? (
     <MagnifyingGlassIcon 
-      className="absolute left-3  top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-700" 
+      className="absolute left-9  top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-700" 
       aria-hidden="true" 
     />
-  ): (
+    
+  )
+  : (
     <button 
       type="button"
       onClick={() => {setSearchQuery(''); 
@@ -130,7 +144,7 @@ export default function NavBar() {
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
   />
-  {results.length > 0 && searchQuery==='' && (
+  {results.length > 0 && (
     <ul className="absolute z-10 w-full max-w-lg bg-white border border-dark border-t-0 rounded-b-md shadow-lg max-h-60 overflow-y-auto">
       {results.map((user) => (
         <li
@@ -230,15 +244,20 @@ export default function NavBar() {
                     <MagnifyingGlassIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 )}
+                <div>
 
+              
                 <button
                   type="button"
+                  onClick={toggleNotification}
                   className="rounded-full bg-transparent p-1 hover:text-white text-gray-400 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                 >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
+                {showNotification && <Notification />}
 
+                </div>
                 <Menu as="div" className="relative">
                   <div>
                     <Menu.Button style={{ background: 'transparent' }}>
