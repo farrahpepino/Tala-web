@@ -9,6 +9,7 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
 import axios from 'axios';
+import Footer from '../Footer';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
@@ -145,8 +146,7 @@ const ExternalProfile = () => {
         <div className="mt-8 w-full max-w-4xl">
         <Posts userId={userId}/>
         </div>
-
-
+    <Footer/>
     </div>
   );
 };

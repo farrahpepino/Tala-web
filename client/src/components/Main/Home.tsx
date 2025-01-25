@@ -7,7 +7,7 @@ import AddPost from '../Posts/AddPost';
 import Posts from '../Posts/Posts';
 import Loading from '../../utils/loading';
 import { handleReload } from '../../utils/HandleReload';
-
+import Footer from '../Footer';
 const Home: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
@@ -39,6 +39,7 @@ const Home: React.FC = () => {
         <Posts userId={user?.userId || user?._id}/>
       </div>
     </main>
+      <Footer/>
       </div>
   );
 };

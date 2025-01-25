@@ -81,6 +81,7 @@ const Login = () => {
               >
                 Sign in
               </button>
+
             </div>
           </form>
           {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
@@ -89,6 +90,8 @@ const Login = () => {
             <Link to="/register" className="font-semibold leading-6 text-gray-400 hover:text-gray-300">Sign up</Link>
           </p>
         </div>
+        <span className='ml-2'> 💌</span>
+
       </div>
     </div>
   );

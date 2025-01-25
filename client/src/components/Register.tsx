@@ -135,6 +135,7 @@ const Register = () => {
               Log in
             </Link>
           </p>
+          <span className='ml-2'> 💌</span>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { storeUserData } from '../../utils/User/storeUserData';
 import { useNavigate } from 'react-router-dom';
 import DefaultUserIcon from '../../assets/tala/user.png';
-
+import Footer from '../Footer';
 const EditProfile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userId, setUserId] = useState('');
@@ -122,6 +122,8 @@ const EditProfile = () => {
           </div>
         </div>
       </main>
+
+      <Footer/>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { handleReload } from '../../utils/HandleReload';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
 import DefaultUserIcon from '../../assets/tala/user.png';
-
+import Footer from '../Footer';
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -54,6 +54,7 @@ const Profile = () => {
         <AddPost />
         <Posts userId={user?.userId || user?._id}/>
       </div>
+      <Footer/>
     </div>
   );
 };
