@@ -109,7 +109,7 @@ export default function NavBar() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {!isSearchOpen ? (
                   <div className="flex flex-shrink-0 items-center">
-                    <Button className="bg-transparent m-0 p-0" onClick={() => navigate('/home')}>
+                    <Button className=" bg-transparent m-0 p-0" onClick={() => navigate('/home')}>
                     <img className="h-8 w-auto" src={TalaLogo} alt="Tala" />
                     </Button>
                   </div>
@@ -166,7 +166,7 @@ export default function NavBar() {
 
                {/* Search Bar for Larger Screens */}
 <form 
-  className="hidden   sm:flex flex-1 items-center justify-center max-w-lg mx-auto relative" 
+  className="hidden  sm:flex flex-1 items-center justify-center max-w-lg mx-auto relative" 
   onSubmit={(e) => { e.preventDefault(); handleSearch(searchQuery); }}
 >
 <div className='w-full'>

@@ -5,7 +5,7 @@ const Notification = () => {
     <div className="relative font-[sans-serif] w-max mx-auto">
       <div
         id="dropdownMenu"
-        className="absolute block -right-10 shadow-lg bg-white py-4 z-[1000] min-w-full rounded-lg w-[410px] max-h-[500px] overflow-auto mt-2"
+        className="absolute block -right-10 shadow-lg bg-white py-4 z-[1000] min-w-full rounded-lg w-[35vh] sm-[70vh] max-h-[500px] overflow-auto mt-2"
       >
         <div className="flex items-center justify-between px-4 mb-4">
           <p className="text-xs text-black cursor-pointer hover:underline">Clear all</p>
