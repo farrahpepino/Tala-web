@@ -88,7 +88,7 @@ export default function NavBar() {
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {isSearchOpen ? (
                   <button
-                  className="absolute top-3 left-0 p-2 bg-transparent text-gray-400 hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 active:bg-gray-200 z-10"
+                  className="absolute top-3 left-0 p-2 bg-transparent text-gray-400 hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 active:bg-white z-10"
                   onClick={() => setIsSearchOpen(false)}
                   >
                     <ArrowLeftIcon className="h-5 w-5" aria-hidden="true" />
@@ -200,7 +200,7 @@ export default function NavBar() {
       {results.map((user) => (
         <li
           key={user.userId || user._id}
-          className="cursor-pointer text-left ml-3 hover:text-gray-500 hover:bg-gray-100 p-2 text-gray-700"
+          className="cursor-pointer text-left ml-3 hover:bg-gray-50 p-2 text-gray-700"
           onClick={() => handleResultClick(user.userId || user._id) }
         >
           {user.firstName} {user.lastName} 
@@ -278,7 +278,7 @@ export default function NavBar() {
                     leaveFrom="opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute bg-white right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 ">
                       <Menu.Item>
                         {({ active }) => (
                           <a
@@ -287,8 +287,8 @@ export default function NavBar() {
                               navigate('/profile');
                             }}
                             className={classNames(
-                              active ? 'bg-gray-100 text-gray-800' : '',
-                              'block px-4 py-2 text-sm text-gray-700 hover:text-gray-500'
+                              // active ? '' : '',
+                              'block px-4 py-2 text-sm text-[#333] hover:text-gray-500'
                               )}
                             >
                               Your Profile
@@ -300,8 +300,8 @@ export default function NavBar() {
                             <a
                               href="#"
                               className={classNames(
-                                active ? 'bg-gray-100 text-gray-800' : '',
-                                'block px-4 py-2 text-sm text-gray-700 hover:text-gray-500'
+                                // active ? 'bg-gray-100 text-gray-800' : '',
+                                'block px-4 py-2 text-sm text-[#333] hover:text-gray-500'
                               )}
                             >
                               Settings
@@ -313,8 +313,8 @@ export default function NavBar() {
                             <a
                               onClick={handleLogout}
                               className={classNames(
-                                active ? 'bg-gray-100 text-gray-800' : '',
-                                'block px-4 py-2 text-sm text-gray-700 hover:text-gray-500'
+                                // active ? 'bg-gray-100 text-gray-800' : '',
+                                'block px-4 py-2 text-sm text-[#333] hover:text-gray-500'
                               )}
                             >
                               Sign out
