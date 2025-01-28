@@ -9,10 +9,17 @@ const searchUsers = async (req, res) => {
     try {
         const users = await User.find({
             $or: [
+                {
+                    $and: [
+                        { firstName: { $regex: query, $options: 'i' } },
+                        { lastName: { $regex: query, $options: 'i' } }
+                    ]
+                },
                 { firstName: { $regex: query, $options: 'i' } },
                 { lastName: { $regex: query, $options: 'i' } }
             ]
         });
+        
         
         res.status(200).send(users);
         console.log(users);
