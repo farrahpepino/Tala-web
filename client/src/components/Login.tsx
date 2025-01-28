@@ -37,7 +37,9 @@ const Login = () => {
   };
 
   return (
-    <div className="Login">
+    <div className="Login"
+    style={{height:'90vh'}}
+    >
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img className="mx-auto h-20 w-auto" src={TalaLogo} alt="Tala" />
