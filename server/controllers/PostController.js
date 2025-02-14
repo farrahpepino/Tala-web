@@ -18,7 +18,6 @@ exports.createPost = async (req, res) => {
 
     res.status(201).send({ message: 'Post created successfully!', post: newPost });
   } catch (error) {
-    console.error('Error saving post:', error);
     res.status(500).send({ message: 'Internal Server Error' });
   }
 };
@@ -43,7 +42,13 @@ exports.getUserPosts = async (req, res) => {
   
     res.status(200).json(posts);
   } catch (error) {
-    console.error('Error fetching posts:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
   };
+
+
+  //get all likes from a post
+
+  // get all comments from a post
+
+  

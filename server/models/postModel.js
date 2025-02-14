@@ -11,7 +11,8 @@ const postSchema = new mongoose.Schema({
             likedAt: { 
                 type: Date, 
                 default: Date.now 
-            }
+            },
+            
         }
     ],
     comments: [
@@ -32,10 +33,10 @@ const postSchema = new mongoose.Schema({
     ],
     postImages: [{ type: String }],
     description: { type: String },
-    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     
 }, {
-    timestamps: true 
+    timestamps: true,
 });
 
 postSchema.pre('save', function (next) {

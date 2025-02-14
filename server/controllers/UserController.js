@@ -4,8 +4,6 @@ const { User } = require('../models/userModel');
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
 
-  console.log('Received userId:', userId);
-
   if (!userId) {
     return res.status(400).send({ message: 'No userId provided.' });
   }
@@ -25,7 +23,6 @@ exports.getUserData = async (req, res) => {
 
     res.status(200).json(userData);
   } catch (error) {
-    console.error('Error fetching user data:', error);
     res.status(500).send({ message: 'Internal Server Error' });
   }
 };
@@ -52,7 +49,6 @@ exports.searchUsers = async (req, res) => {
         
         
         res.status(200).send(users);
-        console.log(users);
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send({ message: 'Internal Server Error' });
@@ -84,3 +80,7 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+
+
+

@@ -4,9 +4,6 @@ const Joi = require('joi');
 const passwordComplexity = require('joi-password-complexity');
 
 exports.loginUser = async (req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(405).send({ message: 'Method Not Allowed' });
-    }
     try {
         const { error } = validateLogin(req.body);
         if (error) 
@@ -35,9 +32,7 @@ exports.loginUser = async (req, res) => {
                 active: true,
             },
         });
-        console.log('Logged in successfully');
     } catch (error) {
-        console.error(error);
         res.status(500).send({ message: 'Internal Server Error' });
     }
 };
@@ -83,7 +78,6 @@ exports.registerUser = async(req, res) => {
         });
     }
     catch(error){
-        console.log(error)
         res.status(500).send({message: 'Internal Server Error'})
     }
 }

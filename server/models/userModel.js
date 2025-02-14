@@ -13,7 +13,18 @@ const userSchema = new mongoose.Schema({
     profilePicture: {type: String},
     active: {type: Boolean}
     },
-    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    friends: [ 
+        { userId: {type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+        createdAt: { type: Date, default: Date.now },
+    }
+   ],
+   friendRequests: [
+    {
+      senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      status: { type: String, enum: ['pending', 'accepted', 'declined', 'blocked'], default: 'pending' },
+      createdAt: { type: Date, default: Date.now },
+    }
+  ]
 })
 
 const complexityOptions = {
