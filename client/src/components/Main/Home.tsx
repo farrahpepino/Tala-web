@@ -4,7 +4,7 @@ import { getUserData } from '../../utils/User/GetUserData';
 import { User } from '../../utils/User/UserType';
 import NavBar from '../NavBar';
 import AddPost from '../Posts/AddPost';
-import Posts from '../Posts/Posts';
+import HomePosts from '../Posts/HomePosts';
 import Loading from '../../utils/loading';
 import { handleReload } from '../../utils/HandleReload';
 import Footer from '../Footer';
@@ -27,6 +27,8 @@ const Home: React.FC = () => {
     );
   }
 
+
+
   return (
     <div className="min-h-screen mx-auto">
     <NavBar />
@@ -36,7 +38,7 @@ const Home: React.FC = () => {
       <div className="mt-4 mx-auto w-full max-w-4xl">
 
         <AddPost />
-        <Posts userId={user?.userId || user?._id}/>
+        <HomePosts userId={user?.userId || user?._id}/>
       </div>
     </main>
       <Footer/>

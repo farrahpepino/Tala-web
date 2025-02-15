@@ -90,3 +90,31 @@ exports.getMessages = async (req, res) => {
         return res.status(500).json({ message: "An error occurred while retrieving the messages." });
     }
 };
+
+exports.getChatList = async (req, res) => {
+    try {
+      const currentUserId = req.query.currentUserId;
+  
+      const chats = await Chat.find({
+        participants: { $in: [currentUserId] }
+      })
+      .populate('participants', 'firstName lastName') 
+      .populate('messages.sender', 'firstName lastName') 
+      .sort({ 'messages.sentAt': -1 }) 
+      .limit(10); 
+      const chatList = chats.map(chat => {
+        const latestMessage = chat.messages[chat.messages.length - 1];
+        return {
+          chatId: chat._id,
+          participants: chat.participants.map(p => `${p.firstName} ${p.lastName}`),
+          latestMessage: latestMessage ? latestMessage.content : '',
+          latestMessageSender: latestMessage ? `${latestMessage.sender.firstName} ${latestMessage.sender.lastName}` : ''
+        };
+      });
+  
+      res.json(chatList);
+    } catch (error) {
+      console.error('Error fetching chat list:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
