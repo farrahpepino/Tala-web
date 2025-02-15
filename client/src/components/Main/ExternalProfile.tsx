@@ -15,79 +15,103 @@ const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams(); 
   const [user, setUser] = useState<User | null>(null);
-  const [friendStatus, setFriendStatus] = useState<'NF' | 'pending' | 'accepted' | 'pending-req' | 'cancel-req'>('NF');
-  
+  const [friendStatus, setFriendStatus] = useState<'none' | 'pending' | 'friends'>('none');
+  const [friendRequestSender, setFriendRequestSender] = useState<string | null>(null);
+
   const navigate = useNavigate();
   console.log('User ID for external profile:', userId);
-  const senderId = getUserData()?.userId || getUserData()?._id;
+  const senderId = (getUserData()?.userId || getUserData()?._id)?.toString();
   const receiverId = userId;
 
-
+  const fetchFriendStatus = async () => {
+     
+    try {
+    const response = await axios.get(`http://localhost:5005/api/friends/status`, {
+      params: { currentUserId: senderId, otherUserId: receiverId },
+    });
+    const status = response.data.status;
+    console.log(response.data.status)
+    if (status === 'pending' && response.data.senderId) {
+      setFriendRequestSender(response.data.senderId);
+    } else {
+      setFriendRequestSender(null);
+    }
+    console.log("status", status)
+    setFriendStatus(status); // "friends", "pending", or "none"
+  } catch (error) {
+    console.error("Error fetching friend status:", error);
+  }
+};
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(`http://localhost:5005/api/users/${userId}`);
-        console.log('Response:', response);
-        setUser(response.data);
         console.log('Fetched user:', response.data);
-
+        setUser(response.data);
       } catch (err: any) {
         console.error('Fetch error:', err);
         setError(err.response ? err.response.data : 'Internal Server Error');
       }
     };
-    const fetchFriendsId = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5005/api/friends/getFriendsId/${senderId}/${userId}`);
-        return response.data.friendsId;
-      } catch (err: any) {
-        console.error('Error fetching friendsId:', err.response?.data || 'Internal Server Error');
-        setError(err.response?.data || 'Internal Server Error');
-        return null;
-      }
-    };
-
-    const fetchFriendStatus = async () => {
-      const friendsId = await fetchFriendsId();
-      if (!friendsId) return;
-      try {
-        const response = await axios.get(`http://localhost:5005/api/friends/friend-status/${friendsId}`);
-        console.log(response.data.status)
-
-        if (response.data.status === 'pending') {
-          setFriendStatus(senderId !== response.data.sender ? 'pending-req' : 'pending');
-        } else {
-          setFriendStatus(response.data.status);
-        }
-
-      } catch (err: any) {
-        console.error('Error fetching friendship status:', err.response?.data || 'Internal Server Error');
-        setError(err.response?.data || 'Internal Server Error');
-      }
-    };
-
+    
+    
     if (userId) {
       fetchUser();
       fetchFriendStatus();
     }
   }, [userId, senderId]);
-
-  
- 
+  fetchFriendStatus();
 
   const handleAddFriend = async () => {
     try {
-   
-        const response = 
-        await axios.post(`http://localhost:5005/api/friends/sendRequest/${senderId}/${receiverId}`, {status: 'pending'});
-        console.log('Friend request sent:', response.data);
-        setFriendStatus('pending');
+      const response = await axios.post(`http://localhost:5005/api/friends/send`, {
+         senderId,
+         receiverId
+      });
+      console.log('Friend request sent:', response.data);
+      fetchFriendStatus();
     } catch (err: any) {
-        console.error('Add Friend Error:', err);
-        setError(err.response?.data || 'Unable to send friend request');
+      console.error('Add Friend Error:', err);
+      setError(err.response?.data || 'Unable to send friend request');
     }
-};
+  };
+
+  const accept = async() => {
+
+    try{
+      const response = await axios.post(`http://localhost:5005/api/friends/accept`, {
+        senderId: userId,
+        receiverId: senderId,
+     });
+     console.log('Friend request accepted:', response.data);
+     fetchFriendStatus();
+        }
+    catch (err: any) {
+      console.error('Accept Friend Request Error:', err);
+      setError(err.response?.data || 'Unable to accept friend request');
+    }
+
+
+  }
+
+  const decline = async() => {
+
+    try{
+      const response = await axios.post(`http://localhost:5005/api/friends/decline`, {
+        senderId: userId,
+        receiverId: senderId,
+     });
+     console.log('Friend request declined:', response.data, friendRequestSender, userId);
+     fetchFriendStatus();     
+    }
+    catch (err: any) {
+      console.error('Decline Friend Request Error:', err);
+      setError(err.response?.data || 'Unable to decline friend request');
+    }
+
+
+  }
 
 
   return (
@@ -107,18 +131,18 @@ const ExternalProfile = () => {
             <p className="text-sm text-gray-400 text-center">{user?.bio}</p>
             
             <div className="flex gap-2 mt-3" style={{ maxWidth: '290px', width: '100%' }}>
-            {friendStatus === 'pending-req' && (
+            {friendStatus === 'pending' && friendRequestSender && friendRequestSender !== senderId  &&(
                 <div className="flex gap-2">
-                  <button className="btn btn-success flex-grow px-6 py-2 rounded-pill">Accept</button>
-                  <button className="btn btn-danger flex-grow px-6 py-2 rounded-pill">Decline</button>
+                  <button className="btn btn-success flex-grow px-6 py-2 rounded-pill" onClick={accept}>Accept</button>
+                  <button className="btn btn-danger flex-grow px-6 py-2 rounded-pill" onClick={decline}>Decline</button>
                 </div>
               )}
-               {friendStatus === 'pending' && (
+               {friendStatus === 'pending' && friendRequestSender && friendRequestSender === senderId  &&(
                 <button className="btn btn-warning flex-grow px-6 py-2 rounded-pill" disabled>
                   Request Sent
                 </button>
               )}
-              {friendStatus === 'NF' && (
+              {friendStatus === 'none' && (
                 <button 
                   className="btn btn-dark flex-grow px-6 py-2 rounded-pill" 
                   onClick={()=>{
@@ -130,7 +154,7 @@ const ExternalProfile = () => {
               )}
              
               
-              {friendStatus === 'accepted' && (
+              {friendStatus === 'friends' && (
                 <button className="btn btn-success flex-grow px-6 py-2 rounded-pill" disabled>
                   Friends
                 </button>

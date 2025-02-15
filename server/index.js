@@ -34,7 +34,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', chatRoutes);
-app.use('api/friends', friendsRoutes);
+app.use('/api/friends', friendsRoutes);
 
 app.get("/", (request, response) => {
   console.log("GET request received at /");

@@ -35,7 +35,10 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
   useEffect(() => {
     let fetchUserData = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await 
+        axios.get(`http://localhost:5005/api/users/${userId}`);
+        // axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        console.log('done');
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -44,7 +47,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchUserPosts = async () => {
       try {
-        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/user/${userId}/posts`);
+        let response = await axios.get(`http://localhost:5005/api/post/${userId}/posts`);
+        // axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/posts`);
         setPosts(response.data);
         console.log('Fetched user posts:', response.data);
       } catch (error) {

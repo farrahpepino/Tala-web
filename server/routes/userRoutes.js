@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getUserData, searchUsers, updateProfile } = require('../controllers/UserController');
+const UserController = require('../controllers/UserController');
 
-router.get('/search', searchUsers)
-router.patch('/profile/:userId', updateProfile);
-router.get('/:userId', getUserData)
+router.get('/search', UserController.searchUsers)
+router.patch('/profile/:userId', UserController.updateProfile);
+router.get('/:userId', UserController.getUserData)
 
 
 

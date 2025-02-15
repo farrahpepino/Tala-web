@@ -1,138 +1,153 @@
 const mongoose = require('mongoose');
-const {User} = require('../models/userModel')
+const { User } = require('../models/userModel');
 
-//request friends
+// Send Friend Request (Manual Approach)
+exports.sendFriendRequest = async (req, res) => {
+    try {
+        const { senderId, receiverId } = req.body;
 
-exports.sendFriendRequest = async(req, res)=>{
-try{
-    
-    const {senderId, receiverId} = req.body;
-
-    if(!senderId || !receiverId){
-        return res.status(400).json({message: "SenderId and ReceiverId are required."})
-    }
-
-    const receiver = await User.findById(receiverId);
-    if (!receiver) {
-        return res.status(404).json({ message: "Receiver not found." });
-    }
-
-    const alreadyRequested = receiver.friendRequests.some(
-        (request) => {
-            request.senderId.toString() === senderId
+        if (!senderId || !receiverId) {
+            return res.status(400).json({ message: "SenderId and ReceiverId are required." });
         }
-    )
 
-    if(alreadyRequested){
-        return res.status(400).json({message: "Request already sent. "})
-    }
-
-    await User.UpdateOne(
-    {_id: receiverId},
-    {
-        $push:{
-            friendRequests:{
-                senderId,
-                status: 'pending',
-                createdAt: new Date(), 
-            }
+        const receiver = await User.findById(receiverId);
+        if (!receiver) {
+            return res.status(404).json({ message: "Receiver not found." });
         }
-    });
-    
-    return res.status(200).json({message: "Friend request sent successfully!"})
 
-}catch (error){
-    console.error("Error sending friend request:", error);
-    return res.status(500).json({ message: "Server error." });
-}
-}
+        const alreadyRequested = receiver.friendRequests.some(
+            request => request.senderId.toString() === senderId
+        );
 
+        if (alreadyRequested) {
+            return res.status(400).json({ message: "Request already sent." });
+        }
 
-exports.acceptFriendRequest = async(req, res) => {
+        // Manually add the friend request to receiver's friendRequests array
+        receiver.friendRequests.push({
+            senderId,
+            status: 'pending',
+            createdAt: new Date(),
+        });
 
-    try{
+        // Save the updated receiver
+        await receiver.save();
 
-        const {senderId, receiverId} = req.body;
-
-        if(!senderId || !receiverId){
-            return res.status(400).json({message: "SenderId and ReceiverId are required."})
-        }        
-
-        await User.updateOne(
-            {_id : receiverId},
-            {
-                $pull:{
-                    friendRequests:{
-                        senderId,
-                    }
-                }
-            },
-            {
-                $push:{
-                friends: {
-                    _id: senderId,
-                    createdAt: new Date()
-                }
-                }
-            }
-        )
-
-
-        await User.updateOne(
-            {_id: senderId},
-            {
-               $push: {
-                friends: {
-                    _id: receiverId,
-                    createdAt: new Date()
-                }
-               } 
-            }
-        )
-
-    }catch(error){
-        console.error("Error accepting friend request:", error)
-        return res.status(500).json({message: "Internal server error."})
+        return res.status(200).json({ message: "Friend request sent successfully!" });
+    } catch (error) {
+        console.error("Error sending friend request:", error);
+        return res.status(500).json({ message: "Server error." });
     }
-}
+};
 
 
-exports.declineFriendRequest = async(req, res) => {
+// Accept Friend Request (Manual Approach)
+exports.acceptFriendRequest = async (req, res) => {
+    try {
+        const { senderId, receiverId } = req.body;
 
-    try{
+        if (!senderId || !receiverId) {
+            return res.status(400).json({ message: "SenderId and ReceiverId are required." });
+        }
 
-        const {senderId, receiverId} = req.body;
+        // Retrieve both users
+        const receiver = await User.findById(receiverId);
+        const sender = await User.findById(senderId);
 
-        if(!senderId || !receiverId){
-            return res.status(400).json({message: "SenderId and ReceiverId are required."})
-        }        
+        if (!receiver || !sender) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
-        await User.updateOne(
-            {_id : receiverId},
-            {
-                $pull:{
-                    friendRequests:{
-                        senderId,
-                    }
-                }
-            }
-        )
+        // Remove the friend request from receiver's friendRequests
+        receiver.friendRequests = receiver.friendRequests.filter(
+            request => request.senderId.toString() !== senderId
+        );
 
-        return res.status(200).json({message: "Friend request accepted."})
-    }catch(error){
-        console.error("Error declining friend request:", error)
-        return res.status(500).json({message: "Internal server error."})
+        // Add both users to each other's friends list
+        receiver.friends.push({ _id: senderId, createdAt: new Date() });
+        sender.friends.push({ _id: receiverId, createdAt: new Date() });
+
+        // Save the updated users
+        await receiver.save();
+        await sender.save();
+
+        return res.status(200).json({ message: "Friend request accepted, both users are now friends." });
+    } catch (error) {
+        console.error("Error accepting friend request:", error);
+        return res.status(500).json({ message: "Internal server error." });
     }
-}
+};
+
+exports.declineFriendRequest = async (req, res) => {
+    try {
+        const { senderId, receiverId } = req.body;
+
+        if (!senderId || !receiverId) {
+            return res.status(400).json({ message: "SenderId and ReceiverId are required." });
+        }
+
+        // Retrieve the receiver and sender
+        const receiver = await User.findById(receiverId);
+        const sender = await User.findById(senderId);
+
+        if (!receiver) {
+            return res.status(404).json({ message: "Receiver not found." });
+        }
+
+        if (!sender) {
+            return res.status(404).json({ message: "Sender not found." });
+        }
+
+        // Debug: Log current state of friendRequests
+        console.log("Receiver friend requests before decline:", receiver.friendRequests);
+        console.log("Sender friend requests before decline:", sender.friendRequests);
+
+        // Find the index of the friend request in receiver's friendRequests array
+        const receiverRequestIndex = receiver.friendRequests.findIndex(
+            request => request.senderId.toString() === senderId
+        );
+
+        if (receiverRequestIndex !== -1) {
+            // If found, remove it
+            receiver.friendRequests.splice(receiverRequestIndex, 1);
+            console.log("Receiver's friend requests after removal:", receiver.friendRequests);
+        } else {
+            console.log("No matching request found in receiver's friend requests.");
+        }
+
+        // Find the index of the friend request in sender's friendRequests array
+        const senderRequestIndex = sender.friendRequests.findIndex(
+            request => request.receiverId.toString() === receiverId
+        );
+
+        if (senderRequestIndex !== -1) {
+            // If found, remove it
+            sender.friendRequests.splice(senderRequestIndex, 1);
+            console.log("Sender's friend requests after removal:", sender.friendRequests);
+        } else {
+            console.log("No matching request found in sender's friend requests.");
+        }
+
+        // Save both updated users
+        await receiver.save();
+        await sender.save();
+
+        return res.status(200).json({ message: "Friend request declined and removed from both sides." });
+    } catch (error) {
+        console.error("Error declining friend request:", error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
 
 
-//GET ALL FRIENDS
-exports.getAllFriends =  async(req, res) => {
-    try{
-        const {userId} = req.body
 
-        if (!userId){
-            return res.status(400).json({message: "UserId is required. "})
+// Get All Friends
+exports.getAllFriends = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: "UserId is required." });
         }
 
         const user = await User.findById(userId).populate("friends");
@@ -146,88 +161,98 @@ exports.getAllFriends =  async(req, res) => {
         }
 
         return res.status(200).json({ friends: user.friends });
-    }
-    catch(error){
+    } catch (error) {
         console.error("Error checking friend status:", error);
         return res.status(500).json({ message: "Internal server error." });
     }
-}
+};
 
+// Get Friend Status
+exports.getFriendStatus = async (req, res) => {
+    const { currentUserId, otherUserId } = req.query;
 
-exports.getFriendStatus = async(req, res) => {
-
-    try{
-    const {currentUserId, otherUserId} = req.body
-
-    if(!currentUserId || !otherUserId){
-        return res.status(400).json({message: "CurrentUserId and OtherUserId are required."})
+    if (!currentUserId || !otherUserId) {
+        return res.status(400).json({ message: "CurrentUserId and OtherUserId are required." });
     }
 
-    const currentUser = await User.findById(currentUserId);
-    const otherUser = await User.findById(otherUserId);
+    try {
+        const currentUser = await User.findById(currentUserId);
+        const otherUser = await User.findById(otherUserId);
 
-    if (!currentUser || !otherUser) {
-        return res.status(404).json({ message: "User not found." });
-    }
+        if (!currentUser || !otherUser) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
+        // Check if both users are friends
+        if (currentUser.friends.some(friend => friend._id.toString() === otherUserId)) {
+            return res.status(200).json({ status: "friends" });
+        }
 
-    if (currentUser.friends.some(friend => friend._id.toString === otherUserId)){
-        return res.status(200).json({ status: "friends" });
-    }
+        // Check if there's a pending request from the current user to the other user
+        const pendingRequestFromCurrent = otherUser.friendRequests.find(
+            request => request.senderId.toString() === currentUserId
+        );
 
-    if (otherUser.friendRequests.some(request => request.senderId.toString() === currentUserId)) {
-        return res.status(200).json({ status: "pending" }); 
-    }
+        if (pendingRequestFromCurrent) {
+            return res.status(200).json({
+                status: "pending",
+                senderId: pendingRequestFromCurrent.senderId.toString(),
+            });
+        }
 
-    if (currentUser.friendRequests.some(request => request.senderId.toString() === otherUserId)) {
-        return res.status(200).json({ status: "pending" }); 
-    }
+        // Check if there's a pending request from the other user to the current user
+        const pendingRequestFromOther = currentUser.friendRequests.find(
+            request => request.senderId.toString() === otherUserId
+        );
 
-    return res.status(200).json({ status: "none" });
+        if (pendingRequestFromOther) {
+            return res.status(200).json({
+                status: "pending",
+                senderId: pendingRequestFromOther.senderId.toString(),
+            });
+        }
 
-
-}
-    catch(error){
+        return res.status(200).json({ status: "none" });
+    } catch (error) {
         console.error("Error checking friend status:", error);
         return res.status(500).json({ message: "Internal server error." });
     }
+};
 
-}
-
-
+// Unfriend (Manual Approach)
 exports.unfriend = async (req, res) => {
-    const {currentUserId, otherUserId} = req.body
+    const { currentUserId, otherUserId } = req.body;
 
-
-    if(!currentUserId || !otherUserId){
-        return res.status(400).json({message: "CurrentUserId and OtherUserId are required."})
+    if (!currentUserId || !otherUserId) {
+        return res.status(400).json({ message: "CurrentUserId and OtherUserId are required." });
     }
 
-    const currentUser = await User.findById(currentUserId);
-    const otherUser = await User.findById(otherUserId);
+    try {
+        // Retrieve both users
+        const currentUser = await User.findById(currentUserId);
+        const otherUser = await User.findById(otherUserId);
 
-    if (!currentUser || !otherUser) {
-        return res.status(404).json({ message: "User not found." });
-    }
-  
-    await User.updateOne(
-        {_id: currentUserId},
-        {
-        $pull : {
-            friends:{
-                _id: otherUserId
-            }
+        if (!currentUser || !otherUser) {
+            return res.status(404).json({ message: "User not found." });
         }
+
+        // Remove the other user from the current user's friends array
+        currentUser.friends = currentUser.friends.filter(
+            friend => friend._id.toString() !== otherUserId
+        );
+
+        // Remove the current user from the other user's friends array
+        otherUser.friends = otherUser.friends.filter(
+            friend => friend._id.toString() !== currentUserId
+        );
+
+        // Save both users
+        await currentUser.save();
+        await otherUser.save();
+
+        return res.status(200).json({ message: "Unfriended successfully." });
+    } catch (error) {
+        console.error("Error unfriending:", error);
+        return res.status(500).json({ message: "Internal server error." });
     }
-    );
-    await User.updateOne(
-        {_id: otherUserId},
-        {
-        $pull : {
-            friends:{
-                _id: currentUserId
-            }
-        }
-    }
-    );
-}
+};

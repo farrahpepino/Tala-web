@@ -57,8 +57,7 @@ exports.searchUsers = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   
-    console.log(req.params)
-    console.log(req.body)
+
   const { userId } = req.params;
 
   try {

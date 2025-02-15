@@ -22,7 +22,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
       e.preventDefault();
       try{
-        const { data: res } = await axios.post('https://tala-web-kohl.vercel.app/api/auth/register', data); 
+        const { data: res } = await         axios.post('http://localhost:5005/api/auth/register', data); 
+
+        // axios.post('https://tala-web-kohl.vercel.app/api/auth/register', data); 
         storeUserData(res.token, res.user)
         window.location.href = '/home'; 
         console.log(res.message);

@@ -34,7 +34,6 @@ const postSchema = new mongoose.Schema({
     postImages: [{ type: String }],
     description: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    
 }, {
     timestamps: true,
 });

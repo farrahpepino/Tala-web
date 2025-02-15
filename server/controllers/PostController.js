@@ -26,15 +26,12 @@ exports.createPost = async (req, res) => {
 
 exports.getUserPosts = async (req, res) => {
     let { userId } = req.params;
-    let posts;
     try {
       const posts = await Post.find({ postedBy: userId })
-      .populate({
-        path: 'postedBy',
-        select: 'firstName lastName profile.profilePicture',
-      })
-      .sort({ createdAt: -1 })
-      .exec();
+        .populate('postedBy')
+        .sort({ createdAt: -1 })
+        .exec();
+
   
     if (!posts || posts.length === 0) {
       return res.status(404).json({ message: 'No posts found for this user.' });
@@ -42,6 +39,7 @@ exports.getUserPosts = async (req, res) => {
   
     res.status(200).json(posts);
   } catch (error) {
+    console.error(error)
     res.status(500).json({ message: 'Internal Server Error' });
   }
   };
