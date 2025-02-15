@@ -21,7 +21,7 @@ function Router() {
         <Route path="/register" element={isAuthenticated() ? <Navigate to="/home" /> : <Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/messages" element={<Messages />} />
+        <Route path="/messages/:userId" element={<Messages />} />
         <Route path="/external-profile/:userId" element={<ExternalProfile />} />
 
       </Routes>

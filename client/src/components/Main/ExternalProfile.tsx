@@ -159,7 +159,9 @@ const ExternalProfile = () => {
                   Friends
                 </button>
               )}
-              <button className="btn btn-light text-dark flex-grow px-6 py-2 rounded-pill">
+              <button className="btn btn-light text-dark flex-grow px-6 py-2 rounded-pill"
+              onClick={()=>navigate(`/messages/${userId}`)}
+              >
                 Message
               </button>
             </div>
