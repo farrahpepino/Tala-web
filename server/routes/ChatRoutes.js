@@ -4,7 +4,7 @@ const ChatController = require('../controllers/ChatController');
 
 router.post('/send', ChatController.sendMessage);
 router.get('/:chatId', ChatController.getMessages);
-router.get('/chatId', ChatController.getChatId);
-router.get('/chatList', ChatController.getChatList);
+router.get('/chatId/:currentUserId/:otherUserId', ChatController.getChatId);
+router.get('/chatList/:currentUserId', ChatController.getChatList);
 
 module.exports = router;

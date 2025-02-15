@@ -13,8 +13,7 @@ import axios from 'axios';
 import Notification from './Main/Notification';
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
-  { name: 'Messages', href: '/messages', icon: ChatBubbleLeftIcon },
-  // { name: 'Requests', href: '/requests', icon: UserPlusIcon },
+  { name: 'Messages', href: `/messages/${null}`, icon: ChatBubbleLeftIcon },
 ];
 
 function classNames(...classes) {
