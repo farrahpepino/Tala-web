@@ -9,6 +9,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { deletePost } from '../../utils/Services/PostService';
 import { getUserData } from '../../utils/User/GetUserData';
+import CommentSection from './CommentSection';
+
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -16,16 +18,16 @@ interface PostsProps {
 
 const formatNumber = (num: number): string => {
   if (num >= 1_000_000_000_000) {
-    return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; // Zillion
+    return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; 
   }
   if (num >= 1_000_000_000) {
-    return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; // Billion
+    return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; 
   }
   if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; // Million
+    return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; 
   }
   if (num >= 1_000) {
-    return (num / 1_000).toFixed(1).slice(0, 3) + 'k'; // Thousand
+    return (num / 1_000).toFixed(1).slice(0, 3) + 'k'; 
   }
   return num.toString().slice(0, 3); 
 };
@@ -161,6 +163,23 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                 <span>{post.comments.length}</span>
               </button>
             </div>
+            {/* Comment Section */}
+              <CommentSection
+                postId={post.id}
+                comments={post.comments} 
+                onAddComment={(commentText) => {
+                  const newComment = {
+                    text: commentText,
+                    createdAt: new Date().toISOString(),
+                    postedBy: currentLoggeedIn, 
+                  };
+                  setPosts((prevPosts) =>
+                    prevPosts.map((p) =>
+                      p.id === post.id ? { ...p, comments: [...p.comments, newComment] } : p
+                    )
+                  );
+                }}
+              />
           </div>
         ))
       )}
