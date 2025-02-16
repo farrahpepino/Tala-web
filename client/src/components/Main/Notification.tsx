@@ -1,4 +1,5 @@
 import React from 'react';
+import DefaultUserIcon from '../../assets/tala/user.png';
 
 const Notification = () => {
   return (
@@ -15,14 +16,15 @@ const Notification = () => {
         <ul className="divide-y">
           <li className="p-4 flex items-center hover:bg-gray-50 cursor-pointer">
             <img
-              src="https://readymadeui.com/profile_2.webp"
+              src= {DefaultUserIcon}
               className="w-12 h-12 rounded-full shrink-0"
               alt="User"
             />
+            
             <div className="ml-6">
-              <h3 className="text-sm text-[#333] font-semibold">You have a new message from Yin</h3>
+              <h3 className="text-sm text-[#333] font-semibold">Farrah commented your post:</h3>
               <p className="text-xs text-gray-500 mt-2">
-                Hello there, check this new item from the motion school.
+                i miss youuu
               </p>
               <p className="text-xs text-black leading-3 mt-2">10 minutes ago</p>
             </div>

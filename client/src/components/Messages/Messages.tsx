@@ -19,7 +19,6 @@ import { sendMessage } from './MessagesService';
 
 const Messages = () => {
   const { userId } = useParams<{ userId: string }>();
-
   const [chatId, setChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [message, setMessage] = useState('');
@@ -44,6 +43,7 @@ const Messages = () => {
       try {
         await sendMessage(currentUserId, otherUserId, message);
         setMessage(''); 
+        fetchMessages(chatId);
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -55,6 +55,7 @@ const Messages = () => {
       fetchUserData();
     }
   }, [otherUserId]);
+  
 
   const otherUserFullName = otherUser ? `${otherUser.firstName} ${otherUser.lastName}` : '';
 
@@ -76,17 +77,19 @@ const Messages = () => {
     }
   }, [currentUserId, otherUserId]);
 
+  const fetchMessages = async (chatId: string | null) => {
+    if (!chatId) return;
+    try {
+      const response = await axios.get(`http://localhost:5005/api/messages/${chatId}`);
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
   useEffect(() => {
     if (chatId) {
-      const fetchMessages = async () => {
-        try {
-          const response = await axios.get(`http://localhost:5005/api/messages/${chatId}`);
-          setMessages(response.data.messages);
-        } catch (error) {
-          console.error('Error fetching messages:', error);
-        }
-      };
-      fetchMessages();
+      fetchMessages(chatId);
     }
   }, [chatId]);
 
@@ -106,16 +109,28 @@ const Messages = () => {
       <ChatList currentUserId={currentUserId} />
     </div>
 
-    <div className="col-span-8 bg-gray-100 bg-opacity-10 flex flex-col max-h-[calc(100vh-100px)] rounded">
-      <div className="flex items-center rounded-t-none bg-black bg-opacity-25 text-gray-100">
-        <div className="flex items-start py-4 ml-2">
-          <img src={DefaultUserIcon} className="object-cover h-8 w-8 rounded-full" alt="Avatar" />
-        </div>
-        <h3 className="flex items-start text-lg font-semibold p-4 -ml-3">
-          {
-            // clicked
-           otherUserFullName}
-        </h3>
+    <div className="col-span-8 bg-gray-100 bg-opacity-10 flex  flex-col max-h-[calc(100vh-100px)] rounded">
+      <div className="flex items-center  rounded-t-none bg-black bg-opacity-25 pb-2 text-gray-100">
+      {
+              otherUserId === 'null' ? (
+                <div className='justify-center w-full'>
+                <input
+                  type="text"
+                  placeholder="To:"
+                  className=" text-gray-600 p-2 rounded w-[95%] h-10 mt-2 border-1 items-center justify-center content-around bg-gray-800 bg-opacity-5 px-4 py-2 focus:outline-none"
+                />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-start py-4 ml-2">
+                    <img src={DefaultUserIcon} className="object-cover h-8 w-8 rounded-full" alt="Avatar" />
+                  </div>
+                  <h3 className="flex items-start text-lg font-semibold p-4 -ml-3">
+                    {otherUserFullName}
+                  </h3>
+                </>
+              )
+            }
       </div>
 
       <div className="flex flex-col overflow-y-auto px-2 max-h-[calc(100vh-100px)] py-2 flex-grow">
@@ -130,7 +145,7 @@ const Messages = () => {
         </div>
       </div>
 
-      <div className="flex items-center bg-gray-800 bg-opacity-5 p-2">
+      <div className="flex items-center justify-center content-around bg-gray-800 bg-opacity-5 p-2">
       <form 
       className="flex w-full"
        onSubmit={handleSendMessage}>

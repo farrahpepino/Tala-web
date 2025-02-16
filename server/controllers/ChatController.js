@@ -133,6 +133,7 @@ exports.getChatList = async (req, res) => {
   
         return {
           chatId: chat._id,
+          otherParticipantId: otherParticipant._id,
           name: otherParticipant
             ? `${otherParticipant.firstName} ${otherParticipant.lastName}`
             : 'Unknown',
