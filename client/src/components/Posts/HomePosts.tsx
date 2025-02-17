@@ -40,7 +40,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
  
     let fetchUserData = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -49,7 +49,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchHomePosts = async () => {
       try {
-        let response = await axios.get(`https://tala-web-kohl/api/post/${userId}/all-posts`);
+        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/all-posts`);
         setPosts(response.data);
         console.log('Fetched home posts:', response.data);
       } catch (error) {
