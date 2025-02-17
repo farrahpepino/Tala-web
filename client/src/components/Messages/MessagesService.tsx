@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const sendMessage = async (currentUserId, otherUserId, content) => {
   try {
-    const response = await axios.post('http://localhost:5005/api/messages/send', {
+    const response = await axios.post('https://tala-web-kohl/api/messages/send', {
       currentUserId,
       otherUserId,
       content

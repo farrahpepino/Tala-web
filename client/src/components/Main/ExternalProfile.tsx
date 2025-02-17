@@ -26,7 +26,7 @@ const ExternalProfile = () => {
   const fetchFriendStatus = async () => {
      
     try {
-    const response = await axios.get(`http://localhost:5005/api/friends/status`, {
+    const response = await axios.get(`https://tala-web-kohl/api/friends/status`, {
       params: { currentUserId: senderId, otherUserId: receiverId },
     });
     const status = response.data.status;
@@ -46,7 +46,7 @@ const ExternalProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5005/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web-kohl/api/users/${userId}`);
         console.log('Fetched user:', response.data);
         setUser(response.data);
       } catch (err: any) {
@@ -65,7 +65,7 @@ const ExternalProfile = () => {
 
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`http://localhost:5005/api/friends/send`, {
+      const response = await axios.post(`https://tala-web-kohl/api/friends/send`, {
          senderId,
          receiverId
       });
@@ -80,7 +80,7 @@ const ExternalProfile = () => {
   const accept = async() => {
 
     try{
-      const response = await axios.post(`http://localhost:5005/api/friends/accept`, {
+      const response = await axios.post(`https://tala-web-kohl/api/friends/accept`, {
         senderId: userId,
         receiverId: senderId,
      });
@@ -98,7 +98,7 @@ const ExternalProfile = () => {
   const decline = async() => {
 
     try{
-      const response = await axios.post(`http://localhost:5005/api/friends/decline`, {
+      const response = await axios.post(`https://tala-web-kohl/api/friends/decline`, {
         senderId: userId,
         receiverId: senderId,
      });

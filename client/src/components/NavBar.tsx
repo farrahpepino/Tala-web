@@ -49,8 +49,7 @@ export default function NavBar() {
   if (!searchQuery) {
       setResults([]); }
     try {
-      const response = await axios.get('http://localhost:5005/api/users/search', {
-      // axios.get('https://tala-web-kohl.vercel.app/api/users/search', {
+      const response = await axios.get('https://tala-web-kohl.vercel.app/api/users/search', {
         params: { query: searchQuery },
     });
       console.log('Response:', response.data); 

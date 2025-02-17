@@ -29,7 +29,7 @@ const ChatList: React.FC<ChatListProps> = ({ currentUserId }) => {
     if (currentUserId) {
       const fetchChatList = async () => {
         try {
-          const response = await axios.get(`http://localhost:5005/api/messages/chatList/${currentUserId}`);
+          const response = await axios.get(`https://tala-web-kohl/api/messages/chatList/${currentUserId}`);
           setChats(response.data);
         } catch (error) {
           console.error('Error fetching chat list:', error);

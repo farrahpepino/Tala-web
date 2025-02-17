@@ -30,7 +30,7 @@ const Messages = () => {
   const fetchUserData = async () => {
     if (!otherUserId) return;
     try {
-      const response = await axios.get(`http://localhost:5005/api/users/${otherUserId}`);
+      const response = await axios.get(`https://tala-web-kohl/api/users/${otherUserId}`);
       setOtherUser(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -62,7 +62,7 @@ const Messages = () => {
   const getChatId = async () => {
     if (!currentUserId || !otherUserId) return;
     try {
-      const response = await axios.get(`http://localhost:5005/api/messages/chatId/${currentUserId}/${otherUserId}`
+      const response = await axios.get(`https://tala-web-kohl/api/messages/chatId/${currentUserId}/${otherUserId}`
      
       );
       const id = response.data.chatId;
@@ -80,7 +80,7 @@ const Messages = () => {
   const fetchMessages = async (chatId: string | null) => {
     if (!chatId) return;
     try {
-      const response = await axios.get(`http://localhost:5005/api/messages/${chatId}`);
+      const response = await axios.get(`https://tala-web-kohl/api/messages/${chatId}`);
       setMessages(response.data.messages);
     } catch (error) {
       console.error('Error fetching messages:', error);
