@@ -10,6 +10,8 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { getUserData } from '../../utils/User/GetUserData';
 import { deletePost } from '../../utils/Services/PostService';
 import CommentSection from './CommentSection';
+import { TrashIcon } from '@heroicons/react/24/solid';
+
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -87,7 +89,9 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
         <p className="text-gray-400 text-center">No posts available.</p>
       ) : (
         posts.map((post) => (
+
           <div key={post.id} className="p-4 rounded-md text-white">
+            <button className='bg-transparent w-full'>
             <div className="flex flex-col">
               <div className='text-left'>
             <div className="flex space-x-3 mb-1">
@@ -131,7 +135,10 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                             fetchUserPosts();
 
                           }} >
+                          <div className='flex flex-row items-center'>
+                          <TrashIcon className="w-4 h-4 mr-2" />
                           Delete post
+                          </div>
                         </a>
                       </MenuItem>
                     
@@ -180,6 +187,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                   );
                 }}
               />
+              </button>
           </div>
           ))
       )}
