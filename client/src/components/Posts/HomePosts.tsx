@@ -13,7 +13,7 @@ import CommentSection from './CommentSection';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { Comment } from './PostType';
 import { formatDate } from '../../utils/Services/DateFormatter';
-
+import { likePost } from '../../utils/Services/PostService';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -73,6 +73,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     }
   }, [userId]);
 
+  
   
 
   const handleAddComment = async (postId: string, commentText: string) => {
@@ -169,13 +170,9 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             <div className="flex space-x-4 mt-4">
               <button
                 className="flex items-center space-x-1 bg-transparent text-gray-400 hover:text-red-500"
-                onClick={() =>
-                  setPosts((prev) =>
-                    prev.map((p) =>
-                      p.id === post.id ? { ...p, likes: p.likes + 1 } : p
-                    )
-                  )
-                }
+                onClick={async()=>{
+                  await likePost(currentLoggedIn.userId, post._id)
+                }}
               >
                 <FaHeart size={16} />
                 <span>{formatNumber(post.likes)}</span>

@@ -10,3 +10,14 @@ export const deletePost = async (userId, postId) => {
         throw error;
     }
 };
+
+export const likePost = async(userId, postId) => {
+    try {
+        const response = await axios.post(`https://tala-web-kohl.vercel.app/api/post/${postId}/like`, {userId: userId});
+        return response.data;
+    } catch (error) {
+        console.error("Error liking post:", error);
+        throw error;
+    }
+
+}
