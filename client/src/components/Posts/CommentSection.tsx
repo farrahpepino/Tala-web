@@ -96,7 +96,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
             <div>
               <div className="flex items-center gap-4">
               <p className="font-bold text-white">
-                          {typeof comment.postedBy === 'string' ? comment.postedBy : `${comment.postedBy.firstName} ${comment.postedBy.lastName}`}
+                          {typeof comment.commentBy === 'string' ? comment.commentBy : `${comment.commentBy.firstName} ${comment.commentBy.lastName}`}
                         </p>                <p className="text-gray-300">{comment.text}</p>
               </div>
               <p className="text-gray-400 text-xs">{comment.createdAt}</p>

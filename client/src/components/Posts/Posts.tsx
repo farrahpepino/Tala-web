@@ -10,6 +10,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { getUserData } from '../../utils/User/GetUserData';
 import { deletePost } from '../../utils/Services/PostService';
 import { TrashIcon } from '@heroicons/react/24/solid';
+
 import CommentSection from './CommentSection';
 interface PostsProps {
   userId?: string; 

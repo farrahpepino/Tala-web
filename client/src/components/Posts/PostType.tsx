@@ -15,6 +15,6 @@ export interface Post {
   export interface Comment {
     text: string;
     createdAt: string;
-    postedBy: string | User;
+    commentBy: string | User;
    
   }
