@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../../utils/User/UserType';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,7 +7,7 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import { FaHeart, FaEllipsisH } from 'react-icons/fa';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Comment } from './PostType';
-
+import axios from 'axios';
 
 interface CommentSectionProps {
   postId: string;
@@ -15,8 +15,23 @@ interface CommentSectionProps {
   onAddComment: (commentText: string) => void;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, comments, onAddComment }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, onAddComment }) => {
   const [newComment, setNewComment] = useState<string>('');
+  const [comments, setComments] = useState<Comment[]>([]);  // State to store comments
+
+  // Fetch comments when the component mounts
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get<{ comments: Comment[] }>(`https://your-api-url/posts/${postId}/comments`);
+        setComments(response.data.comments);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, [postId]);  
 
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault();
