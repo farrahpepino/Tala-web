@@ -46,6 +46,25 @@ exports.deletePost = async (req, res) =>{
 
 }
 
+exports.getPost = async(req,res) => {
+  let {userId, postId} = req.params;
+  try {
+    const post = await Post.findById(postId)
+      .populate('postedBy')
+      .sort({ createdAt: -1 })
+      .exec();
+
+
+  if (!post || post.length === 0) {
+    return res.status(404).json({ message: 'No post with this postId.' });
+  }
+
+  res.status(200).json(post);
+} catch (error) {
+  console.error(error)
+  res.status(500).json({ message: 'Internal Server Error' });
+}
+}
 exports.getUserPosts = async (req, res) => {
     let { userId } = req.params;
     try {

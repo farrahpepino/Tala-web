@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaComment } from 'react-icons/fa';
 import { Post } from './PostType';
 import axios from 'axios';
@@ -14,6 +15,9 @@ import { TrashIcon } from '@heroicons/react/24/solid';
 import { Comment } from './PostType';
 import { formatDate } from '../../utils/Services/DateFormatter';
 import { likePost } from '../../utils/Services/PostService';
+import { unlikePost } from '../../utils/Services/PostService';
+import { Navigate } from 'react-router-dom';
+
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -22,6 +26,7 @@ interface PostsProps {
 }
 
 const formatNumber = (num: number): string => {
+  
   if (num >= 1_000_000_000_000) {
     return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; 
   }
@@ -38,6 +43,8 @@ const formatNumber = (num: number): string => {
 };
 
 let HomePosts: React.FC<PostsProps> = ({ userId }) => {
+  const navigate = useNavigate();
+
   let [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,7 +118,10 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       ) : (
         posts.map((post) => (
           <div key={post.id} className="p-4 rounded-md text-white">
-            <button className='bg-transparent w-full'>
+            <button className='bg-transparent w-full' onClick={(event)=>{
+              event.preventDefault();
+              navigate(`/${post.postedBy}/${post._id}`);
+            }}>
 
             <div className="flex flex-col">
               <div className='text-left'>
@@ -169,13 +179,57 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
             <div className="flex space-x-4 mt-4">
               <button
-                className="flex items-center space-x-1 bg-transparent text-gray-400 hover:text-red-500"
-                onClick={async()=>{
-                  await likePost(currentLoggedIn.userId, post._id)
-                }}
-              >
+            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
+            onClick={async () => {
+              let updatedLikes: number | { likedBy: string }[] = post.likes;
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
+          
+              if (Array.isArray(updatedLikes)) {
+                if (userHasLiked) {
+                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn.userId); 
+                } else {
+                  updatedLikes.push({ likedBy: currentLoggedIn.userId }); 
+                }
+              } else {
+                updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
+              }
+          
+              setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                  p._id === post._id
+                    ? {
+                        ...p,
+                        likes: updatedLikes,
+                      }
+                    : p
+                )
+              );
+          
+              try {
+                if (userHasLiked) {
+                  await unlikePost(currentLoggedIn.userId, post._id); 
+                } else {
+                  await likePost(currentLoggedIn.userId, post._id); 
+                }
+              } catch (error) {
+                console.error('Error toggling like:', error);
+                setPosts((prevPosts) =>
+                  prevPosts.map((p) =>
+                    p._id === post._id
+                      ? {
+                          ...p,
+                          likes: post.likes, 
+                        }
+                      : p
+                  )
+                );
+              }
+            }}
+          >
                 <FaHeart size={16} />
-                <span>{formatNumber(post.likes)}</span>
+                <span>  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
+
+</span>
               </button>
               <button className="flex items-center space-x-1 text-gray-400 bg-transparent">
                 <FaComment size={16} />

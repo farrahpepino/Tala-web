@@ -6,10 +6,9 @@ export interface Post {
     userAvatar: string;
     description: string;
     createdAt: string;
-    likes: number;
+    likes: number | { likedBy: string }[]; 
     comments: Comment[];
     postedBy: string | User;
- 
   }
 
   export interface Comment {

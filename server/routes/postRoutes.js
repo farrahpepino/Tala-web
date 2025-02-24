@@ -6,10 +6,12 @@ router.post('/createPost', PostController.createPost)
 router.get('/:userId/posts', PostController.getUserPosts);
 router.get('/:userId/all-posts', PostController.getHomePosts);
 router.delete('/:userId/:postId/delete', PostController.deletePost);
-
+ 
 router.post('/:userId/:postId/new-comment', PostController.createComment);
 router.get('/:postId/comments', PostController.getComments);
 router.delete('/:postId/delete', PostController.deleteComment);
 router.post('/:postId/like', PostController.createLike);
 router.post('/:postId/unlike', PostController.deleteLike);
+post.get('/:userId/:postId', PostController.getPost);
 module.exports = router;
+

@@ -21,3 +21,14 @@ export const likePost = async(userId, postId) => {
     }
 
 }
+
+export const unlikePost = async(userId, postId) => {
+    try {
+        const response = await axios.post(`https://tala-web-kohl.vercel.app/api/post/${postId}/unlike`, {userId: userId});
+        return response.data;
+    } catch (error) {
+        console.error("Error liking post:", error);
+        throw error;
+    }
+
+}
