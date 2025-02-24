@@ -37,7 +37,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
   let [user, setUser] = useState<User | null>(null);
   let [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const currentLoggeedIn = getUserData();
+  const currentLoggedIn = getUserData();
   const fetchUserData = async () => {
     if (userId) {
       try {
@@ -111,8 +111,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               </div>
               </div>
 
-              <div className={( typeof post.postedBy!== 'string' && post.postedBy._id === currentLoggeedIn.userId )? 'text-right -mt-11' : ''}>
-              {(typeof post.postedBy !== 'string' && post.postedBy._id === currentLoggeedIn.userId) && (                  <div className="text-right -mt-11">
+              <div className={( typeof post.postedBy!== 'string' && post.postedBy._id === currentLoggedIn.userId )? 'text-right -mt-11' : ''}>
+              {(typeof post.postedBy !== 'string' && post.postedBy._id === currentLoggedIn.userId) && (                  <div className="text-right -mt-11">
 
               <Menu as="div" className="relative inline-block text-left ">
                   <div>
@@ -131,7 +131,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
-                            deletePost(currentLoggeedIn.userId, post.id); 
+                            deletePost(currentLoggedIn.userId, post.id); 
                             fetchUserPosts();
 
                           }} >
@@ -178,7 +178,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                   const newComment = {
                     text: commentText,
                     createdAt: new Date().toISOString(),
-                    postedBy: currentLoggeedIn, 
+                    postedBy: currentLoggedIn, 
                   };
                   setPosts((prevPosts) =>
                     prevPosts.map((p) =>

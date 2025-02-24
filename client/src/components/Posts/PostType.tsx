@@ -7,7 +7,13 @@ export interface Post {
     description: string;
     createdAt: string;
     likes: number;
-    comments: { text: string; createdAt: string; postedBy: string | User }[];
+    comments: Comment[];
     postedBy: string | User;
  
+  }
+
+  export interface Comment {
+    text: string;
+    createdAt: string;
+    postedBy: string | User;
   }

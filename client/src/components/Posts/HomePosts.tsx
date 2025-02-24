@@ -11,10 +11,13 @@ import { deletePost } from '../../utils/Services/PostService';
 import { getUserData } from '../../utils/User/GetUserData';
 import CommentSection from './CommentSection';
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { Comment } from './PostType';
 
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
+  onAddComment: (postId: string, commentText: string) => void;
+
 }
 
 const formatNumber = (num: number): string => {
@@ -35,10 +38,11 @@ const formatNumber = (num: number): string => {
 
 let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   let [user, setUser] = useState<User | null>(null);
-  let [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const currentLoggedIn = getUserData();
  
+  
     let fetchUserData = async () => {
       try {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
@@ -68,6 +72,11 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     }
   }, [userId]);
 
+  
+  
+  
+
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const formatter = new Intl.DateTimeFormat(undefined, {
@@ -80,6 +89,35 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     return formatter.format(date);
   };
 
+  const handleAddComment = async (postId: string, commentText: string) => {
+    console.log(postId, 'hi')
+    try {
+      // Make the API request to add the comment
+      const response = await axios.post<{ message: string; comment: Comment }>(
+        `https://tala-web-kohl.vercel.app/api/post/${currentLoggedIn.userId}/${postId}/new-comment`,
+        { content: commentText }
+      );
+  
+      console.log(response, response.data)
+      // Destructure the new comment from the response
+      const newComment: Comment = response.data.comment;
+  
+      // Update the posts state with the new comment added to the appropriate post
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                comments: [...post.comments, newComment],  // Add the new comment to the comments array
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  };
+  
   if (loading) {
     return <Loading />;
   }
@@ -168,28 +206,10 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             </div>
             {/* Comment Section */}
             <CommentSection
-  postId={post.id}
-  comments={post.comments} 
-  onAddComment={(commentText) => {
-    if (!commentText.trim()) return; 
-
-    const newComment: Comment = {
-      content: commentText, 
-      createdAt: new Date().toISOString(),
-      postedBy: currentLoggedIn, 
-    };
-
-    setPosts((prevPosts) =>
-      prevPosts.map((p) =>
-        p.id === post.id
-          ? { ...p, comments: [...(p.comments || []), newComment] }
-          : p
-      )
-    );
-  }}
-/>
-
-
+        comments={post.comments}
+        postId={post.id}
+        onAddComment={(commentText: string) => handleAddComment(post._id, commentText)} 
+        />
                     </button>
 
           </div>

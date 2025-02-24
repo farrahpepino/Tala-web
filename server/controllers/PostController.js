@@ -108,8 +108,8 @@ exports.getUserPosts = async (req, res) => {
 
 
 exports.createComment = async (req, res) => {
-  const userId  = req.params;
-  const postId  = req.params;
+  const { userId, postId } = req.params; 
+
   const {content} =req.body
 
   if (!postId || !content || !userId) {
