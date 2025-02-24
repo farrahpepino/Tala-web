@@ -118,10 +118,17 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       ) : (
         posts.map((post) => (
           <div key={post.id} className="p-4 rounded-md text-white">
-            <button className='bg-transparent w-full' onClick={(event)=>{
-              event.preventDefault();
-              navigate(`/${post.postedBy}/${post._id}`);
-            }}>
+           <button
+  className="bg-transparent w-full"
+  onClick={(event) => {
+    event.preventDefault();
+    if (typeof post.postedBy === 'object' && post.postedBy._id) {
+      navigate(`/${post.postedBy._id}/${post._id}`);
+    } else {
+      console.error('Invalid postedBy format:', post.postedBy);
+    }
+  }}
+>
 
             <div className="flex flex-col">
               <div className='text-left'>
