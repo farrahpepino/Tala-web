@@ -13,8 +13,8 @@ export interface Post {
   }
 
   export interface Comment {
-    text: string;
-    createdAt: string;
+    content: string;
+    commentedAt: string;
     commentBy: string | User;
    
   }

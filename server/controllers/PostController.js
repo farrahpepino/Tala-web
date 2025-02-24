@@ -183,8 +183,8 @@ exports.getComments = async (req, res) => {
 };
 
 exports.createLike = async (req, res) => {
-  const { postId, userId } = req.body;
-
+  const { userId } = req.body;
+  const {postId} = req.params;
   if (!postId || !userId) {
     return res.status(400).json({ message: 'PostId and userId are required.' });
   }
@@ -214,8 +214,8 @@ exports.createLike = async (req, res) => {
 };
 
 exports.deleteLike = async (req, res) => {
-  const { postId, userId } = req.params;
-
+  const { userId } = req.body;
+  const {postId} = req.params;
   try {
     const post = await Post.findById(postId);
     if (!post) {

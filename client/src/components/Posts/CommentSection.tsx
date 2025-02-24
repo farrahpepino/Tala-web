@@ -8,12 +8,11 @@ import { FaHeart, FaEllipsisH } from 'react-icons/fa';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Comment } from './PostType';
 import { getUserData } from '../../../../server/controllers/UserController';
+import { formatDate } from '../../utils/Services/DateFormatter';
 import axios from 'axios';
 interface CommentSectionProps {
   postId: string;
-  // comments: Comment[];
   userId: string;
-  // onAddComment: (commentText: string) => void;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
@@ -95,11 +94,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
             />
             <div>
               <div className="flex items-center gap-4">
-              <p className="font-bold text-white">
+              <p className="text-s text-white">
                           {typeof comment.commentBy === 'string' ? comment.commentBy : `${comment.commentBy.firstName} ${comment.commentBy.lastName}`}
-                        </p>                <p className="text-gray-300">{comment.text}</p>
+                        </p>                <p className="text-gray-300">{comment.content}</p>
               </div>
-              <p className="text-gray-400 text-xs">{comment.createdAt}</p>
+              {/* <p className="text-gray-400 text-xs">{formatDate(comment.commentedAt)}</p> */}
             </div>
           </div>
 

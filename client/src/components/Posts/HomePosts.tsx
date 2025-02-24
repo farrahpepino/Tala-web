@@ -12,6 +12,7 @@ import { getUserData } from '../../utils/User/GetUserData';
 import CommentSection from './CommentSection';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { Comment } from './PostType';
+import { formatDate } from '../../utils/Services/DateFormatter';
 
 interface PostsProps {
   userId?: string; 
@@ -73,21 +74,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   }, [userId]);
 
   
-  
-  
-
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const formatter = new Intl.DateTimeFormat(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-    return formatter.format(date);
-  };
 
   const handleAddComment = async (postId: string, commentText: string) => {
     console.log(postId, 'hi')
@@ -99,7 +85,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   
       console.log(response, response.data)
       const newComment: Comment = response.data.comment;
-  
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId

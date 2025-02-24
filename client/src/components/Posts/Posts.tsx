@@ -10,7 +10,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { getUserData } from '../../utils/User/GetUserData';
 import { deletePost } from '../../utils/Services/PostService';
 import { TrashIcon } from '@heroicons/react/24/solid';
-
+import { formatDate } from '../../utils/Services/DateFormatter';
 import CommentSection from './CommentSection';
 interface PostsProps {
   userId?: string; 
@@ -67,17 +67,6 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
     fetchUserPosts();
   }, [userId]);
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const formatter = new Intl.DateTimeFormat(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-    return formatter.format(date);
-  };
 
   if (loading) {
     return <Loading />;
@@ -171,7 +160,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection postId={post.id} userId={currentLoggedIn.userId}/>
+            <CommentSection postId={post._id} userId={currentLoggedIn.userId}/>
 
               </button>
           </div>
