@@ -108,7 +108,9 @@ exports.getUserPosts = async (req, res) => {
 
 
 exports.createComment = async (req, res) => {
-  const { postId, content, userId } = req.body;
+  const userId  = req.params;
+  const postId  = req.params;
+  const {content} =req.body
 
   if (!postId || !content || !userId) {
     return res.status(400).json({ message: 'PostId, content, and userId are required.' });

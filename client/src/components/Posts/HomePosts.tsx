@@ -37,7 +37,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   let [user, setUser] = useState<User | null>(null);
   let [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const currentLoggeedIn = getUserData();
+  const currentLoggedIn = getUserData();
  
     let fetchUserData = async () => {
       try {
@@ -129,7 +129,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
-                            deletePost(currentLoggeedIn.userId, post._id); 
+                            deletePost(currentLoggedIn.userId, post._id); 
                             fetchHomePosts();
                           }} >
                           <div className='flex flex-row items-center'>
@@ -167,22 +167,29 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-              <CommentSection
-                postId={post.id}
-                comments={post.comments} 
-                onAddComment={(commentText) => {
-                  const newComment = {
-                    text: commentText,
-                    createdAt: new Date().toISOString(),
-                    postedBy: currentLoggeedIn, 
-                  };
-                  setPosts((prevPosts) =>
-                    prevPosts.map((p) =>
-                      p.id === post.id ? { ...p, comments: [...p.comments, newComment] } : p
-                    )
-                  );
-                }}
-              />
+            <CommentSection
+  postId={post.id}
+  comments={post.comments} 
+  onAddComment={(commentText) => {
+    if (!commentText.trim()) return; 
+
+    const newComment: Comment = {
+      content: commentText, 
+      createdAt: new Date().toISOString(),
+      postedBy: currentLoggedIn, 
+    };
+
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === post.id
+          ? { ...p, comments: [...(p.comments || []), newComment] }
+          : p
+      )
+    );
+  }}
+/>
+
+
                     </button>
 
           </div>

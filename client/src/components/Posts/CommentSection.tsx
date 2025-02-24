@@ -6,9 +6,10 @@ import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import DefaultUserIcon from '../../assets/tala/user.png';
 import { FaHeart, FaEllipsisH } from 'react-icons/fa';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-
+import axios from 'axios';
+import { getUserData } from '../../utils/User/GetUserData';
 interface Comment {
-  text: string;
+  content: string;
   createdAt: string;
   postedBy: string | User;
 }
@@ -21,13 +22,25 @@ interface CommentSectionProps {
 
 const CommentSection: React.FC<CommentSectionProps> = ({ postId, comments, onAddComment }) => {
   const [newComment, setNewComment] = useState('');
+  const UserData = getUserData();
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      onAddComment(newComment);
-      setNewComment('');
+      try {
+        const response = await axios.post<{ message: string }>(
+          `https://tala-web-kohl.vercel.app/api/post/${UserData.userId}/${postId}/new-comment`,
+          { content: newComment }
+        );
+        
+        console.log("Comment added:", response.data);
+        onAddComment(newComment);
+        setNewComment(''); 
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
     }
   };
+  
 
   return (
     <div>
@@ -73,7 +86,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, comments, onAdd
             <div>
               <div className="flex items-center gap-4">
                 <p className="font-bold text-white">Farrah Pepino</p>
-                <p className="text-gray-300">{comment.text}</p>
+                <p className="text-gray-300">{comment.content}</p>
               </div>
               <p className="text-gray-400 text-xs">{comment.createdAt}</p>
             </div>
