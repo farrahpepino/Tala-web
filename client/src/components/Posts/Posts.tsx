@@ -9,9 +9,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { getUserData } from '../../utils/User/GetUserData';
 import { deletePost } from '../../utils/Services/PostService';
-import CommentSection from './CommentSection';
 import { TrashIcon } from '@heroicons/react/24/solid';
-
+import CommentSection from './CommentSection';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -171,22 +170,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection
-                postId={post.id}
-                comments={post.comments} 
-                onAddComment={(commentText) => {
-                  const newComment = {
-                    text: commentText,
-                    createdAt: new Date().toISOString(),
-                    postedBy: currentLoggedIn, 
-                  };
-                  setPosts((prevPosts) =>
-                    prevPosts.map((p) =>
-                      p.id === post.id ? { ...p, comments: [...p.comments, newComment] } : p
-                    )
-                  );
-                }}
-              />
+            <CommentSection postId={post.id} userId={currentLoggedIn.userId}/>
+
               </button>
           </div>
           ))

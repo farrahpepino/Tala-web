@@ -92,23 +92,20 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   const handleAddComment = async (postId: string, commentText: string) => {
     console.log(postId, 'hi')
     try {
-      // Make the API request to add the comment
       const response = await axios.post<{ message: string; comment: Comment }>(
         `https://tala-web-kohl.vercel.app/api/post/${currentLoggedIn.userId}/${postId}/new-comment`,
         { content: commentText }
       );
   
       console.log(response, response.data)
-      // Destructure the new comment from the response
       const newComment: Comment = response.data.comment;
   
-      // Update the posts state with the new comment added to the appropriate post
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId
             ? {
                 ...post,
-                comments: [...post.comments, newComment],  // Add the new comment to the comments array
+                comments: [...post.comments, newComment], 
               }
             : post
         )
@@ -121,7 +118,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   if (loading) {
     return <Loading />;
   }
-
   return (
     <div className="space-y-8">
       {posts.length === 0 ? (
@@ -205,12 +201,8 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection
-        comments={post.comments}
-        postId={post.id}
-        onAddComment={(commentText: string) => handleAddComment(post._id, commentText)} 
-        />
-                    </button>
+            <CommentSection postId={post._id} userId={currentLoggedIn.userId}/>
+            </button>
 
           </div>
         ))

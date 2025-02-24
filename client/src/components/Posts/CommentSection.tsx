@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from '../../utils/User/UserType';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,39 +7,50 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import { FaHeart, FaEllipsisH } from 'react-icons/fa';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Comment } from './PostType';
+import { getUserData } from '../../../../server/controllers/UserController';
 import axios from 'axios';
-
 interface CommentSectionProps {
   postId: string;
-  comments: Comment[];
-  onAddComment: (commentText: string) => void;
+  // comments: Comment[];
+  userId: string;
+  // onAddComment: (commentText: string) => void;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, onAddComment }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
   const [newComment, setNewComment] = useState<string>('');
-  const [comments, setComments] = useState<Comment[]>([]);  // State to store comments
+  const [comments, setComments] = useState<Comment[]>([]);
+  const handleAddComment = async () => {
+    if (newComment.trim() === '') {
+      return; 
+    }
 
-  // Fetch comments when the component mounts
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get<{ comments: Comment[] }>(`https://your-api-url/posts/${postId}/comments`);
-        setComments(response.data.comments);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    };
+    try {
+      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}/new-comment`, {
+        content: newComment
+      });
 
-    fetchComments();
-  }, [postId]);  
-
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      onAddComment(newComment); 
+      setComments((prevComments) => [...prevComments, response.data]);
       setNewComment(''); 
+    } catch (error) {
+      console.error('Error adding comment:', error);
     }
   };
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${postId}/comments`);
+      console.log(comments);
+      setComments(response.data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };  
+  useEffect(()=>{
+    fetchComments();
+  }, [postId]);
+
+  
+  
 
   return (
     <div>
@@ -84,8 +95,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, onAddComment })
             />
             <div>
               <div className="flex items-center gap-4">
-                <p className="font-bold text-white">Farrah Pepino</p>
-                <p className="text-gray-300">{comment.text}</p>
+              <p className="font-bold text-white">
+                          {typeof comment.postedBy === 'string' ? comment.postedBy : `${comment.postedBy.firstName} ${comment.postedBy.lastName}`}
+                        </p>                <p className="text-gray-300">{comment.text}</p>
               </div>
               <p className="text-gray-400 text-xs">{comment.createdAt}</p>
             </div>
@@ -138,6 +150,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, onAddComment })
 </div>
 
 );
-};
+                        }
 
 export default CommentSection;

@@ -167,7 +167,7 @@ exports.deleteComment = async (req, res) => {
 
 exports.getComments = async (req, res) => {
   const { postId } = req.params;
-
+  console.log(postId);
   try {
     const post = await Post.findById(postId).populate('comments.commentBy');
     

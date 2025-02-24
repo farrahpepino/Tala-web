@@ -16,4 +16,5 @@ export interface Post {
     text: string;
     createdAt: string;
     postedBy: string | User;
+   
   }
