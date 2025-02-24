@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
-
 }
 const formatNumber = (num: number): string => {
   if (num >= 1_000_000_000_000) {
@@ -84,10 +83,17 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
         posts.map((post) => (
 
           <div key={post.id} className="p-4 rounded-md text-white">
-            <button className='bg-transparent w-full' onClick={(event)=>{
-              event.preventDefault();
-              navigate(`/${post.postedBy}/${post._id}`);
-            }}>
+            <button
+  className="bg-transparent w-full"
+  onClick={(event) => {
+    event.preventDefault();
+    if (typeof post.postedBy === 'object' && post.postedBy._id) {
+      navigate(`/${post.postedBy._id}/${post._id}`);
+    } else {
+      console.error('Invalid postedBy format:', post.postedBy);
+    }
+  }}
+>
             <div className="flex flex-col">
               <div className='text-left'>
             <div className="flex space-x-3 mb-1">
@@ -147,6 +153,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
             </div>
             </div>
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
+            </button>
+
             <div className="flex space-x-4 mt-4">
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
@@ -205,9 +213,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection postId={post._id} userId={currentLoggedIn.userId}/>
+            <CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={false}/>
 
-              </button>
           </div>
           ))
       )}

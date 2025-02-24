@@ -7,6 +7,7 @@ import Profile from '../components/Main/Profile';
 import EditProfile from '../components/Main/EditProfile';
 import ExternalProfile from '../components/Main/ExternalProfile';
 import Messages from '../components/Messages/Messages';
+import Post from '../components/Posts/Post';
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };
@@ -23,6 +24,7 @@ function Router() {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/messages/:userId" element={<Messages />} />
         <Route path="/external-profile/:userId" element={<ExternalProfile />} />
+        <Route path="/:userId/:postId" element={<Post />} />
 
       </Routes>
     </BrowserRouter>

@@ -32,3 +32,21 @@ export const unlikePost = async(userId, postId) => {
     }
 
 }
+
+export const formatNumber = (num: number): string => {
+  
+    if (num >= 1_000_000_000_000) {
+      return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'T'; 
+    }
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; 
+    }
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; 
+    }
+    if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).slice(0, 3) + 'k'; 
+    }
+    return num.toString().slice(0, 3); 
+};
+  

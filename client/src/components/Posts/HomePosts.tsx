@@ -17,30 +17,14 @@ import { formatDate } from '../../utils/Services/DateFormatter';
 import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
 import { Navigate } from 'react-router-dom';
-
+import { formatNumber } from '../../utils/Services/PostService';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
-  onAddComment: (postId: string, commentText: string) => void;
+  onAddComment?: (postId: string, commentText: string) => void;
 
 }
 
-const formatNumber = (num: number): string => {
-  
-  if (num >= 1_000_000_000_000) {
-    return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; 
-  }
-  if (num >= 1_000_000_000) {
-    return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; 
-  }
-  if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; 
-  }
-  if (num >= 1_000) {
-    return (num / 1_000).toFixed(1).slice(0, 3) + 'k'; 
-  }
-  return num.toString().slice(0, 3); 
-};
 
 let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   const navigate = useNavigate();
@@ -118,7 +102,8 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       ) : (
         posts.map((post) => (
           <div key={post.id} className="p-4 rounded-md text-white">
-           <button
+          
+          <button
   className="bg-transparent w-full"
   onClick={(event) => {
     event.preventDefault();
@@ -129,9 +114,9 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     }
   }}
 >
-
             <div className="flex flex-col">
               <div className='text-left'>
+             
             <div className="flex space-x-3 mb-1">
               <img
                 className="h-10 w-10 rounded-full object-cover"
@@ -180,10 +165,13 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                     </Menu>
                   </div>
                 )}
+                           
+
             </div>
 
             </div>
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
+            </button>
             <div className="flex space-x-4 mt-4">
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
@@ -244,8 +232,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection postId={post._id} userId={currentLoggedIn.userId}/>
-            </button>
+            <CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={false} />
 
           </div>
         ))

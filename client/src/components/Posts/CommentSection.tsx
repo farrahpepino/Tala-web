@@ -13,9 +13,10 @@ import axios from 'axios';
 interface CommentSectionProps {
   postId: string;
   userId: string;
+  isSinglePost: boolean;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSinglePost = true }) => {
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
   const handleAddComment = async () => {
@@ -38,9 +39,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${postId}/comments`);
-      console.log(comments);
-      setComments(response.data);
-    } catch (error) {
+    if (Array.isArray(response.data) && response.data.every(comment => comment.commentedAt)) {
+      const sortedComments = [...response.data].sort((a, b) => {
+        const dateA = new Date(a.commentedAt).getTime();  
+        const dateB = new Date(b.commentedAt).getTime();  
+
+        return dateB - dateA; 
+      });
+
+      if (!isSinglePost) {
+        setComments([sortedComments[0]]);
+      } else {
+        setComments(sortedComments);
+     } }}catch (error) {
       console.error('Error fetching comments:', error);
     }
   };  
