@@ -15,6 +15,8 @@ import CommentSection from './CommentSection';
 import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
 import { useNavigate } from 'react-router-dom';
+import { transformLikesToString } from './PostType';
+
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -166,8 +168,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
-                  let updatedLikes: number | { likedBy: string }[] = post.likes;
-                  const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
+              let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
               
                   if (Array.isArray(updatedLikes)) {
                     if (userHasLiked) {

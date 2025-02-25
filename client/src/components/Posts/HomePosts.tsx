@@ -21,6 +21,7 @@ import { formatNumber } from '../../utils/Services/PostService';
 import { getLikes } from '../../utils/Services/PostService';
 import { Like } from './PostType';
 import { LikeListResponse } from './PostType';
+import { transformLikesToString } from './PostType';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -194,7 +195,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
-              let updatedLikes: number | { likedBy: string }[] = post.likes;
+              let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
               const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
           
               if (Array.isArray(updatedLikes)) {
@@ -241,13 +242,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
           >
                 <FaHeart size={16} />
                 <span               data-dropdown-trigger="hover"       
-                onMouseOver={async (event) => {
-                  // const postId = event.currentTarget.getAttribute('data-id');
-                  // if(postId){
-                  const likeList = await getLikes(post._id);
-                  setLikes(likeList.likedBy);
-                  }
-                }
+                
 
 >  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
 
@@ -263,10 +258,11 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
       className="absolute max-h-[200px] min-w-[400px] z-10  overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
     >
 
-          {post.likes.map((like) => (
+          {post.likes.map((like, index) => (
             
       <li
         role="menuitem"
+        key={index}
         className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
       >
         <img
@@ -276,7 +272,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
         />
         <div className="flex flex-col gap-1 ml-4">
           <p className="text-slate-800 font-medium">
-                {like.likedBy.firstName} 
+          {like.likedBy} {like.likedBy.lastName}
           </p>
           {/* <p className="text-slate-500 text-sm flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">

@@ -113,6 +113,7 @@ exports.getUserPosts = async (req, res) => {
                 ]
             })
             .populate('postedBy')  
+            .populate('likes.likedBy', 'firstName lastName') 
             .sort({ createdAt: -1 })  
             .exec();
 

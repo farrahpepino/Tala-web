@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Post as PostType } from './PostType';
 import React from 'react';
+import { transformLikesToString } from './PostType';
+
 import { formatNumber } from '../../utils/Services/PostService';
 import { FaHeart, FaComment } from 'react-icons/fa';
 import Loading from '../../utils/loading';
@@ -117,7 +119,7 @@ const Post = () => {
                 : 'text-gray-400'
             } hover:text-red-500`}
             onClick={async () => {
-              let updatedLikes: number | { likedBy: string }[] = post.likes;
+              let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
               const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
 
               if (Array.isArray(updatedLikes)) {
