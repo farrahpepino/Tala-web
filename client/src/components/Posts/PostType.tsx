@@ -20,3 +20,14 @@ export interface Post {
     id:string; 
    
   }
+
+ export interface Like {
+    _id: string; 
+    firstName: string; 
+    lastName: string; 
+
+  }
+  
+  export interface LikeListResponse {
+    likedBy: Like[]; 
+  }

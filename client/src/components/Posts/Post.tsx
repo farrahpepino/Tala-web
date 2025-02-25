@@ -150,7 +150,7 @@ const Post = () => {
       </div>
       
     </div>            
-    <div className='w-full '><CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={true}/>
+    <div className='w-full '><CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={true} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id}/>
     </div>
     
     </div>

@@ -18,6 +18,9 @@ import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '../../utils/Services/PostService';
+import { getLikes } from '../../utils/Services/PostService';
+import { Like } from './PostType';
+import { LikeListResponse } from './PostType';
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
@@ -33,8 +36,8 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [likes, setLikes] = useState<Like[]>([]); // an array of `Like` objects
   const currentLoggedIn = getUserData();
- 
   
     let fetchUserData = async () => {
       try {
@@ -61,13 +64,22 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     if (userId) {
       fetchUserData();
       fetchHomePosts(); 
+
       setLoading(false);
     }
   }, [userId]);
 
   
   
-
+  const UserDetails = async (userId: string) => {
+    try {
+      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+      return response.data;  
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return null;  
+    }
+  };
   const handleAddComment = async (postId: string, commentText: string) => {
     console.log(postId, 'hi')
     try {
@@ -228,19 +240,31 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             }}
           >
                 <FaHeart size={16} />
-                <span               data-dropdown-trigger="hover"
+                <span               data-dropdown-trigger="hover"       
+                onMouseOver={async (event) => {
+                  // const postId = event.currentTarget.getAttribute('data-id');
+                  // if(postId){
+                  const likeList = await getLikes(post._id);
+                  setLikes(likeList.likedBy);
+                  }
+                }
+
 >  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
 
 </span>
               </button>
               {isOpen && (
-    
+Array.isArray(post.likes) && post.likes.length > 0 ? (
+
     <ul
       role="menu"
       data-popover="notifications-menu"
       data-popover-placement="bottom"
       className="absolute max-h-[200px] min-w-[400px] z-10  overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
     >
+
+          {post.likes.map((like, index) => (
+            
       <li
         role="menuitem"
         className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
@@ -252,7 +276,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
         />
         <div className="flex flex-col gap-1 ml-4">
           <p className="text-slate-800 font-medium">
-            Tania send you a message
+                {UserDetails[like.likedBy.toString()].firstName} 
           </p>
           {/* <p className="text-slate-500 text-sm flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
@@ -262,10 +286,14 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             13 minutes ago
           </p> */}
         </div>
-      </li>
-      
+        
+      </li>))}
+
+
+        
     
-    </ul>
+    </ul> ) :     <span>No likes yet</span>
+
        )}
                </div>
 

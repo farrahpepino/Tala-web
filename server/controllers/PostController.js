@@ -51,6 +51,7 @@ exports.getPost = async(req,res) => {
   try {
     const post = await Post.findById(postId)
       .populate('postedBy')
+      .populate('likes.likedBy')
       .sort({ createdAt: -1 })
       .exec();
 
@@ -70,6 +71,7 @@ exports.getUserPosts = async (req, res) => {
     try {
       const posts = await Post.find({ postedBy: userId })
         .populate('postedBy')
+        .populate('likes.likedBy')
         .sort({ createdAt: -1 })
         .exec();
 
