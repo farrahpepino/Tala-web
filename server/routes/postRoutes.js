@@ -9,7 +9,7 @@ router.delete('/:userId/:postId/delete', PostController.deletePost);
  
 router.post('/:userId/:postId/new-comment', PostController.createComment);
 router.get('/:postId/comments', PostController.getComments);
-router.delete(':userId/:postId/:commentId/delete', PostController.deleteComment);
+router.delete('/:userId/:postId/:commentId/delete', PostController.deleteComment);
 router.post('/:postId/like', PostController.createLike);
 router.post('/:postId/unlike', PostController.deleteLike);
 router.get('/:postId/likes', PostController.getLikes);
