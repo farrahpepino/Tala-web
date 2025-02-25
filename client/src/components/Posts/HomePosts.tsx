@@ -192,54 +192,71 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-              <button
-            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
-            onClick={async () => {
-              let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
-          
-              if (Array.isArray(updatedLikes)) {
-                if (userHasLiked) {
-                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn.userId); 
-                } else {
-                  updatedLikes.push({ likedBy: currentLoggedIn.userId }); 
-                }
-              } else {
-                updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
+ <button
+  className={`flex items-center space-x-1 bg-transparent ${
+    Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId)
+      ? 'text-red-500' 
+      : 'text-gray-400'} hover:text-red-500`}
+  onClick={async (event) => {
+    let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
+    let userHasLiked = false;
+
+    // Check if updatedLikes is an array before calling .some()
+    if (Array.isArray(updatedLikes)) {
+      userHasLiked = updatedLikes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
+    }
+
+    // Update the likes array or the count
+    if (Array.isArray(updatedLikes)) {
+      if (userHasLiked) {
+        // Remove user from the likes array
+        updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn.userId);
+      } else {
+        // Add user to the likes array
+        updatedLikes.push({ likedBy: currentLoggedIn.userId });
+      }
+    } else if (typeof updatedLikes === 'number') {
+      updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
+    }
+
+    // Update state with new likes
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p._id === post._id
+          ? {
+              ...p,
+              likes: updatedLikes,
+            }
+          : p
+      )
+    );
+
+    try {
+      if (userHasLiked) {
+        // If user has liked, call the unlike function
+        await unlikePost(currentLoggedIn.userId, post._id); 
+      } else {
+        // If user has not liked, call the like function
+        await likePost(currentLoggedIn.userId, post._id); 
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      // If an error occurs, revert state to the previous likes
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p._id === post._id
+            ? {
+                ...p,
+                likes: post.likes, // Revert back if error occurs
               }
-          
-              setPosts((prevPosts) =>
-                prevPosts.map((p) =>
-                  p._id === post._id
-                    ? {
-                        ...p,
-                        likes: updatedLikes,
-                      }
-                    : p
-                )
-              );
-          
-              try {
-                if (userHasLiked) {
-                  await unlikePost(currentLoggedIn.userId, post._id); 
-                } else {
-                  await likePost(currentLoggedIn.userId, post._id); 
-                }
-              } catch (error) {
-                console.error('Error toggling like:', error);
-                setPosts((prevPosts) =>
-                  prevPosts.map((p) =>
-                    p._id === post._id
-                      ? {
-                          ...p,
-                          likes: post.likes, 
-                        }
-                      : p
-                  )
-                );
-              }
-            }}
-          >
+            : p
+        )
+      );
+    }
+  }}
+>
+
+
                 <FaHeart size={16} />
                 <span               data-dropdown-trigger="hover"       
                 

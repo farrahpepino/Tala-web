@@ -113,11 +113,15 @@ exports.getUserPosts = async (req, res) => {
                 ]
             })
             .populate('postedBy')  
-            .populate('likes') 
-            .populate('likes.likedBy') 
-            .populate('likes.likedBy', 'firstName lastName') 
-            .sort({ createdAt: -1 })  
-            .exec();
+            .populate({
+              path: 'likes',
+              populate: {
+                  path: 'likedBy',
+                  select: 'firstName lastName _id'  // Only select the fields you need from likedBy
+              }
+          })
+          .sort({ createdAt: -1 })  
+          .exec();
 
         if (!posts || posts.length === 0) {
             return res.status(404).json({ message: "No posts found." });
