@@ -106,8 +106,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
             <div>
               <div className="flex items-center gap-4">
               <p className="text-s text-white">
-                          {typeof comment.commentBy === 'string' ? comment.commentBy : `${comment.commentBy.firstName} ${comment.commentBy.lastName}`}
-                        </p>                <p className="text-gray-300">{comment.content}</p>
+  {typeof comment.commentBy === 'string'
+    ? comment.commentBy
+    : `${comment.commentBy?.firstName} ${comment.commentBy?.lastName}`}
+</p>
+             <p className="text-gray-300">{comment.content}</p>
               </div>
               {/* <p className="text-gray-400 text-xs">{formatDate(comment.commentedAt)}</p> */}
             </div>

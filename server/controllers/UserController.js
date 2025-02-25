@@ -90,9 +90,19 @@ exports.deleteAccount = async (req, res) => {
 
   try {
     await Post.deleteMany({ postedBy: userId });
-    await Post.updateMany({}, { $pull: { comments: { commentBy: userId } } });
-    await Post.updateMany({}, { $pull: { likes: { likedBy: userId } } });
-
+    await Post.updateMany(
+      { 'comments.commentBy': userId }, 
+      { $pull: { comments: { commentBy: userId } } } // Remove all comments by the user
+    );
+    await Post.updateMany(
+      { 'likes.likedBy': userId }, 
+      { $pull: { likes: { likedBy: userId } } } // Remove all likes by the user
+    );
+    await User.updateMany(
+      { 'friends.userId': userId }, // Find all users where the userId exists in their friends array
+      { $pull: { friends: { userId: userId } } } // Remove the userId from the friends array
+    );
+        
     const deletedUser = await User.findByIdAndDelete(userId);
 
     if (!deletedUser) {
