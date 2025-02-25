@@ -71,7 +71,7 @@ exports.getUserPosts = async (req, res) => {
     try {
       const posts = await Post.find({ postedBy: userId })
         .populate('postedBy')
-        .populate('likes.likedBy')
+        .populate('likes.likedBy', 'firstName lastName') 
         .sort({ createdAt: -1 })
         .exec();
 
