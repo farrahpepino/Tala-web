@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'); 
 const { User } = require('../models/userModel');
+const Chat = require('../models/ChatModel');
 
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
@@ -79,6 +80,32 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+exports.deleteAccount = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).send({ message: 'Invalid userId format.' });
+  }
+
+  try {
+    await Post.deleteMany({ postedBy: userId });
+    await Post.updateMany({}, { $pull: { comments: { commentBy: userId } } });
+    await Post.updateMany({}, { $pull: { likes: { likedBy: userId } } });
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    res.status(200).send({ message: 'Account and associated data deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting account and associated data:', error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+};
+
 
 
 

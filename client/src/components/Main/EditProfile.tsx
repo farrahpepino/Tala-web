@@ -73,11 +73,40 @@ const EditProfile = () => {
     }
   };
 
+  const handleDeleteAccount = async (userId) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+  
+    if (!confirmDelete) {
+      alert("Account deletion canceled.");
+      return;
+    }
+  
+    try {
+      const response = await axios.delete(
+        `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
+      );
+  
+      if (response.status === 200) {  
+        alert("Account deleted successfully!");
+        window.location.href = "/goodbye"; // Redirect after deletion
+      } else {
+        alert(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+  
+  
+
   return (
     <div className="min-h-screen">
       <NavBar />
       <main className="flex justify-center w-full px-4">
-        <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
+        <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
             <img
               src={DefaultUserIcon}
@@ -111,13 +140,19 @@ const EditProfile = () => {
                 className="form-control my-3 border-round border border-dark bg-transparent text-gray-300"
               />
             </div>
-            <div className="w-100 px-4">
+            <div className="w-100 px-4 ">
+              <div className='flex justify-end mt-10'>
               <button
                 onClick={handleSaveChanges}
-                className="btn btn-dark btn btn-dark w-50 px-6 py-2 rounded-pill w-100 font-weight-semibold"
+                className="btn btn-dark btn btn-dark w-30 px-6 py-2 rounded-pill font-weight-semibold"
               >
                 Save Changes
               </button>
+              <button
+                onClick={()=>{handleDeleteAccount(userId)}}
+                className="btn bg-red-700 text-white hover:bg-red-400 w-30 ml-4 px-6 py-2 rounded-pill  font-weight-semibold"
+              >Delete account</button>
+            </div>
             </div>
           </div>
         </div>
