@@ -26,7 +26,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen mx-auto">
     <NavBar />
-    <main className="flex justify-center w-full px-4">
+    <main className="flex flex-grow justify-center w-full px-4">
         <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
           <img
