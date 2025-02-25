@@ -9,11 +9,14 @@ export interface Post {
     likes: number | { likedBy: string }[]; 
     comments: Comment[];
     postedBy: string | User;
+    
   }
 
   export interface Comment {
-    content: string;
-    commentedAt: string;
-    commentBy: string | User;
+    content?: string;
+    commentedAt?: string;
+    commentBy?: string | User;
+    _id: string;
+    id:string; 
    
   }

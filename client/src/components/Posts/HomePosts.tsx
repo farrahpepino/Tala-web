@@ -32,6 +32,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   let [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState(false);
   const currentLoggedIn = getUserData();
  
   
@@ -173,6 +174,11 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
             </button>
             <div className="flex space-x-4 mt-4">
+            <div
+      className="relative"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
@@ -222,18 +228,54 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             }}
           >
                 <FaHeart size={16} />
-                <span>  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
+                <span               data-dropdown-trigger="hover"
+>  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
 
 </span>
               </button>
+              {isOpen && (
+    
+    <ul
+      role="menu"
+      data-popover="notifications-menu"
+      data-popover-placement="bottom"
+      className="absolute max-h-[200px] min-w-[400px] z-10  overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
+    >
+      <li
+        role="menuitem"
+        className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+      >
+        <img
+          alt= 'User avatar'
+          src={DefaultUserIcon}
+          className="relative inline-block h-10 w-10 rounded-full object-cover object-center"
+        />
+        <div className="flex flex-col gap-1 ml-4">
+          <p className="text-slate-800 font-medium">
+            Tania send you a message
+          </p>
+          {/* <p className="text-slate-500 text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd" />
+            </svg>
+     
+            13 minutes ago
+          </p> */}
+        </div>
+      </li>
+      
+    
+    </ul>
+       )}
+               </div>
+
               <button className="flex items-center space-x-1 text-gray-400 bg-transparent">
                 <FaComment size={16} />
                 <span>{post.comments.length}</span>
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={false} />
-
+            <CommentSection postId={post._id} userId={currentLoggedIn.userId} isSinglePost={false} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id} />
           </div>
         ))
       )}

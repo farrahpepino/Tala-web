@@ -50,3 +50,18 @@ export const formatNumber = (num: number): string => {
     return num.toString().slice(0, 3); 
 };
   
+
+export const likeList = async (postId) => {
+    try {
+      const response = await fetch(`https://tala-web-kohl.vercel.app/api/post/${postId}/likes`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch likes');
+      }
+      const data = await response.json();
+      return data; 
+    } catch (error) {
+      console.error('Error fetching like list:', error);
+      throw error; 
+    }
+  };
+  

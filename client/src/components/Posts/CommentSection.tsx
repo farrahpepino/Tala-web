@@ -10,15 +10,28 @@ import { Comment } from './PostType';
 import { getUserData } from '../../../../server/controllers/UserController';
 import { formatDate } from '../../utils/Services/DateFormatter';
 import axios from 'axios';
+import { deleteComment } from '../../../../server/controllers/PostController';
 interface CommentSectionProps {
   postId: string;
   userId: string;
   isSinglePost: boolean;
+  postUserId: string;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSinglePost = true }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSinglePost = true, postUserId }) => {
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
+  const [post, setPost] = useState<any>(null);
+
+  const fetchPostData = async () => {
+    try {
+      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}`);
+      setPost(response.data);
+    } catch (error) {
+      console.error('Error fetching post data:', error);
+    }
+  };
+
   const handleAddComment = async () => {
     if (newComment.trim() === '') {
       return; 
@@ -35,6 +48,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
       console.error('Error adding comment:', error);
     }
   };
+
+  const deleteComment = async (commentId) => {
+    try {
+      const response = await axios.delete(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}/${commentId}/delete`);
+
+      fetchComments();
+      }catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };  
 
   const fetchComments = async () => {
     try {
@@ -80,7 +103,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
       </div>
      {/* Render Comments */}
 <div className="mt-2">
-  {comments.length === 0 ? (
+  {comments.length === 0 || comments ===undefined  ? (
     <div className="flex gap-1">
     <div className="relative ml-5 ">
       <div className="absolute top-0 left-0 h-6 w-0.5 bg-gray-600"></div> 
@@ -89,7 +112,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
     <p className="text-gray-400 text-sm ml-7 mt-3">No comments yet.</p>
   </div>
   ) : (
-    comments.map((comment, idx) => (
+    comments
+    .filter(comment => comment && comment.commentBy)
+    .map((comment, idx) => (
+      
       <div key={idx} className="px-1 pb-2 bg-transparent rounded-md">
         {/* Comment Container */}
         <div className="flex gap-1">
@@ -106,10 +132,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
             <div>
               <div className="flex items-center gap-4">
               <p className="text-s text-white">
-  {typeof comment.commentBy === 'string'
-    ? comment.commentBy
-    : `${comment.commentBy?.firstName} ${comment.commentBy?.lastName}`}
-</p>
+                  {comment.commentBy && typeof comment.commentBy !== 'string' 
+                    ? `${comment.commentBy?.firstName} ${comment.commentBy?.lastName}` 
+                    : 'Unknown User'}
+                </p>
              <p className="text-gray-300">{comment.content}</p>
               </div>
               {/* <p className="text-gray-400 text-xs">{formatDate(comment.commentedAt)}</p> */}
@@ -132,12 +158,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
                         transition
                         className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                       >
+                        {post?.postedBy?._id === userId || comment?.commentBy === userId ? (
+
                         <div className="py-1">
                           <MenuItem>
                           <a
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
+                            deleteComment(comment._id)
                          
                           }} >
                             <div className='flex flex-row items-center'>
@@ -147,9 +176,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
                             </a>
                           </MenuItem>
                         </div>
+                                   ) : null}
+
                       </MenuItems>
                     </Menu>
                   </div>
+                       
           </div>
           </div>
 
