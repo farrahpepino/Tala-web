@@ -77,7 +77,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       return response.data;  
     } catch (error) {
       console.error('Error fetching user details:', error);
-      return null;  
+      return null;  // Return null in case of error
     }
   };
   const handleAddComment = async (postId: string, commentText: string) => {
@@ -263,7 +263,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
       className="absolute max-h-[200px] min-w-[400px] z-10  overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
     >
 
-          {post.likes.map((like, index) => (
+          {post.likes.map((like) => (
             
       <li
         role="menuitem"
@@ -276,7 +276,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
         />
         <div className="flex flex-col gap-1 ml-4">
           <p className="text-slate-800 font-medium">
-                {UserDetails[like.likedBy.toString()].firstName} 
+                {like.likedBy.firstName} 
           </p>
           {/* <p className="text-slate-500 text-sm flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
