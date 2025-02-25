@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'); 
 const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
-
+const Post = require('../models/postModel'); 
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
 
