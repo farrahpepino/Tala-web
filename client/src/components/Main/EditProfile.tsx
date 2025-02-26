@@ -75,7 +75,7 @@ const EditProfile = () => {
 
   const handleDeleteAccount = async () => {
     const currentUser = getUserData();
-    const userId = currentUser._id;
+    const userId = currentUser.userId;
 
     const confirmDelete = confirm(
       "Are you sure you want to delete your account? This action cannot be undone."
@@ -90,9 +90,11 @@ const EditProfile = () => {
       const response = await axios.delete(
         `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
       );  
-      if (response.status === 200) {  
+      if (response.status === 200) { 
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.replace('/login');
         alert("Account deleted successfully!");
-        window.location.href = "/login"; // Redirect after deletion
       } else {
         alert(`Error: ${response.data.message}`);
       }
