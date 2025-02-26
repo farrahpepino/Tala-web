@@ -102,6 +102,9 @@ exports.deleteAccount = async (req, res) => {
       { 'friends.userId': userId }, // Find all users where the userId exists in their friends array
       { $pull: { friends: { userId: userId } } } // Remove the userId from the friends array
     );
+    await Chat.deleteMany({
+      participants: { $in: [userId] }
+    });
         
     const deletedUser = await User.findByIdAndDelete(userId);
 
