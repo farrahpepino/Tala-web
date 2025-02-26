@@ -40,7 +40,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   const [likes, setLikes] = useState<Like[]>([]); // an array of `Like` objects
   const currentLoggedIn = getUserData();
   
-  
     let fetchUserData = async () => {
       try {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
@@ -193,13 +192,11 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-      {}
               <button
             className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
-              
               let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              let userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn.userId);
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn.userId);
           
               if (Array.isArray(updatedLikes)) {
                 if (userHasLiked) {
@@ -211,14 +208,22 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                 updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
               }
           
-             
+              setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                  p._id === post._id
+                    ? {
+                        ...p,
+                        likes: updatedLikes,
+                      }
+                    : p
+                )
+              );
           
               try {
                 if (userHasLiked) {
-                  await unlikePost(currentLoggedIn.userId, post._id);
+                  await unlikePost(currentLoggedIn.userId, post._id); 
                 } else {
                   await likePost(currentLoggedIn.userId, post._id); 
-
                 }
               } catch (error) {
                 console.error('Error toggling like:', error);
@@ -233,8 +238,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                   )
                 );
               }
-             
-              
             }}
           >
                 <FaHeart size={16} />
