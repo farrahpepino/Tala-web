@@ -41,7 +41,7 @@ export interface Post {
     if (Array.isArray(likes) && likes.length > 0) {
       if ('likedBy' in likes[0]) {
         return (likes as Like[]).map((like) => ({
-          likedBy: like.likedBy._id // assuming User has an _id field
+          likedBy: like.likedBy._id 
         }));
       } else {
         return likes as { likedBy: string }[];
