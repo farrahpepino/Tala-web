@@ -86,6 +86,17 @@ const AddPost = () => {
             onChange={(e) => setDescription(e.target.value)}
             onInput={autoResize}
           />
+           {/* {post.postImages?.length > 0 && (
+  <div className="grid grid-cols-2 gap-2">
+    {post.postImages.map((image, index) => (
+      <div key={index}>
+        <img
+          className="h-auto max-w-full rounded-lg"
+          src={image}
+          alt={`Post image ${index + 1}`}
+        />
+      </div>
+    ))} */}
           <div className="absolute bottom-4 right-2 flex space-x-2">
             {/* Image Upload Button (Disabled) */}
             <label className="p-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer">

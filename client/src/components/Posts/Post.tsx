@@ -111,6 +111,23 @@ const Post = () => {
         </div>
 
         <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
+        <div>
+        {post.postImages?.length > 0 && (
+  <div className="grid grid-cols-2 gap-2">
+    {post.postImages.map((image, index) => (
+      <div key={index}>
+        <img
+          className="h-auto max-w-full rounded-lg"
+          src={image}
+          alt={`Post image ${index + 1}`}
+        />
+      </div>
+    ))}
+    
+    </div>
+)}
+
+        </div>
         <div className="flex space-x-4 mt-4">
           <button
             className={`flex items-center space-x-1 bg-transparent ${
@@ -160,6 +177,7 @@ const Post = () => {
     </div>
 
     </main>
+    
     </div>            
         </div>
 
