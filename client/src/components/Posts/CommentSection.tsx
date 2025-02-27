@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { User } from '../../utils/User/UserType';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
@@ -7,10 +6,10 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import { FaHeart, FaEllipsisH } from 'react-icons/fa';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Comment } from './PostType';
-import { getUserData } from '../../../../server/controllers/UserController';
 import { formatDate } from '../../utils/Services/DateFormatter';
 import axios from 'axios';
 import { deleteComment } from '../../../../server/controllers/PostController';
+
 interface CommentSectionProps {
   postId: string;
   userId: string;

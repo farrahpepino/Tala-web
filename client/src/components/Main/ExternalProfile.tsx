@@ -11,6 +11,7 @@ import Posts from '../Posts/Posts';
 import axios from 'axios';
 import Footer from '../Footer';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+
 const ExternalProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams(); 

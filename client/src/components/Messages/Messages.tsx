@@ -5,8 +5,6 @@ import ChatBubble from './ChatBubble';
 import DefaultUserIcon from '../../assets/tala/user.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
-import { Icon, IconProp } from '@fortawesome/fontawesome-svg-core';
 import Footer from '../Footer';
 import axios from 'axios';
 import { getUserData } from '../../utils/User/GetUserData';

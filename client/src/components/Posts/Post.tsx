@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Post as PostType } from './PostType';
 import React from 'react';
 import { transformLikesToString } from './PostType';
-
 import { formatNumber } from '../../utils/Services/PostService';
 import { FaHeart, FaComment } from 'react-icons/fa';
 import Loading from '../../utils/loading';
@@ -19,6 +18,7 @@ import { formatDate } from '../../utils/Services/DateFormatter';
 import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
 import NavBar from '../NavBar';
+
 import CommentSection from './CommentSection';
 const Post = () => {
   const { userId, postId } = useParams<{ userId: string; postId: string }>();

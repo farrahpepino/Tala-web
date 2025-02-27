@@ -4,6 +4,7 @@ import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
 import axios from 'axios';
+
 const AddPost = () => {
   const [user, setUser] = useState<User | null>(null);
   const [description, setDescription] = useState('');

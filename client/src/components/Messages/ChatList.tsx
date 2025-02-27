@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import DefaultUserIcon from '../../assets/tala/user.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 interface Participant {
   userId: string;
   name: string;

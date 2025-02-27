@@ -16,12 +16,9 @@ import { Comment } from './PostType';
 import { formatDate } from '../../utils/Services/DateFormatter';
 import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
-import { Navigate } from 'react-router-dom';
 import { formatNumber } from '../../utils/Services/PostService';
-import { getLikes } from '../../utils/Services/PostService';
-import { Like } from './PostType';
-import { LikeListResponse } from './PostType';
 import { transformLikesToString } from './PostType';
+
 interface PostsProps {
   userId?: string; 
   postedBy?: string;

@@ -8,6 +8,7 @@ import HomePosts from '../Posts/HomePosts';
 import Loading from '../../utils/loading';
 import { handleReload } from '../../utils/HandleReload';
 import Footer from '../Footer';
+
 const Home: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import axios from "axios"
 import { LikeListResponse } from "../../components/Posts/PostType";
+
 export const deletePost = async (userId, postId) => {
 
     try {
@@ -51,17 +52,5 @@ export const formatNumber = (num: number): string => {
 };
   
 
-export const getLikes = async (postId: string): Promise<LikeListResponse> => {
-    try {
-      const response = await fetch(`https://tala-web-kohl.vercel.app/api/post/${postId}/likes`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch likes');
-      }
-      const data = await response.json();
-      return data; 
-    } catch (error) {
-      console.error('Error fetching like list:', error);
-      throw error; 
-    }
-  };
+
   

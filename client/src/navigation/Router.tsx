@@ -8,6 +8,7 @@ import EditProfile from '../components/Main/EditProfile';
 import ExternalProfile from '../components/Main/ExternalProfile';
 import Messages from '../components/Messages/Messages';
 import Post from '../components/Posts/Post';
+
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };

@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Button, Disclosure, Menu, Transition } from '@headlessui/react';
-import { HomeIcon, ChatBubbleLeftIcon, UserPlusIcon, BellIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, ChatBubbleLeftIcon, BellIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import TalaLogo from '../assets/tala/tala-darkbg.png'; 
 import { clearUserData } from '../utils/User/ClearUserData';
 import { getUserData } from '../utils/User/GetUserData';
@@ -11,6 +11,7 @@ import Loading from '../utils/loading';
 import DefaultUserIcon from '../assets/tala/user.png';
 import axios from 'axios';
 import Notification from './Main/Notification';
+
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
   { name: 'Messages', href: `/messages/${null}`, icon: ChatBubbleLeftIcon },
