@@ -22,7 +22,8 @@ const Profile = () => {
     }
   }, []);
 
-  console.log(user?.userId)
+
+  console.log(user?._id)
   return (
     <div className="min-h-screen mx-auto">
     <NavBar />
