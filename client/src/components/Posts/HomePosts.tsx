@@ -37,7 +37,6 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState(false);
-  const [likes, setLikes] = useState<Like[]>([]); // an array of `Like` objects
   const currentLoggedIn = getUserData();
   
     let fetchUserData = async () => {

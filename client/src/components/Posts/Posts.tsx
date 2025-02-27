@@ -16,26 +16,13 @@ import { likePost } from '../../utils/Services/PostService';
 import { unlikePost } from '../../utils/Services/PostService';
 import { useNavigate } from 'react-router-dom';
 import { transformLikesToString } from './PostType';
+import { formatNumber } from '../../utils/Services/PostService';
 
 interface PostsProps {
   userId?: string; 
   postedBy?: string;
 }
-const formatNumber = (num: number): string => {
-  if (num >= 1_000_000_000_000) {
-    return (num / 1_000_000_000_000).toFixed(1).slice(0, 3) + 'Z'; 
-  }
-  if (num >= 1_000_000_000) {
-    return (num / 1_000_000_000).toFixed(1).slice(0, 3) + 'B'; 
-  }
-  if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).slice(0, 3) + 'M'; 
-  }
-  if (num >= 1_000) {
-    return (num / 1_000).toFixed(1).slice(0, 3) + 'k';
-  }
-  return num.toString().slice(0, 3); 
-};
+
 
 let Posts: React.FC<PostsProps> = ({ userId }) => {
   const navigate = useNavigate();
@@ -166,130 +153,103 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
       onMouseLeave={() => setIsOpen(false)}
     >
               <button
-            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
+            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn.userId) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
               let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn.userId);
-              
-                  if (Array.isArray(updatedLikes)) {
-                    if (userHasLiked) {
-                      updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn.userId); 
-                    } else {
-                      updatedLikes.push({ likedBy: currentLoggedIn.userId }); 
-                    }
-                  } else {
-                    updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
-                  }
-              
-                  setPosts((prevPosts) =>
-                    prevPosts.map((p) =>
-                      p._id === post._id
-                        ? {
-                            ...p,
-                            likes: updatedLikes,
-                          }
-                        : p
-                    )
-                  );
-              
-                  try {
-                    if (userHasLiked) {
-                      await unlikePost(currentLoggedIn.userId, post._id); 
-                    } else {
-                      await likePost(currentLoggedIn.userId, post._id); 
-                    }
-                  } catch (error) {
-                    console.error('Error toggling like:', error);
-                    setPosts((prevPosts) =>
-                      prevPosts.map((p) =>
-                        p._id === post._id
-                          ? {
-                              ...p,
-                              likes: post.likes, 
-                            }
-                          : p
-                      )
-                    );
-                  }
-                }}
-              >
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn.userId);
+          
+              if (Array.isArray(updatedLikes)) {
+                if (userHasLiked) {
+                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn.userId); 
+                } else {
+                  updatedLikes.push({ likedBy: currentLoggedIn.userId }); 
+                }
+              } else {
+                updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
+              }
+          
+              setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                  p._id === post._id
+                    ? {
+                        ...p,
+                        likes: updatedLikes,
+                      }
+                    : p
+                )
+              );
+          
+              try {
+                if (userHasLiked) {
+                  await unlikePost(currentLoggedIn.userId, post._id); 
+                } else {
+                  await likePost(currentLoggedIn.userId, post._id); 
+                }
+              } catch (error) {
+                console.error('Error toggling like:', error);
+                setPosts((prevPosts) =>
+                  prevPosts.map((p) =>
+                    p._id === post._id
+                      ? {
+                          ...p,
+                          likes: post.likes, 
+                        }
+                      : p
+                  )
+                );
+              }
+            }}
+          >
                 <FaHeart size={16} />
-                <span data-dropdown-trigger="hover"
->  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes) } </span>
+                <span               data-dropdown-trigger="hover"       
+                
+
+>  {Array.isArray(post.likes) ? formatNumber(post.likes.length) : formatNumber(post.likes)}
+
+</span>
               </button>
               {isOpen && (
-    
+Array.isArray(post.likes) && post.likes.length > 0 ? (
+
     <ul
       role="menu"
       data-popover="notifications-menu"
       data-popover-placement="bottom"
-      className="absolute z-10 min-w-[180px] overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
+      className="absolute max-h-[200px] min-w-[400px] z-10  overflow-auto rounded-lg border border-slate-200 bg-white p-1.5  focus:outline-none"
     >
+
+          {post.likes.map((like, index) => (
+            
       <li
         role="menuitem"
+        key={index}
         className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
       >
         <img
-          alt="tania andrew"
-          src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+          alt= 'User avatar'
+          src={DefaultUserIcon}
           className="relative inline-block h-10 w-10 rounded-full object-cover object-center"
         />
         <div className="flex flex-col gap-1 ml-4">
           <p className="text-slate-800 font-medium">
-            Tania send you a message
+          {like.likedBy.firstName} {like.likedBy.lastName}
           </p>
-          <p className="text-slate-500 text-sm flex items-center">
+          {/* <p className="text-slate-500 text-sm flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
               <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd" />
             </svg>
      
             13 minutes ago
-          </p>
+          </p> */}
         </div>
-      </li>
-      <li
-        role="menuitem"
-        className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
-      >
-        <img
-          alt="natali craig"
-          src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1061&amp;q=80"
-          className="relative inline-block h-10 w-10 rounded-full object-cover object-center"
-        />
-        <div className="flex flex-col gap-1 ml-4">
-          <p className="text-slate-800 font-medium">
-            Natali replied to your email.
-          </p>
-          <p className="text-slate-500 text-sm flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd" />
-            </svg>
-            1 hour ago
-          </p>
-        </div>
-      </li>
-      <li
-        role="menuitem"
-        className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
-      >
-        <img
-          alt="paypal"
-          src="https://dwglogo.com/wp-content/uploads/2016/08/PayPal_Logo_Icon.png"
-          className="relative inline-block h-10 w-10 rounded-full  object-cover object-center"
-        />
-        <div className="flex flex-col gap-1 ml-4">
-          <p className="text-slate-800 font-medium">
-            You&apos;ve received a payment.
-          </p>
-          <p className="text-slate-500 text-sm flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1 text-slate-400">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd" />
-            </svg>
-            5 hours ago
-          </p>
-        </div>
-      </li>
-    </ul>
+        
+      </li>))}
+
+
+        
+    
+    </ul> ) :     <span>No likes yet</span>
+
        )}
                </div>
               <button className="flex items-center space-x-1 text-gray-400 bg-transparent">
