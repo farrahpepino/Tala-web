@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
     email:  {type: String, required: true, unique: true},
     bio: {type: String},
     profile:{
-    profilePicture: {type: String},
-    active: {type: Boolean}
+        profilePicture: {type: String},
+        active: {type: Boolean}
     },
     friends: [ 
         { userId: {type: mongoose.Schema.Types.ObjectId, ref: 'user' },

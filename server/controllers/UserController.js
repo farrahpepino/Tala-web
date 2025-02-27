@@ -119,7 +119,47 @@ exports.deleteAccount = async (req, res) => {
   }
 };
 
+exports.addProfilePhoto = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { profilePhoto } = req.body;
 
+    if (!profilePhoto) {
+        return res.status(400).json({ message: "Profile photo is required." });
+    }
 
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(404).json({ message: "User not found." });
+    }
 
+    user.profile.profilePicture = profilePhoto;
+    await user.save();
 
+    res.status(200).json({ message: "Profile photo updated successfully.", profilePicture: user.profile.profilePicture });
+} catch (error) {
+    console.error("Error updating profile photo:", error);
+    res.status(500).json({ message: "Internal server error." });
+}
+
+}
+
+exports.getProfilePhoto = async (req, res) => {
+  try {
+      const { userId } = req.params;
+
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found." });
+      }
+
+      if (!user.profile.profilePicture) {
+          return res.status(404).json({ message: "Profile photo not set." });
+      }
+
+      res.status(200).json({ profilePicture: user.profile.profilePicture });
+  } catch (error) {
+      console.error("Error fetching profile photo:", error);
+      res.status(500).json({ message: "Internal server error." });
+  }
+};
