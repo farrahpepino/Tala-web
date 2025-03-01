@@ -25,7 +25,7 @@ function Router() {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/messages/:userId" element={<Messages />} />
         <Route path="/external-profile/:userId" element={<ExternalProfile />} />
-        <Route path="/:postId" element={<Post />} />
+        <Route path="/:userId/:postId" element={<Post />} />
 
       </Routes>
     </BrowserRouter>

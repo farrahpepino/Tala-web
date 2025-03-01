@@ -11,6 +11,8 @@ interface Notification {
   comment?: string;
   isRead: boolean;
   createdAt: string;
+  relatedPostId?:string;
+  senderId?: string;
 }
 
 const Notification = () => {
@@ -98,11 +100,26 @@ const Notification = () => {
         </div>
 
         <ul className="divide-y">
-          {notifications.length > 0 ? (
-            notifications.map(notification => (
-              <button className='p-0 leading-none'
-              onClick={()=>{navigate(`/${notifications.relatedPostId}`)}} 
-              >
+        {notifications?.length > 0 ? (
+  notifications.map(notification => (
+    <button
+  key={notification._id}
+  className="p-0 leading-none"
+  onClick={() => {
+    console.log(notification);  // Log to check the properties
+    if (notification.relatedPostId) {
+        navigate(`/${userId}/${notification.relatedPostId}`);
+    
+    } else {
+      // Safely navigate to the sender's profile if senderId exists
+      if (notification.senderId) {
+        navigate(`external-profile/${notification.senderId}`);
+      } else {
+        console.error("No senderId available.");
+      }
+    }
+  }}
+>
               <li key={notification._id} className="p-4 flex items-center hover:bg-gray-50 cursor-pointer">
                 <img
                   src={DefaultUserIcon}

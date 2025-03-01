@@ -92,7 +92,7 @@ exports.acceptFriendRequest = async (req, res) => {
 
         const notificationReceiver = {
             type: 'friend_request_accepted',
-            senderId,
+            senderId: senderId,
             message: `You are now friends with ${fullNameSender}`,
         };
 

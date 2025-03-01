@@ -79,7 +79,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
   onClick={(event) => {
     event.preventDefault();
     if (typeof post.postedBy === 'object' && post.postedBy._id) {
-      navigate(`/${post._id}`);
+      navigate(`/${post.postedBy._id}/${post._id}`);
     } else {
       console.error('Invalid postedBy format:', post.postedBy);
     }
