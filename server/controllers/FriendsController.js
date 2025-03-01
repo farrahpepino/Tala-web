@@ -33,10 +33,14 @@ exports.sendFriendRequest = async (req, res) => {
         // Save the updated receiver
         await receiver.save();
 
+
+        const sender = await User.findById(senderId);
+        const senderFullName = `${sender.firstName} ${sender.lastName}`;
+
         const notification = {
             type: 'friend_request',
             senderId,
-            message: `You have received a friend request from ${senderId}`,
+            message: `You have received a friend request from ${senderFullName}`,
         };
 
         receiver.notifications.push(notification);
