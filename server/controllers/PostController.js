@@ -166,7 +166,8 @@ exports.createComment = async (req, res) => {
                   type: 'comment',
                   senderId: userId,
                   message: `${fullName} commented on your post.`,
-                  comment: content
+                  comment: content,
+                  relatedPostId: post._id
               }
           }
       });
@@ -259,7 +260,8 @@ exports.createLike = async (req, res) => {
                   type: 'like',
                   senderId: userId,
                   message: `${fullName} liked your post.`,
-                  postDescription: post.description
+                  postDescription: post.description,
+                  relatedPostId: post._id
                 }
           }
       });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DefaultUserIcon from '../../assets/tala/user.png';
 import { getUserData } from '../../utils/User/GetUserData';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface Notification {
   _id: string;
@@ -17,6 +18,8 @@ const Notification = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const currentLoggedIn = getUserData();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (currentLoggedIn && (currentLoggedIn._id || currentLoggedIn.userId)) {
@@ -97,6 +100,9 @@ const Notification = () => {
         <ul className="divide-y">
           {notifications.length > 0 ? (
             notifications.map(notification => (
+              <button className='p-0 leading-none'
+              onClick={()=>{navigate(`/${notifications.relatedPostId}`)}} 
+              >
               <li key={notification._id} className="p-4 flex items-center hover:bg-gray-50 cursor-pointer">
                 <img
                   src={DefaultUserIcon}
@@ -107,14 +113,16 @@ const Notification = () => {
                   <h3 className="text-sm text-[#333] font-semibold">
                     {notification.message}
                   </h3>
-                  {notification.comment || notification.postDescription && (
+                  {(notification.comment || notification.postDescription) && (
                     <p className="text-xs text-gray-500 mt-2">"{notification.postDescription || notification.comment}"</p>
                   )}
+
                   <p className="text-xs text-black leading-3 mt-2">
                     {new Date(notification.createdAt).toLocaleTimeString()}
                   </p>
                 </div>
               </li>
+              </button>
             ))
           ) : (
             <p className="text-center text-xs text-gray-500">No new notifications.</p>
