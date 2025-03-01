@@ -63,7 +63,7 @@ export default function NavBar() {
 
   const handleResultClick = (userId) => {
     console.log(`Clicked on user with ID: ${userId}`); 
-    if(userData.userId === userId){
+    if(userData._id === userId){
     navigate(`/profile`);
     }
     else{
@@ -148,11 +148,11 @@ export default function NavBar() {
     <ul className="absolute z-10 w-full max-w-lg bg-white border border-dark border-t-0 rounded-b-md shadow-lg max-h-60 overflow-y-auto">
       {results.map((user) => (
         <li
-          key={user.userId || user._id}
+          key={user._id}
           className="cursor-pointer text-left ml-3 hover:text-gray-500 hover:bg-gray-100 p-2 text-gray-700"
           onClick={() => {
             console.log(`Clicked on user with ID: ${user.userId || user._id}`);
-            handleResultClick(user.userId || user._id)}}
+            handleResultClick( user._id)}}
         >
           {user.firstName} {user.lastName} 
         </li>
@@ -199,9 +199,9 @@ export default function NavBar() {
     <ul className="absolute z-10 w-full max-w-lg bg-white  border border-dark  border-t-0 rounded-b-md shadow-lg max-h-60 overflow-y-auto">
       {results.map((user) => (
         <li
-          key={user.userId || user._id}
+          key={user._id}
           className="cursor-pointer text-left ml-3 hover:bg-gray-50 p-2 text-gray-700"
-          onClick={() => handleResultClick(user.userId || user._id) }
+          onClick={() => handleResultClick(user._id) }
         >
           {user.firstName} {user.lastName} 
         </li>

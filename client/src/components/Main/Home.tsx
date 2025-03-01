@@ -39,7 +39,7 @@ const Home: React.FC = () => {
       <div className="mt-4 mx-auto w-full max-w-4xl">
 
         <AddPost />
-        <HomePosts userId={user?.userId || user?._id}/>
+        <HomePosts userId={user?._id}/>
       </div>
     </main>
       <Footer/>

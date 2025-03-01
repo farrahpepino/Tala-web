@@ -33,6 +33,15 @@ exports.sendFriendRequest = async (req, res) => {
         // Save the updated receiver
         await receiver.save();
 
+        const notification = {
+            type: 'friend_request',
+            senderId,
+            message: `You have received a friend request from ${senderId}`,
+        };
+
+        receiver.notifications.push(notification);
+        await receiver.save();
+
         return res.status(200).json({ message: "Friend request sent successfully!" });
     } catch (error) {
         console.error("Error sending friend request:", error);
@@ -70,6 +79,32 @@ exports.acceptFriendRequest = async (req, res) => {
         // Save the updated users
         await receiver.save();
         await sender.save();
+
+        const userReceiver = await User.findById(receiverId);
+        const fullNameReceiver = `${userReceiver.firstName} ${userReceiver.lastName}`;
+        const userSender = await User.findById(senderId);
+        const fullNameSender = `${userSender.firstName} ${userSender.lastName}`;
+    
+
+        const notificationReceiver = {
+            type: 'friend_request_accepted',
+            senderId,
+            message: `You are now friends with ${fullNameSender}`,
+        };
+
+        const notificationSender = {
+            type: 'friend_request_accepted',
+            senderId: receiverId,
+            message: `Your friend request to ${fullNameReceiver} has been accepted.`,
+        };
+
+        receiver.notifications.push(notificationReceiver);
+        sender.notifications.push(notificationSender);
+
+        // Save the notifications
+        await receiver.save();
+        await sender.save();
+
 
         return res.status(200).json({ message: "Friend request accepted, both users are now friends." });
     } catch (error) {

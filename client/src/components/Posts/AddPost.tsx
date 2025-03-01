@@ -41,14 +41,14 @@ const AddPost = () => {
       const formData = new FormData();
            
       formData.append('description', description);
-      formData.append('postedBy', user?.userId || '');
-      console.log('Posted by:', user?.userId || '');
+      formData.append('postedBy', user?._id || '');
+      console.log('Posted by:', user?._id || '');
       const response = await axios({
         method: 'POST',
         url: 'https://tala-web-kohl.vercel.app/api/post/createPost',
         data: {
             description,
-            postedBy: user?.userId || '',
+            postedBy: user?._id || '',
         },
         headers: {
             Authorization: `Bearer ${token}`,

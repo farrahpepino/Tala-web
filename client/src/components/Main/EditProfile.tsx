@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent, useRef } from 'react';
 import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
@@ -15,16 +15,20 @@ const EditProfile = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [bio, setBio] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
+  const [profilePicture, setProfilePicture] = useState<string>('');
+  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const userData = getUserData();
 
+  
   useEffect(() => {
-    const userData = getUserData();
     if (!userData) {
       handleReload();
     } else {
       setUser(userData);
-      setUserId(userData.userId || '');
+      setUserId(userData._id || '');
       setFirstName(userData.firstName || '');
       setLastName(userData.lastName || '');
       setBio(userData.bio || '');
@@ -39,44 +43,84 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
 
-  const handleSaveChanges = async (userId) => {
+  const handleProfilePhotoChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setProfilePhotoFile(file);
+      
+      // Preview Image
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        setProfilePicture(reader.result as string);
+        
+        // Upload image after preview
+        try {
+          const formData = new FormData();
+          formData.append("profilePhoto", file);
+  
+          setLoading(true); // Start loading state
+  
+          const uploadResponse = await axios.post(
+            `https://tala-web-kohl.vercel.app/api/users/${userData._id}/add-profile-photo`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+  
+          if (uploadResponse.status === 200) {
+            setProfilePicture(uploadResponse.data.profilePicture);
+          }
+        } catch (error) {
+          console.error("Error uploading profile photo:", error);
+        } finally {
+          setLoading(false); // End loading state
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  const handleSaveChanges = async () => {
     if (!userId) {
       console.error("User ID is missing!");
-      return; // Stop execution if userId is not available
+      return;
     }
-
+  
+    let uploadedProfilePhotoUrl = profilePicture;
+  
+    // Update user profile
     const updatedUser = {
-      userId: user?.userId || user?._id,
-      ...(firstName && { firstName }),
-      ...(lastName && { lastName }),
-      ...(bio && { bio }),
-      ...(profilePicture && { profilePicture }),
+      userId,
+      firstName,
+      lastName,
+      bio,
+      profilePicture: uploadedProfilePhotoUrl,
     };
-
-    console.log('Updated user object:', updatedUser);
-
+  
     try {
-      let user = getUserData();
-      let userId = user?.userId || user?._id;
-      const response = await axios.patch(`https://tala-web-kohl.vercel.app/api/users/profile/${userId}`, updatedUser);
+      setLoading(true); // Start loading state
+      const response = await axios.patch(
+        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
+        updatedUser
+      );
+  
       if (response.status === 200) {
-        console.log('Profile updated:', response.data.user);
+        console.log("Profile updated:", response.data.user);
         storeUserData(null, response.data.user);
-        const updatedUserData = getUserData();
-        setUser(updatedUserData);
-        console.log('Updated user data after save:', updatedUserData);
-        navigate('/profile');
+        setUser(getUserData());
+        navigate("/profile");
       } else {
-        console.error('Failed to update profile:', response.statusText);
+        console.error("Failed to update profile:", response.statusText);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error updating profile:", error);
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
   const handleDeleteAccount = async () => {
     const currentUser = getUserData();
-    const userId = currentUser.userId;
+    const userId = currentUser._id;
 
     const confirmDelete = confirm(
       "Are you sure you want to delete your account? This action cannot be undone."
@@ -88,6 +132,7 @@ const EditProfile = () => {
     }
   
     try {
+      setLoading(true); // Start loading state
       const response = await axios.delete(
         `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
       );  
@@ -102,10 +147,10 @@ const EditProfile = () => {
     } catch (error) {
       console.error("Error deleting account:", error);
       alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false); // End loading state
     }
   };
-  
-  
 
   return (
     <div className="min-h-screen">
@@ -113,10 +158,21 @@ const EditProfile = () => {
       <main className="flex justify-center w-full px-4">
         <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
-            <img
-              src={DefaultUserIcon}
-              alt="user-avatar"
-              className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
+            <button
+              className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <img
+                src={profilePicture || DefaultUserIcon}
+                alt="user-avatar"
+                className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
+              />
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleProfilePhotoChange}
             />
 
             <div className="w-100 px-6 ">
@@ -147,23 +203,27 @@ const EditProfile = () => {
             </div>
             <div className="w-100 px-4 ">
               <div className='flex justify-end mt-10'>
-              <button
-                onClick={handleSaveChanges}
-                className="btn btn-dark btn btn-dark w-30 px-6 py-2 rounded-pill font-weight-semibold"
-              >
-                Save Changes
-              </button>
-              <button
-                onClick={handleDeleteAccount}
-                className="btn bg-red-700 text-white hover:bg-red-400 w-30 ml-4 px-6 py-2 rounded-pill  font-weight-semibold"
-              >Delete account</button>
-            </div>
+                <button
+                  onClick={handleSaveChanges}
+                  disabled={loading}
+                  className="btn btn-dark w-30 px-6 py-2 rounded-pill font-weight-semibold"
+                >
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={loading}
+                  className="btn bg-red-700 text-white hover:bg-red-400 w-30 ml-4 px-6 py-2 rounded-pill font-weight-semibold"
+                >
+                  {loading ? 'Deleting...' : 'Delete account'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -156,6 +156,21 @@ exports.createComment = async (req, res) => {
     });
 
     await post.save();
+    const user = await User.findById(userId);
+    const fullName = `${user.firstName} ${user.lastName}`;
+
+    if (post.postedBy.toString() !== userId) {
+      await User.findByIdAndUpdate(post.postedBy, {
+          $push: {
+              notifications: {
+                  type: 'comment',
+                  senderId: userId,
+                  message: `${fullName} commented on your post.`,
+                  relatedPostId: postId,
+              }
+          }
+      });
+  }
 
     res.status(201).json({ message: 'Comment created successfully!', comment: post.comments[post.comments.length - 1] });
   } catch (error) {
@@ -233,6 +248,22 @@ exports.createLike = async (req, res) => {
     });
 
     await post.save();
+
+    const user = await User.findById(userId);
+    const fullName = `${user.firstName} ${user.lastName}`;
+
+    if (post.postedBy.toString() !== userId) {
+      await User.findByIdAndUpdate(post.postedBy, {
+          $push: {
+              notifications: {
+                  type: 'like',
+                  senderId: userId,
+                  message: `${fullName} liked your post.`,
+                  relatedPostId: postId,
+              }
+          }
+      });
+  }
 
     res.status(201).json({ message: 'Post liked successfully!', like: post.likes[post.likes.length - 1] });
   } catch (error) {

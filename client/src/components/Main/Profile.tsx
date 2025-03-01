@@ -23,7 +23,6 @@ const Profile = () => {
   }, []);
 
 
-  console.log(user?._id)
   return (
     <div className="min-h-screen mx-auto">
     <NavBar />
@@ -54,7 +53,7 @@ const Profile = () => {
 
       <div className="mt-4 mx-auto w-full max-w-4xl">
         <AddPost />
-        <Posts userId={user?.userId || user?._id}/>
+        <Posts userId={user?._id}/>
       </div>
       <Footer/>
     </div>

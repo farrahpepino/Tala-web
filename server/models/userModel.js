@@ -24,7 +24,15 @@ const userSchema = new mongoose.Schema({
       status: { type: String, enum: ['pending', 'accepted', 'declined', 'blocked'], default: 'pending' },
       createdAt: { type: Date, default: Date.now },
     }
-  ]
+  ],
+  notifications: [{
+    type: { type: String, enum: ['friend_request', 'like', 'comment', 'friend_request_accepted'], required: true },
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    message: { type: String, required: true },        relatedPostId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post' }, // Optional, for likes and comments
+    isRead: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+
+}]
 })
 
 const complexityOptions = {
