@@ -1,7 +1,7 @@
 const { User } = require('../models/userModel');
 
 exports.getUnreadNotifications = async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.params;
 
     if (!userId) {
         return res.status(400).json({ message: "UserId is required." });

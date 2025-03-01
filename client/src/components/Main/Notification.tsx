@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DefaultUserIcon from '../../assets/tala/user.png';
 import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
+import axios from 'axios';
 interface Notification {
   _id: string;
   message: string;
@@ -15,7 +16,7 @@ const Notification = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
-  useEffect(() => {
+ 
     const fetchUserData = async () => {
       try {
         const currentLoggedIn: User = await getUserData();
@@ -27,19 +28,20 @@ const Notification = () => {
     };
 
     fetchUserData();
-  }, []);
 
-  const fetchNotifications = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/notifications/${userId}`);
-      const data = await response.json();
-      setNotifications(data.notifications); // Assuming data.notifications is of type Notification[]
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      setIsLoading(false);
-    }
-  };
+
+    const fetchNotifications = async (userId: string) => {
+      try {
+        const response = await axios.get(
+          `https://tala-web-kohl.vercel.app/api/notifications/${userId}/unread`
+        );
+        setNotifications(response.data); // Access the data directly
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        setIsLoading(false);
+      }
+    };
 
   const markAllAsRead = async () => {
     try {
