@@ -12,10 +12,13 @@ import DefaultUserIcon from '../assets/tala/user.png';
 import axios from 'axios';
 import Notification from './Main/Notification';
 
+
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
   { name: 'Messages', href: `/messages/${null}`, icon: ChatBubbleLeftIcon },
 ];
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

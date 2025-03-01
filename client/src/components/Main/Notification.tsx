@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DefaultUserIcon from '../../assets/tala/user.png';
-import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
 import axios from 'axios';
+
 interface Notification {
   _id: string;
   message: string;
@@ -15,35 +15,36 @@ const Notification = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const currentLoggedIn = getUserData();
 
- 
-    const fetchUserData = async () => {
-      try {
-        const currentLoggedIn: User = await getUserData();
-        setUserId(currentLoggedIn._id || currentLoggedIn.userId);
-        fetchNotifications(currentLoggedIn._id || currentLoggedIn.userId);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  useEffect(() => {
+    if (currentLoggedIn && (currentLoggedIn._id || currentLoggedIn.userId)) {
+      setUserId(currentLoggedIn._id || currentLoggedIn.userId);
+    }
+  }, [currentLoggedIn]);
 
-    fetchUserData();
+  useEffect(() => {
+    if (userId) {
+      fetchNotifications(userId);
+    }
+  }, [userId]);
 
-
-    const fetchNotifications = async (userId: string) => {
-      try {
-        const response = await axios.get(
-          `https://tala-web-kohl.vercel.app/api/notifications/${userId}/unread`
-        );
-        setNotifications(response.data); // Access the data directly
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-        setIsLoading(false);
-      }
-    };
+  const fetchNotifications = async (userId: string) => {
+    try {
+      const response = await axios.get(
+        `https://tala-web-kohl.vercel.app/api/notifications/${userId}/unread`
+      );
+      console.log('Fetched notifications:', response.data.notifications);
+      setNotifications(response.data.notifications);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      setIsLoading(false);
+    }
+  };
 
   const markAllAsRead = async () => {
+    if (!userId) return;
     try {
       await fetch(`/api/markNotificationsAsRead/${userId}`, { method: 'POST' });
       setNotifications(prevNotifications =>
@@ -58,6 +59,7 @@ const Notification = () => {
   };
 
   const clearAllNotifications = async () => {
+    if (!userId) return;
     try {
       await fetch(`/api/clearAllNotifications/${userId}`, { method: 'DELETE' });
       setNotifications([]);
