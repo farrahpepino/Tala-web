@@ -6,7 +6,8 @@ import axios from 'axios';
 interface Notification {
   _id: string;
   message: string;
-  relatedPostId?: string;
+  postDescription?: string;
+  comment?: string;
   isRead: boolean;
   createdAt: string;
 }
@@ -106,8 +107,8 @@ const Notification = () => {
                   <h3 className="text-sm text-[#333] font-semibold">
                     {notification.message}
                   </h3>
-                  {notification.relatedPostId && (
-                    <p className="text-xs text-gray-500 mt-2">Related post: {notification.relatedPostId}</p>
+                  {notification.comment || notification.postDescription && (
+                    <p className="text-xs text-gray-500 mt-2">"{notification.postDescription || notification.comment}"</p>
                   )}
                   <p className="text-xs text-black leading-3 mt-2">
                     {new Date(notification.createdAt).toLocaleTimeString()}
