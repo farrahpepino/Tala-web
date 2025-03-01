@@ -104,8 +104,8 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
               </div>
               </div>
 
-              <div className={( typeof post.postedBy!== 'string' && post.postedBy._id === currentLoggedIn._id )? 'text-right -mt-11' : ''}>
-              {(typeof post.postedBy !== 'string' && post.postedBy._id === currentLoggedIn._id) && (                  <div className="text-right -mt-11">
+              <div className={( typeof post.postedBy!== 'string' && post.postedBy._id === (currentLoggedIn._id || currentLoggedIn.userId) )? 'text-right -mt-11' : ''}>
+              {(typeof post.postedBy !== 'string' && post.postedBy._id === (currentLoggedIn._id || currentLoggedIn.userId)) && (                  <div className="text-right -mt-11">
 
               <Menu as="div" className="relative inline-block text-left ">
                   <div>
@@ -124,7 +124,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
-                            deletePost(currentLoggedIn._id, post.id); 
+                            deletePost((currentLoggedIn._id || currentLoggedIn.userId), post.id); 
                             fetchUserPosts();
 
                           }} >
@@ -153,16 +153,16 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
       onMouseLeave={() => setIsOpen(false)}
     >
               <button
-            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn._id) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
+            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === (currentLoggedIn._id || currentLoggedIn.userId)) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
               let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn._id);
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === (currentLoggedIn._id || currentLoggedIn.userId));
           
               if (Array.isArray(updatedLikes)) {
                 if (userHasLiked) {
-                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn._id); 
+                  updatedLikes = updatedLikes.filter(like => like.likedBy !== (currentLoggedIn._id || currentLoggedIn.userId)); 
                 } else {
-                  updatedLikes.push({ likedBy: currentLoggedIn._id }); 
+                  updatedLikes.push({ likedBy: (currentLoggedIn._id || currentLoggedIn.userId) }); 
                 }
               } else {
                 updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
@@ -181,9 +181,9 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
           
               try {
                 if (userHasLiked) {
-                  await unlikePost(currentLoggedIn._id, post._id); 
+                  await unlikePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
                 } else {
-                  await likePost(currentLoggedIn._id, post._id); 
+                  await likePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
                 }
               } catch (error) {
                 console.error('Error toggling like:', error);

@@ -48,7 +48,7 @@ const Post = () => {
     return <Loading />;
   }
 
-  const isPostOwner = typeof post.postedBy !== 'string' && post.postedBy._id === currentLoggedIn._id;
+  const isPostOwner = typeof post.postedBy !== 'string' && post.postedBy._id === (currentLoggedIn._id || currentLoggedIn.userId);
 
   return (
 <div className="mx-auto">
@@ -94,7 +94,7 @@ const Post = () => {
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                         onClick={(e) => {
                           e.preventDefault();
-                          deletePost(currentLoggedIn._id, post._id);
+                          deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id);
                         }}
                       >
                         <div className="flex flex-row items-center">
@@ -131,19 +131,19 @@ const Post = () => {
         <div className="flex space-x-4 mt-4">
           <button
             className={`flex items-center space-x-1 bg-transparent ${
-              Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn._id)
+              Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === (currentLoggedIn._id || currentLoggedIn.userId))
                 ? 'text-red-500'
                 : 'text-gray-400'
             } hover:text-red-500`}
             onClick={async () => {
               let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === currentLoggedIn._id);
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy.toString() === (currentLoggedIn._id || currentLoggedIn.userId));
 
               if (Array.isArray(updatedLikes)) {
                 if (userHasLiked) {
-                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn._id);
+                  updatedLikes = updatedLikes.filter(like => like.likedBy !== (currentLoggedIn._id || currentLoggedIn.userId));
                 } else {
-                  updatedLikes.push({ likedBy: currentLoggedIn._id });
+                  updatedLikes.push({ likedBy: (currentLoggedIn._id || currentLoggedIn.userId)});
                 }
               } else {
                 updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
@@ -151,9 +151,9 @@ const Post = () => {
 
               try {
                 if (userHasLiked) {
-                  await unlikePost(currentLoggedIn._id, post._id);
+                  await unlikePost((currentLoggedIn._id || currentLoggedIn.userId), post._id);
                 } else {
-                  await likePost(currentLoggedIn._id, post._id);
+                  await likePost((currentLoggedIn._id || currentLoggedIn.userId), post._id);
                 }
               } catch (error) {
                 console.error('Error toggling like:', error);
@@ -169,7 +169,7 @@ const Post = () => {
       </div>
       
     </div>            
-    <div className='w-full '><CommentSection postId={post._id} userId={currentLoggedIn._id} isSinglePost={true} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id}/>
+    <div className='w-full '><CommentSection postId={post._id} userId={currentLoggedIn._id || currentLoggedIn.userId} isSinglePost={true} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id}/>
     </div>
     
     </div>

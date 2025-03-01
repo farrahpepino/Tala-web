@@ -48,7 +48,7 @@ const AddPost = () => {
         url: 'https://tala-web-kohl.vercel.app/api/post/createPost',
         data: {
             description,
-            postedBy: user?._id || '',
+            postedBy: user?.userId || user?._id || '',
         },
         headers: {
             Authorization: `Bearer ${token}`,

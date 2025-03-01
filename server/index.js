@@ -10,6 +10,7 @@ const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
 const friendsRoutes = require('./routes/FriendsRoutes')
 const chatRoutes = require('./routes/ChatRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/post', postRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', chatRoutes);
 app.use('/api/friends', friendsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get("/", (request, response) => {
   console.log("GET request received at /");

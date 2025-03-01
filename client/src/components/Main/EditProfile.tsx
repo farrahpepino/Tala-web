@@ -28,7 +28,7 @@ const EditProfile = () => {
       handleReload();
     } else {
       setUser(userData);
-      setUserId(userData._id || '');
+      setUserId(userData._id || userData.userId || '');
       setFirstName(userData.firstName || '');
       setLastName(userData.lastName || '');
       setBio(userData.bio || '');
@@ -61,7 +61,7 @@ const EditProfile = () => {
           setLoading(true); // Start loading state
   
           const uploadResponse = await axios.post(
-            `https://tala-web-kohl.vercel.app/api/users/${userData._id}/add-profile-photo`,
+            `https://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
@@ -120,7 +120,7 @@ const EditProfile = () => {
 
   const handleDeleteAccount = async () => {
     const currentUser = getUserData();
-    const userId = currentUser._id;
+    const userId = currentUser._id || currentUser.userId;
 
     const confirmDelete = confirm(
       "Are you sure you want to delete your account? This action cannot be undone."

@@ -81,7 +81,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     console.log(postId, 'hi')
     try {
       const response = await axios.post<{ message: string; comment: Comment }>(
-        `https://tala-web-kohl.vercel.app/api/post/${currentLoggedIn._id}/${postId}/new-comment`,
+        `https://tala-web-kohl.vercel.app/api/post/${currentLoggedIn._id || currentLoggedIn.userId}/${postId}/new-comment`,
         { content: commentText }
       );
   
@@ -161,7 +161,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
-                            deletePost(currentLoggedIn._id, post._id); 
+                            deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
                             fetchHomePosts();
                           }} >
                           <div className='flex flex-row items-center'>
@@ -189,16 +189,16 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
       onMouseLeave={() => setIsOpen(false)}
     >
               <button
-            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn._id) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
+            className={`flex items-center space-x-1 bg-transparent ${Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === (currentLoggedIn._id || currentLoggedIn.userId)) ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
             onClick={async () => {
               let updatedLikes: number | { likedBy: string }[] = transformLikesToString(post.likes);
-              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === currentLoggedIn._id);
+              const userHasLiked = Array.isArray(post.likes) && post.likes.some(like => like.likedBy._id === (currentLoggedIn._id || currentLoggedIn.userId));
           
               if (Array.isArray(updatedLikes)) {
                 if (userHasLiked) {
-                  updatedLikes = updatedLikes.filter(like => like.likedBy !== currentLoggedIn._id); 
+                  updatedLikes = updatedLikes.filter(like => like.likedBy !== (currentLoggedIn._id || currentLoggedIn.userId)); 
                 } else {
-                  updatedLikes.push({ likedBy: currentLoggedIn._id }); 
+                  updatedLikes.push({ likedBy: (currentLoggedIn._id || currentLoggedIn.userId) }); 
                 }
               } else {
                 updatedLikes = userHasLiked ? Math.max(updatedLikes - 1, 0) : updatedLikes + 1;
@@ -217,9 +217,9 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
           
               try {
                 if (userHasLiked) {
-                  await unlikePost(currentLoggedIn._id, post._id); 
+                  await unlikePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
                 } else {
-                  await likePost(currentLoggedIn._id, post._id); 
+                  await likePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
                 }
               } catch (error) {
                 console.error('Error toggling like:', error);
@@ -295,7 +295,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
               </button>
             </div>
             {/* Comment Section */}
-            <CommentSection postId={post._id} userId={currentLoggedIn._id} isSinglePost={false} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id} />
+            <CommentSection postId={post._id} userId={currentLoggedIn._id || currentLoggedIn.userId} isSinglePost={false} postUserId={typeof post.postedBy === "string" ? post.postedBy : post.postedBy._id} />
           </div>
         ))
       )}

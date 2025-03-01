@@ -22,7 +22,7 @@ const Messages = () => {
   const [message, setMessage] = useState('');
   const [otherUser, setOtherUser] = useState<User | null>(null);
   const userData = getUserData();
-  const currentUserId = userData._id;
+  const currentUserId = userData._id || userData.userId;
   const otherUserId = userId; 
 
   const fetchUserData = async () => {

@@ -21,7 +21,7 @@ const ExternalProfile = () => {
 
   const navigate = useNavigate();
   console.log('User ID for external profile:', userId);
-  const senderId = (getUserData()?._id)?.toString();
+  const senderId = (getUserData()?._id || getUserData()?.userId)?.toString();
   const receiverId = userId;
 
   const fetchFriendStatus = async () => {

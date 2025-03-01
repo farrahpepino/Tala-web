@@ -63,7 +63,7 @@ export default function NavBar() {
 
   const handleResultClick = (userId) => {
     console.log(`Clicked on user with ID: ${userId}`); 
-    if(userData._id === userId){
+    if((userData._id || userData.userId) === userId){
     navigate(`/profile`);
     }
     else{
