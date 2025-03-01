@@ -113,8 +113,9 @@ const Notification = () => {
     } else {
       // Safely navigate to the sender's profile if senderId exists
       if (notification.senderId) {
-        navigate(`external-profile/${notification.senderId}`);
-      } else {
+        console.log(`/external-profile/${notification.senderId}`);
+        navigate(`/external-profile/${notification.senderId}`);
+              } else {
         console.error("No senderId available.");
       }
     }
