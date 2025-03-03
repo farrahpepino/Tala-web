@@ -267,7 +267,7 @@ export default function NavBar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src= {DefaultUserIcon}
+                        src= {user.profile.profilePicture}
                         alt="user-avatar"
                       />
                     </Menu.Button>

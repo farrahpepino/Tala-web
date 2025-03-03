@@ -157,8 +157,9 @@ exports.deleteAccount = async (req, res) => {
 
 
 exports.addProfilePhoto = async (req, res) => {
+  const {userId} = req.params;
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     user.profilePicture = req.file.location; // S3 URL

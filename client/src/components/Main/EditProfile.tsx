@@ -16,8 +16,8 @@ const EditProfile = () => {
   const [lastName, setLastName] = useState('');
   const [bio, setBio] = useState('');
   const [profilePicture, setProfilePicture] = useState<string>('');
-  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [profilePictureFile, setProfilePhotoFile] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const userData = getUserData();
@@ -53,9 +53,9 @@ const EditProfile = () => {
       reader.onloadend = async () => {
         const result = reader.result as string | null;
         if (result) {
-          setProfilePicture(result); 
+          setProfilePicture(result); // Set the base64 preview image
         }  
-        // Upload to S3 via Backend
+  
         try {
           const formData = new FormData();
           formData.append("profilePhoto", file);
@@ -63,16 +63,13 @@ const EditProfile = () => {
           setLoading(true);
   
           const uploadResponse = await axios.patch(
-            `https:tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
+            `https://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
-          
-
-          console.log(uploadResponse.data);
   
           if (uploadResponse.status === 200) {
-            setProfilePicture(uploadResponse.data.profilePicture); // S3 URL
+            setProfilePicture(uploadResponse.data.profilePicture); // S3 URL received from backend
           }
         } catch (error) {
           console.error("Error uploading profile photo:", error);
@@ -81,7 +78,7 @@ const EditProfile = () => {
         }
       };
   
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Read the file for preview
     }
   };
   
@@ -172,7 +169,7 @@ const EditProfile = () => {
               onClick={() => fileInputRef.current?.click()}
             >
               <img
-                src={profilePicture || DefaultUserIcon}
+              src= {userData.profile.profilePicture}
                 alt="user-avatar"
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />

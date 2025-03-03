@@ -9,7 +9,7 @@ import { Comment } from './PostType';
 import { formatDate } from '../../utils/Services/DateFormatter';
 import axios from 'axios';
 import { deleteComment } from '../../../../server/controllers/PostController';
-
+import { getUserData } from '../../utils/User/GetUserData';
 interface CommentSectionProps {
   postId: string;
   userId: string;
@@ -21,7 +21,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [post, setPost] = useState<any>(null);
-
+  const user = getUserData();
   const fetchPostData = async () => {
     try {
       const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}`);
@@ -126,8 +126,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
           <div className="flex items-center gap-3 ">
             <img
               className="h-10 w-10 rounded-full object-cover ml-7 mt-2"
-              src={DefaultUserIcon}
-            />
+              src= {user.profile.profilePicture}
+              />
             <div>
               <div className="flex items-center gap-4">
               <p className="text-s text-white">
