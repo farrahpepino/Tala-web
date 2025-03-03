@@ -174,7 +174,7 @@ exports.addProfilePhoto = async (req, res) => {
 
     const profilePictureUrl = req.file.location;
 
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params);
     if (!user) {
       return res.status(404).json({ error: 'User not found.' });
     }
