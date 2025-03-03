@@ -3,7 +3,7 @@ import TalaLogo from '../assets/tala/tala-darkbg.png';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { storeUserData } from '../utils/User/storeUserData';
-import DefaultUserIcon from '../../assets/tala/user.png';
+import DefaultUserIcon from '../assets/tala/user.png';
 
 const Register = () => {
 
