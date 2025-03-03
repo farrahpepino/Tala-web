@@ -61,7 +61,7 @@ exports.registerUser = async(req, res) => {
         
         const salt = await bcrypt.genSalt(Number(process.env.SALT))
         const hashPassword = await bcrypt.hash(req.body.password, salt)
-
+        
         const newUser = new User({ ...req.body, password: hashPassword });
         await newUser.save();
 
@@ -72,7 +72,9 @@ exports.registerUser = async(req, res) => {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 email: newUser.email,
-                userId: newUser._id
+                userId: newUser._id,
+                profilePicture: newUser.profilePicture,
+
             },
             token
         });
