@@ -167,18 +167,25 @@ exports.addProfilePhoto = async (req, res) => {
   if (!file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
-
   try {
-    const user = await User.findById(req.params);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded.' });
+    }
 
-    user.profile.profilePicture = req.file.location; // S3 URL
+    const profilePictureUrl = req.file.location;
+
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    user.profile.profilePicture = profilePictureUrl;
     await user.save();
 
-    res.status(200).json({ profilePicture: user.profile.profilePicture });
+    return res.status(200).json({ message: 'Profile photo updated successfully', profilePicture: profilePictureUrl });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error uploading profile picture' });
+    console.error('Error uploading profile photo:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 

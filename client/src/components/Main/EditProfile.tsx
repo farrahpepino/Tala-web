@@ -42,30 +42,28 @@ const EditProfile = () => {
     if (name === 'lastName') setLastName(value);
     if (name === 'bio') setBio(value);
   };
-
   const handleProfilePhotoChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setProfilePhotoFile(file);
   
-      // Preview Image Before Upload
       const reader = new FileReader();
       reader.onloadend = async () => {
         const result = reader.result as string | null;
         if (result) {
-          setProfilePicture(result); // Set the base64 preview image
-        }  
+          setProfilePicture(result); 
+        }
   
         try {
           const formData = new FormData();
-          formData.append("profilePhoto", file);
+          formData.append('profilePhoto', file); 
   
           setLoading(true);
   
           const uploadResponse = await axios.patch(
             `https://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
             formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { 'Content-Type': 'multipart/form-data' } }
           );
   
           if (uploadResponse.status === 200) {
@@ -78,9 +76,10 @@ const EditProfile = () => {
         }
       };
   
-      reader.readAsDataURL(file); // Read the file for preview
+      reader.readAsDataURL(file); 
     }
   };
+  
   
   
   const handleSaveChanges = async () => {
@@ -93,7 +92,6 @@ const EditProfile = () => {
     }
   
     let uploadedProfilePhotoUrl = profilePicture;
-    // Update user profile
     const updatedUser = {
       userId,
       firstName,
@@ -105,7 +103,7 @@ const EditProfile = () => {
   };
   
     try {
-      setLoading(true); // Start loading state
+      setLoading(true); 
       const response = await axios.patch(
         `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
@@ -122,7 +120,7 @@ const EditProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
   };
 
@@ -140,7 +138,7 @@ const EditProfile = () => {
     }
   
     try {
-      setLoading(true); // Start loading state
+      setLoading(true);
       const response = await axios.delete(
         `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
       );  
@@ -156,7 +154,7 @@ const EditProfile = () => {
       console.error("Error deleting account:", error);
       alert("Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
   };
 
@@ -213,10 +211,9 @@ const EditProfile = () => {
               <div className='flex justify-end mt-10'>
                 <button
                   onClick={handleSaveChanges}
-                  disabled={loading}
                   className="btn btn-dark w-30 px-6 py-2 rounded-pill font-weight-semibold"
                 >
-                  {loading ? 'Saving...' : 'Save Changes'}
+                 Save Changes
                 </button>
                 <button
                   onClick={handleDeleteAccount}
