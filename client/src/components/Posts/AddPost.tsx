@@ -100,7 +100,7 @@ const AddPost = () => {
     ))} */}
           <div className="absolute bottom-4 right-2 flex space-x-2">
             {/* Image Upload Button (Disabled) */}
-            <label className="p-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer">
+            {/* <label className="p-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer">
               <FaImage size={18} />
               <input
                 type="file"
@@ -109,7 +109,7 @@ const AddPost = () => {
                 className="hidden"
                 onChange={(e) => console.log('Image upload disabled')} // Disabled for now
               />
-            </label>
+            </label> */}
 
             <button
               type="submit"

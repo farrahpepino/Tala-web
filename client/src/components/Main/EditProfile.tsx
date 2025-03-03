@@ -43,41 +43,45 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
 
-  const handleProfilePhotoChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePhotoChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setProfilePhotoFile(file);
-      
-      // Preview Image
+  
+      // Preview Image Before Upload
       const reader = new FileReader();
       reader.onloadend = async () => {
-        setProfilePicture(reader.result as string);
-        
-        // Upload image after preview
+        const result = reader.result as string | null;
+        if (result) {
+          setProfilePicture(result); 
+        }  
+        // Upload to S3 via Backend
         try {
           const formData = new FormData();
           formData.append("profilePhoto", file);
   
-          setLoading(true); // Start loading state
+          setLoading(true);
   
           const uploadResponse = await axios.post(
-            `https://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
+            `http://localhost:5000/api/users/${userData._id || userData.userId}/add-profile-photo`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
   
           if (uploadResponse.status === 200) {
-            setProfilePicture(uploadResponse.data.profilePicture);
+            setProfilePicture(uploadResponse.data.profilePicture); // S3 URL
           }
         } catch (error) {
           console.error("Error uploading profile photo:", error);
         } finally {
-          setLoading(false); // End loading state
+          setLoading(false);
         }
       };
+  
       reader.readAsDataURL(file);
     }
   };
+  
   
   const handleSaveChanges = async () => {
     if (!userId) {
