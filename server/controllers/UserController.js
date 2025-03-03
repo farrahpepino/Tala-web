@@ -157,29 +157,17 @@ exports.deleteAccount = async (req, res) => {
 
 
 exports.addProfilePhoto = async (req, res) => {
-  const { userId } = req.params;
-  const file = req.file;
-
-  if (!file) {
-    return res.status(400).json({ message: "No file uploaded." });
-  }
-
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const fileUrl = await uploadToS3(req.file);
+    user.profilePicture = req.file.location; // S3 URL
+    await user.save();
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.userId,
-      { profilePhoto: fileUrl },
-      { new: true }
-    );
-
-    res.status(200).json({ message: "Profile photo updated", user: updatedUser });
+    res.status(200).json({ profilePicture: user.profilePicture });
   } catch (error) {
-    res.status(500).json({ message: "Error updating profile photo", error });
+    console.error(error);
+    res.status(500).json({ message: 'Error uploading profile picture' });
   }
 };
 

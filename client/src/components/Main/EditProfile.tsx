@@ -67,6 +67,9 @@ const EditProfile = () => {
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
+          
+
+          console.log(uploadResponse.data);
   
           if (uploadResponse.status === 200) {
             setProfilePicture(uploadResponse.data.profilePicture); // S3 URL
@@ -97,8 +100,10 @@ const EditProfile = () => {
       firstName,
       lastName,
       bio,
-      profilePicture: uploadedProfilePhotoUrl,
-    };
+      profile: { 
+        profilePicture: uploadedProfilePhotoUrl,
+        active: true
+    }      };
   
     try {
       setLoading(true); // Start loading state

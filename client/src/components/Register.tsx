@@ -14,7 +14,7 @@ const Register = () => {
     password: '',
     email: '',
     profile: { 
-      profilePicture: DefaultUserIcon, 
+      profilePicture: typeof DefaultUserIcon === 'string' ? DefaultUserIcon : URL.createObjectURL(DefaultUserIcon),
       active: true
   }  })
 
