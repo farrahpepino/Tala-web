@@ -162,33 +162,30 @@ exports.deleteAccount = async (req, res) => {
 
 
 exports.addProfilePhoto = async (req, res) => {
-  const {userId} = req.params;
-  const file = req.file;
-  if (!file) {
-    return res.status(400).json({ error: 'No file uploaded.' });
-  }
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded.' });
+    const userId = req.params;
+    const { profilePicture } = req.body;
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          "profile.profilePicture": profilePicture, 
+          "profile.active": true 
+        }
+      },
+      { new: true } 
+    );
+
+    if (updatedUser) {
+      res.status(200).json(updatedUser); 
+    } else {
+      res.status(404).json({ message: "User not found" });
     }
-
-    const profilePictureUrl = req.file.location;
-
-    const user = await User.findById(req.params);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
-    }
-
-    user.profile.profilePicture = profilePictureUrl;
-    await user.save();
-
-    return res.status(200).json({ message: 'Profile photo updated successfully', profilePicture: profilePictureUrl });
   } catch (error) {
-    console.error('Error uploading profile photo:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error updating profile picture:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 exports.getProfilePhoto = async (req, res) => {
   try {
