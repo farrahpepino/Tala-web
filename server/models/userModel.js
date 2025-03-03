@@ -57,6 +57,10 @@ const validate = (data) => {
         lastName: Joi.string().min(2).max(50).required().label('Last name'),
        email: Joi.string().required().label('Email'),
        password: passwordComplexity(complexityOptions).label('Password'),
+       profile: Joi.object({
+        profilePicture: Joi.string().uri().label('Profile Picture'), 
+        active: Joi.boolean().label('Active')
+    }).label('Profile')
     })
 
     return schema.validate(data)
