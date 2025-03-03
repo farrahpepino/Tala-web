@@ -1,8 +1,8 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController'); 
-
-require("dotenv").config();
 const multer = require("multer");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multerS3 = require("multer-s3");
@@ -10,13 +10,13 @@ const multerS3 = require("multer-s3");
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
 
 const upload = multer({
-  storage: multer.memoryStorage(), // Keep files in memory before upload
+  storage: multer.memoryStorage(), 
 });
 
 const uploadToS3 = async (file) => {
