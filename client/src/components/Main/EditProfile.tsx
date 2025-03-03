@@ -84,13 +84,15 @@ const EditProfile = () => {
   
   
   const handleSaveChanges = async () => {
+    console.log("hey", profilePicture );
+
+
     if (!userId) {
       console.error("User ID is missing!");
       return;
     }
   
     let uploadedProfilePhotoUrl = profilePicture;
-  
     // Update user profile
     const updatedUser = {
       userId,
@@ -98,9 +100,9 @@ const EditProfile = () => {
       lastName,
       bio,
       profile: { 
-        profilePicture: uploadedProfilePhotoUrl,
-        active: true
-    }      };
+        profilePicture: profilePicture,
+    }      
+  };
   
     try {
       setLoading(true); // Start loading state
