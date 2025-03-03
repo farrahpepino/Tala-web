@@ -3,30 +3,40 @@ const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
 require("dotenv").config();
-const AWS = require("aws-sdk");
 const multer = require("multer");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multerS3 = require("multer-s3");
 
-
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
 const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: process.env.AWS_BUCKET_NAME,
-    acl: "public-read", // Make uploaded images public
-    metadata: (req, file, cb) => {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: (req, file, cb) => {
-      cb(null, `profile-photos/${Date.now()}-${file.originalname}`);
-    },
-  }),
-})
+  storage: multer.memoryStorage(), // Keep files in memory before upload
+});
+
+const uploadToS3 = async (file) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `profile-photos/${Date.now()}-${file.originalname}`,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ACL: "public-read",
+  };
+
+  try {
+    const command = new PutObjectCommand(params);
+    await s3.send(command);
+    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+  } catch (error) {
+    console.error("Error uploading file to S3:", error);
+    throw new Error("File upload failed");
+  }
+};
 
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
@@ -145,32 +155,33 @@ exports.deleteAccount = async (req, res) => {
   }
 };
 
-exports.addProfilePhoto = async (req, res) => {
-  try {
-    const { userId } = req.params;
 
+exports.addProfilePhoto = async (req, res) => {
+  const { userId } = req.params;
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ message: "No file uploaded." });
+  }
+
+  try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const fileUrl = await uploadToS3(req.file);
 
-    // Save S3 URL to user profile
-    user.profile.profilePicture = req.file.location;
-    await user.save();
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      { profilePhoto: fileUrl },
+      { new: true }
+    );
 
-    res.status(200).json({
-      message: "Profile photo uploaded successfully!",
-      profilePicture: req.file.location, // S3 URL
-    });
+    res.status(200).json({ message: "Profile photo updated", user: updatedUser });
   } catch (error) {
-    console.error("Error uploading profile photo:", error);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Error updating profile photo", error });
   }
-};;
+};
 
 
 exports.getProfilePhoto = async (req, res) => {

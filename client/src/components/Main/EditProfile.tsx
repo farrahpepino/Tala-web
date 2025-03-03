@@ -216,10 +216,9 @@ const EditProfile = () => {
                 </button>
                 <button
                   onClick={handleDeleteAccount}
-                  disabled={loading}
                   className="btn bg-red-700 text-white hover:bg-red-400 w-30 ml-4 px-6 py-2 rounded-pill font-weight-semibold"
                 >
-                  {loading ? 'Deleting...' : 'Delete account'}
+                   Delete account
                 </button>
               </div>
             </div>
