@@ -3,11 +3,11 @@ const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
 require("dotenv").config();
-const multer = require("multer");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const multerS3 = require("multer-s3");
+export const multer = require("multer");
+export const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+export const multerS3 = require("multer-s3");
 
-const s3 = new S3Client({
+export const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -15,11 +15,11 @@ const s3 = new S3Client({
   },
 });
 
-const upload = multer({
+export const upload = multer({
   storage: multer.memoryStorage(), // Keep files in memory before upload
 });
 
-const uploadToS3 = async (file) => {
+export const uploadToS3 = async (file) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `profile-photos/${Date.now()}-${file.originalname}`,
