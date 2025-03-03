@@ -5,6 +5,7 @@ import axios from 'axios';
 import { storeUserData } from '../utils/User/storeUserData';
 import DefaultUserIcon from '../assets/tala/user.png';
 
+
 const Register = () => {
 
   const [data, setData] = useState({
@@ -12,8 +13,10 @@ const Register = () => {
     lastName: '',
     password: '',
     email: '',
-    profile: { profilePicture: DefaultUserIcon } 
-  })
+    profile: { 
+      profilePicture: DefaultUserIcon, 
+      active: true
+  }  })
 
   const [error, setError] = useState('')
 

@@ -58,8 +58,8 @@ const validate = (data) => {
        email: Joi.string().required().label('Email'),
        password: passwordComplexity(complexityOptions).label('Password'),
        profile: Joi.object({
-        profilePicture: Joi.string().uri().label('Profile Picture'), 
-        active: Joi.boolean().label('Active')
+        profilePicture: Joi.string().label('Profile Picture'),
+        active: Joi.boolean()
     }).label('Profile')
     })
 
