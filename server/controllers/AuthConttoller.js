@@ -61,13 +61,18 @@ exports.registerUser = async(req, res) => {
         
         const salt = await bcrypt.genSalt(Number(process.env.SALT))
         const hashPassword = await bcrypt.hash(req.body.password, salt)
-        
-        const newUser = new User({ ...req.body, password: hashPassword,
+        console.log(req.body);
+
+        const newUser = new User({ 
+            ...req.body, 
+            password: hashPassword,
             profile: {
-                profilePicture: req.body.profilePicture,  
+                profilePicture: req.body.profile?.profilePicture || '',  // Ensure it's correctly nested
                 active: true
-            } });
+            } 
+        });
         await newUser.save();
+        
 
         const token = newUser.generateAuthToken();
         res.status(201).send({
@@ -77,7 +82,7 @@ exports.registerUser = async(req, res) => {
                 lastName: newUser.lastName,
                 email: newUser.email,
                 userId: newUser._id,
-                profilePicture: newUser.profile.profilePicture,
+                profilePicture: newUser.profile?.profilePicture,
                 active: newUser.profile.active
                 
 

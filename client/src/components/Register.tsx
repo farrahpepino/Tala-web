@@ -12,7 +12,7 @@ const Register = () => {
     lastName: '',
     password: '',
     email: '',
-    profilePhoto: DefaultUserIcon
+    profilePicture: DefaultUserIcon
   })
 
   const [error, setError] = useState('')
