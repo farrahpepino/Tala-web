@@ -15,10 +15,7 @@ const EditProfile = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [bio, setBio] = useState('');
-  const [profilePicture, setProfilePicture] = useState<string>('');
-  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const userData = getUserData();
 
@@ -32,7 +29,6 @@ const EditProfile = () => {
       setFirstName(userData.firstName || '');
       setLastName(userData.lastName || '');
       setBio(userData.bio || '');
-      setProfilePicture(userData.profile?.profilePicture || '');
     }
   }, []);
 
@@ -43,44 +39,6 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
 
-  const handleProfilePhotoChange = async (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setProfilePhotoFile(file);
-  
-      // Preview Image Before Upload
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const result = reader.result as string | null;
-        if (result) {
-          setProfilePicture(result); 
-        }  
-        // Upload to S3 via Backend
-        try {
-          const formData = new FormData();
-          formData.append("profilePhoto", file);
-  
-          setLoading(true);
-  
-          const uploadResponse = await axios.patch(
-            `https://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          );
-  
-          if (uploadResponse.status === 200) {
-            setProfilePicture(uploadResponse.data.profilePicture); // S3 URL
-          }
-        } catch (error) {
-          console.error("Error uploading profile photo:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      reader.readAsDataURL(file);
-    }
-  };
   
   
   const handleSaveChanges = async () => {
@@ -89,19 +47,16 @@ const EditProfile = () => {
       return;
     }
   
-    let uploadedProfilePhotoUrl = profilePicture;
   
-    // Update user profile
     const updatedUser = {
       userId,
       firstName,
       lastName,
       bio,
-      profilePicture: uploadedProfilePhotoUrl,
     };
   
     try {
-      setLoading(true); // Start loading state
+      setLoading(true); 
       const response = await axios.patch(
         `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
@@ -118,7 +73,7 @@ const EditProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
   };
 
@@ -136,7 +91,7 @@ const EditProfile = () => {
     }
   
     try {
-      setLoading(true); // Start loading state
+      setLoading(true); 
       const response = await axios.delete(
         `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
       );  
@@ -164,19 +119,17 @@ const EditProfile = () => {
           <div className="flex flex-col items-center -mt-16">
             <button
               className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
-              onClick={() => fileInputRef.current?.click()}
             >
               <img
-                src={profilePicture || DefaultUserIcon}
+                src={DefaultUserIcon}
                 alt="user-avatar"
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />
             </button>
             <input
               type="file"
-              ref={fileInputRef}
+              // ref={fileInputRef}
               className="hidden"
-              onChange={handleProfilePhotoChange}
             />
 
             <div className="w-100 px-6 ">

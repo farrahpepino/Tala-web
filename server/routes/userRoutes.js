@@ -43,7 +43,5 @@ router.get('/search', UserController.searchUsers);
 router.patch('/profile/:userId', UserController.updateProfile);
 router.get('/:userId', UserController.getUserData);
 router.delete('/:userId/delete-account', UserController.deleteAccount);
-router.patch("/:userId/add-profile-photo", UserController.addProfilePhoto); // Use upload.single here
-router.get('/:userId/profile-photo', UserController.getProfilePhoto);
 
 module.exports = router;
