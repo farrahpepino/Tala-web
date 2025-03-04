@@ -37,61 +37,50 @@ const EditProfile = () => {
   }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    
     const { name, value } = e.target;
     if (name === 'firstName') setFirstName(value);
     if (name === 'lastName') setLastName(value);
     if (name === 'bio') setBio(value);
   };
-const handleProfilePhotoChange = async (e) => {
-  if (e.target.files && e.target.files.length > 0) {
-    const file = e.target.files[0];
-    console.log('File selected:', file);
 
-    // Check file type and size (optional validation)
-    if (file.size > 5000000) { // Example: max 5MB
-      alert('File size is too large');
-      return;
-    }
-    console.log('File type:', file.type);
-    setProfilePhotoFile(file);
-
-    // Preview Image Before Upload
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const result = reader.result as string | null;
-      if (result) {
-        setProfilePicture(result); 
-      }
-
-      // Upload to Backend via FormData
-      try {
-        const formData = new FormData();
-        formData.append("profilePhoto", file);
-        setLoading(true);
-
-        console.log('Uploading file...');
-        const uploadResponse = await axios.post(
-          `http://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
-          formData
-        );
-
-        console.log('Upload Response:', uploadResponse);
-
-        if (uploadResponse.status === 200) {
-          setProfilePicture(uploadResponse.data.profilePicture); // Assuming backend returns the S3 URL
+  const handleProfilePhotoChange = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setProfilePhotoFile(file);
+  
+      // Preview Image Before Upload
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const result = reader.result as string | null;
+        if (result) {
+          setProfilePicture(result); 
+        }  
+        // Upload to S3 via Backend
+        try {
+          const formData = new FormData();
+          formData.append("profilePhoto", file);
+  
+          setLoading(true);
+  
+          const uploadResponse = await axios.post(
+            `http://tala-web-kohl.vercel.app/api/users/${userData._id || userData.userId}/add-profile-photo`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+  
+          if (uploadResponse.status === 200) {
+            setProfilePicture(uploadResponse.data.profilePicture); // S3 URL
+          }
+        } catch (error) {
+          console.error("Error uploading profile photo:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error uploading profile photo:", error.response || error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    reader.readAsDataURL(file);
-  }
-};
-
+      };
+  
+      reader.readAsDataURL(file);
+    }
+  };
   
   
   const handleSaveChanges = async () => {
@@ -101,16 +90,14 @@ const handleProfilePhotoChange = async (e) => {
     }
   
     let uploadedProfilePhotoUrl = profilePicture;
-    console.log(uploadedProfilePhotoUrl)
+  
     // Update user profile
     const updatedUser = {
       userId,
       firstName,
       lastName,
       bio,
-      profile: { 
-      profilePicture: profilePicture
-    }
+      profilePicture: uploadedProfilePhotoUrl,
     };
   
     try {
