@@ -163,7 +163,7 @@ exports.deleteAccount = async (req, res) => {
 
 exports.addProfilePhoto = async (req, res) => {
   try {
-    const userId = req.params;
+    const userId = req.params.userId;
     console.log('hey', userId)
     const { profilePicture } = req.body;
     const updatedUser = await User.findOneAndUpdate(
