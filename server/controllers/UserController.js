@@ -7,17 +7,10 @@ require("dotenv").config();
 
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params;
-  const {file} = req.file.location;
-  console.log(file); 
-  console.log(req.file.location); 
-  console.log(req.file);
-  console.log(req);
+  const {file} = req.file;
 
 
 
-  if (!file) {
-    return res.status(400).send({ message: 'User ID and file are required.' });
-  }
 
   const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
 

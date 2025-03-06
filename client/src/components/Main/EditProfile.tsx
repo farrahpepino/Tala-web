@@ -44,24 +44,13 @@ const EditProfile = () => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      console.log('Selected file:', file); // Log the selected file
-      if (file.size > 5 * 1024 * 1024) { // 5MB size limit example
-      alert("File size is too large. Please upload a file smaller than 5MB.");
-      return;
-    }
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file.");
-      return;
-    }
+      
       const formData = new FormData();
       formData.append('file', file);
-  
-      // Log the contents of FormData
-      formData.forEach((value, key) => {
-        console.log(key, value); // Check the keys and values
-      });
+      formData.append('fileName', file.name);
+
+      
       try {
-        setLoading(true);
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${user._id}`,
           formData
@@ -71,6 +60,8 @@ const EditProfile = () => {
             },
           }
         );
+
+
   
         if (response.data && response.data.fileUrl) {
           setProfilePicture(response.data.fileUrl); // Update profile picture
@@ -176,6 +167,7 @@ const EditProfile = () => {
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />
             </button>
+            <form>
             <input
               type="file"
               name="file"              
@@ -183,6 +175,7 @@ const EditProfile = () => {
               className="hidden"
               onChange={handleFileChange}
             />
+            </form>
 
             <div className="w-100 px-6 ">
               <input
