@@ -8,7 +8,7 @@ require("dotenv").config();
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params;
   const file = req.file;
-  
+
   if (!userId || !file) {
     return res.status(400).send({ message: 'User ID and file are required.' });
   }
@@ -24,10 +24,14 @@ exports.uploadProfilePicture = async (req, res) => {
   };
 
   try {
+    // Upload the file to S3
     const command = new PutObjectCommand(s3Params);
     await s3.send(command);
+
+    // Generate the file URL
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
+    // Update the user's profile with the new file URL
     const user = await User.findByIdAndUpdate(
       userId,
       { $set: { 'profile.profilePicture': fileUrl } },
@@ -48,6 +52,7 @@ exports.uploadProfilePicture = async (req, res) => {
     res.status(500).send({ message: 'Error uploading profile picture' });
   }
 };
+
 
 
 exports.getUserData = async (req, res) => {

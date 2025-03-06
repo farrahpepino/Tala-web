@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController'); 
 const multer = require('multer');
-const upload = multer();
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage: storage });
 
 // Define the routes
 router.get('/search', UserController.searchUsers);

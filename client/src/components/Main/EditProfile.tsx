@@ -44,10 +44,15 @@ const EditProfile = () => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      console.log('hey', file)
+      console.log('Selected file:', file); // Log the selected file
+  
       const formData = new FormData();
       formData.append('file', file);
   
+      // Log the contents of FormData
+      formData.forEach((value, key) => {
+        console.log(key, value); // Check the keys and values
+      });
       try {
         setLoading(true);
         const response = await axios.post(
