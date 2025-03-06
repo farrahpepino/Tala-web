@@ -45,7 +45,14 @@ const EditProfile = () => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       console.log('Selected file:', file); // Log the selected file
-  
+      if (file.size > 5 * 1024 * 1024) { // 5MB size limit example
+      alert("File size is too large. Please upload a file smaller than 5MB.");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file.");
+      return;
+    }
       const formData = new FormData();
       formData.append('file', file);
   
@@ -57,8 +64,8 @@ const EditProfile = () => {
         setLoading(true);
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${userId}`,
-          formData,
-          {
+          {formData}
+          ,{
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -66,7 +73,10 @@ const EditProfile = () => {
         );
   
         if (response.data && response.data.fileUrl) {
-          setProfilePicture(response.data.fileUrl);
+          setProfilePicture(response.data.fileUrl); // Update profile picture
+          console.log('File uploaded successfully:', response.data);
+        } else {
+          console.error('File upload failed:', response.data);
         }
       } catch (error) {
         console.error("Error uploading profile picture:", error);
@@ -168,6 +178,7 @@ const EditProfile = () => {
             </button>
             <input
               type="file"
+              name="file"              
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}
