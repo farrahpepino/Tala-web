@@ -10,14 +10,14 @@ exports.uploadProfilePicture = async (req, res) => {
   console.log('File upload endpoint hit');
   console.log('Received file:', req.files);
   console.log('UserId:', req.params);
-
+const file = req.files || req.files.file || req.file ||req
   // Add further file handling logic here
   if (req.files && req.files.file) {
     console.log('File exists:', req.files.file);
   } else {
     console.log('No file uploaded.');
   }
-  res.send('File upload successful', req.files, req.files.file, req.file, req);
+  res.send('File upload successful', file);
   // console.log("Received files:", req.files);
   // if (!req.files || Object.keys(req.files).length === 0) {
   //   return res.status(400).json({ message: "No file uploaded" });
