@@ -42,31 +42,7 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
     
-    if (!file) return;
-  
-    try {
-      setLoading(true);
-  
-      const { data } = await axios.post('https://tala-web-kohl.vercel.app/api/users/s3URL', { userId: user?._id });
-    
-
-      if (!data.uploadURL) {
-        throw new Error('Upload URL not received');
-      }
-  
-      await axios.put(data.uploadURL, file);
-  
-      const updatedUser = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`); 
-      setProfilePicture(updatedUser.data.profile.profilePicture); 
-      setLoading(false);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('Error uploading file. Please try again later.');
-      setLoading(false);
-    }
   };
   
 

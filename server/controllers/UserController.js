@@ -2,35 +2,53 @@ const mongoose = require('mongoose');
 const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
-const {generateUploadURL} = require('../services/s3Service')
+const {s3, PutObjectCommand} = require('../services/s3Service') 
+require("dotenv").config();
 
-exports.addProfilePhoto = async (req, res) => {
-  const { userId } = req.body; 
-  
-  if (!userId) {
-    return res.status(400).send({ message: 'User ID is required' });
+exports.uploadProfilePicture = async (req, res) => {
+  const { userId } = req.params;
+  const file = req.file;
+
+  if (!userId || !file) {
+    return res.status(400).send({ message: 'User ID and file are required.' });
   }
 
+  const fileKey = `users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
+
+  const s3Params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: fileKey,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ACL: 'public-read',
+  };
+
   try {
-    const uploadURL = await generateUploadURL();
+    const command = new PutObjectCommand(s3Params);
+    await s3.send(command);
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
-    res.send({ uploadURL });
-
-    const updatedUser = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       userId,
-      { $set: { 'profile.profilePicture': uploadURL } }, 
+      { $set: { 'profile.profilePicture': fileUrl } },
       { new: true }
     );
 
-    if (!updatedUser) {
+    if (!user) {
       return res.status(404).send({ message: 'User not found' });
     }
 
+    res.status(200).json({
+      message: 'Profile picture uploaded successfully',
+      fileUrl,
+      profilePicture: user.profile.profilePicture,
+    });
   } catch (error) {
-    console.error('Error generating S3 URL or updating profile:', error);
-    res.status(500).send('Error generating S3 URL');
+    console.error('Error uploading profile picture:', error);
+    res.status(500).send({ message: 'Error uploading profile picture' });
   }
 };
+
 
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
@@ -48,9 +66,7 @@ exports.getUserData = async (req, res) => {
       return res.status(404).send({ message: 'User not found.' });
     }
 
-    const profileImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/uploads/${user.profileImage}`;
-    
-    user.profileImageUrl = profileImageUrl; 
+   
 
     res.status(200).json(user);
   } catch (error) {
