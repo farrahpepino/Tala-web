@@ -5,13 +5,33 @@ const Post = require('../models/postModel');
 const {generateUploadURL} = require('../services/s3Service')
 
 exports.addProfilePhoto = async (req, res) => {
+  const { userId } = req.body; 
+
+  if (!userId) {
+    return res.status(400).send({ message: 'User ID is required' });
+  }
+
   try {
     const uploadURL = await generateUploadURL();
-    await res.send({ uploadURL });
+
+    res.send({ uploadURL });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { 'profile.profilePicture': uploadURL } }, 
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
   } catch (error) {
+    console.error('Error generating S3 URL or updating profile:', error);
     res.status(500).send('Error generating S3 URL');
   }
 };
+
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
   if (!userId) {
