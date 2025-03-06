@@ -41,26 +41,26 @@ const EditProfile = () => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-        if (file) {
-          setProfilePicture(URL.createObjectURL(file));
-        }
+        // if (file) {
+        //   setProfilePicture(URL.createObjectURL(file));
+        // }
       
-
-  const formData = new FormData();
-  formData.append('pfp', file);
+      const formData = new FormData();
+      formData.append('file', file);
 
       try {
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
-          {formData}
+          formData,
+
         );
 
-        if (response.data && response.data.fileUrl) {
-          setProfilePicture(response.data.fileUrl); // Update profile picture
-          console.log('File uploaded successfully:', response.data);
-        } else {
-          console.error('File upload failed:', response.data);
-        }
+        // if (response.data && response.data.fileUrl) {
+        //   setProfilePicture(response.data.fileUrl); // Update profile picture
+        //   console.log('File uploaded successfully:', response.data);
+        // } else {
+        //   console.error('File upload failed:', response.data);
+        // }
       } catch (error) {
         alert("Error uploading file. Please try again.");
       } finally {
@@ -146,7 +146,6 @@ const EditProfile = () => {
       <main className="flex justify-center w-full px-4">
         <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
-            <form action='/api/users' method="post" encType="multipart/form-data" onSubmit={(e) => e.preventDefault()}>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
@@ -159,12 +158,11 @@ const EditProfile = () => {
               </button>
               <input
                 type="file"
-                name="pfp"
+                name="file"
                 onChange={handleFileChange}
                 ref={fileInputRef}
                 className="hidden"
               />
-            </form>
 
             <div className="w-100 px-6">
               <input
