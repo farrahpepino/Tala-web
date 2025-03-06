@@ -11,6 +11,7 @@ exports.uploadProfilePicture = async (req, res) => {
   console.log(file); 
   console.log(req.file.location); 
   console.log(req.file);
+  console.log(req);
 
 
 
