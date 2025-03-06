@@ -4,8 +4,10 @@ const express = require('express');
 const app = express();
 
 const fileUpload = require('express-fileupload');
-app.use(fileUpload());
-
+app.use(fileUpload({
+  useTempFiles: true, 
+  tempFileDir: '/tmp/' 
+}));
 const cors = require('cors');
 
 const connection = require('./db');
