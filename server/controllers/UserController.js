@@ -12,17 +12,17 @@ exports.uploadProfilePicture = async (req, res) => {
   const {file} = req.file;
 
 
-  const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
+  // const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
 
-  const s3Params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: fileKey,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'public-read',
-  };
+  // const s3Params = {
+  //   Bucket: process.env.AWS_BUCKET_NAME,
+  //   Key: fileKey,
+  //   Body: file.buffer,
+  //   ContentType: file.mimetype,
+  //   ACL: 'public-read',
+  // };
 
-  console.log(s3Params);
+  // console.log(s3Params);
 
   try {
     const command = new PutObjectCommand(s3Params);
@@ -38,13 +38,13 @@ exports.uploadProfilePicture = async (req, res) => {
     //   { new: true }
     // );
 
-    if (!user) {
-      return res.status(404).send({ message: 'User not found' });
-    }
+    // if (!user) {
+    //   return res.status(404).send({ message: 'User not found' });
+    // }
 
     res.status(200).json({
       message: 'Profile picture uploaded successfully',
-      fileUrl,
+      // fileUrl,
       profilePicture: user.profile.profilePicture,
     });
   } catch (error) {
