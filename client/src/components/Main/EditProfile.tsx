@@ -44,6 +44,7 @@ const EditProfile = () => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
+      console.log('hey', file)
       const formData = new FormData();
       formData.append('file', file);
   
