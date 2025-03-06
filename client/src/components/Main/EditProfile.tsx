@@ -44,13 +44,13 @@ const EditProfile = () => {
         // if (file) {
         //   setProfilePicture(URL.createObjectURL(file));
         // }
-      
+      console.log(file)
       const formData = new FormData();
       formData.append('file', file);
 
       try {
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
+          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user.userId}`,
           formData,
 
         );
