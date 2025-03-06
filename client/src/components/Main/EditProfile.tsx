@@ -173,6 +173,8 @@ const EditProfile = () => {
       <main className="flex justify-center w-full px-4">
         <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
+          <form encType="multipart/form-data">
+
             <button
               onClick={() => fileInputRef.current?.click()}
               className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
@@ -183,7 +185,6 @@ const EditProfile = () => {
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />
             </button>
-            <form>
             <input
               type="file"
               name="file"              
