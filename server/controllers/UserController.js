@@ -26,10 +26,10 @@ exports.uploadProfilePicture = async (req, res) => {
 
   try {
     const command = new PutObjectCommand(s3Params);
-const s3Response = await s3.send(command);
-console.log(s3Response); // Log response for debugging
-
-
+    console.log("Uploading file to S3...");
+    await s3.send(command);
+    console.log("File uploaded successfully");
+    
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
     const user = await User.findByIdAndUpdate(
