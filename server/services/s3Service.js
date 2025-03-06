@@ -1,9 +1,10 @@
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
-const mime = require('mime-types'); // For determining MIME types
+const {promisify} = require("util")
 require("dotenv").config();
 
+const randomBytes = promisify(crypto.randomBytes)
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -18,7 +19,6 @@ const allowedMimeTypes = ['image/jpeg', 'image/heic', 'image/png'];
 exports.generateUploadURL = async () => {
   const rawBytes = await randomBytes(16);
   const imageName = rawBytes.toString("hex");
-
 
 
   const params = {

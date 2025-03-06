@@ -43,7 +43,6 @@ const EditProfile = () => {
   };
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    alert(file)
 
     
     if (!file) return;
@@ -52,7 +51,8 @@ const EditProfile = () => {
       setLoading(true);
   
       const { data } = await axios.get('https://tala-web-kohl.vercel.app/api/users/s3URL');  
-  
+    
+
       if (!data.uploadURL) {
         throw new Error('Upload URL not received');
       }

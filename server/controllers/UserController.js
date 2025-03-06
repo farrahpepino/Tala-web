@@ -7,7 +7,7 @@ const {generateUploadURL} = require('../services/s3Service')
 exports.addProfilePhoto = async (req, res) => {
   try {
     const uploadURL = await generateUploadURL();
-    res.json({ uploadURL });
+    res.send({ uploadURL });
   } catch (error) {
     res.status(500).send('Error generating S3 URL');
   }
