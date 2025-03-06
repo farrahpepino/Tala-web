@@ -16,10 +16,11 @@ const EditProfile = () => {
   const [lastName, setLastName] = useState('');
   const [bio, setBio] = useState('');
   const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const userData = getUserData();
 
-  
   useEffect(() => {
     if (!userData) {
       handleReload();
@@ -29,6 +30,7 @@ const EditProfile = () => {
       setFirstName(userData.firstName || '');
       setLastName(userData.lastName || '');
       setBio(userData.bio || '');
+      setProfileImage(userData.profile.profileImage || DefaultUserIcon);
     }
   }, []);
 
@@ -39,29 +41,56 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
 
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
   
+    try {
+      setLoading(true);
   
+      const { data } = await axios.get('https://tala-web-kohl.vercel.app/api/users/s3URL');  
+  
+      await axios.put(data.uploadURL, file, {
+        headers: {
+          'Content-Type': file.type,  
+        },
+      });
+  
+      
+      const updatedUser = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`); 
+  
+      setProfileImage(updatedUser.data.profile.profilePicture); 
+      setLoading(false);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setLoading(false);
+    }
+  };
+  
+
   const handleSaveChanges = async () => {
     if (!userId) {
       console.error("User ID is missing!");
       return;
     }
-  
-  
+
     const updatedUser = {
       userId,
       firstName,
       lastName,
       bio,
+      profile: {
+        profileImage,
+      },
     };
-  
+
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await axios.patch(
         `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
       );
-  
+
       if (response.status === 200) {
         console.log("Profile updated:", response.data.user);
         storeUserData(null, response.data.user);
@@ -73,7 +102,7 @@ const EditProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -84,18 +113,18 @@ const EditProfile = () => {
     const confirmDelete = confirm(
       "Are you sure you want to delete your account? This action cannot be undone."
     );
-  
+
     if (!confirmDelete) {
       alert("Account deletion canceled.");
       return;
     }
-  
+
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await axios.delete(
         `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
-      );  
-      if (response.status === 200) { 
+      );
+      if (response.status === 200) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.replace('/login');
@@ -107,7 +136,7 @@ const EditProfile = () => {
       console.error("Error deleting account:", error);
       alert("Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
   };
 
@@ -118,17 +147,27 @@ const EditProfile = () => {
         <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
             <button
+              onClick={() => fileInputRef.current?.click()}
               className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
             >
               <img
-                src={DefaultUserIcon}
+                src={profileImage || DefaultUserIcon}
                 alt="user-avatar"
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />
             </button>
             <input
               type="file"
-              // ref={fileInputRef}
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
+            {/* </button> */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
               className="hidden"
             />
 

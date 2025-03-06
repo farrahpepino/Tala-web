@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes');
 const friendsRoutes = require('./routes/FriendsRoutes')
 const chatRoutes = require('./routes/ChatRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const generateUploadURL = require('./services/s3Service');
 
 const app = express();
 
@@ -44,5 +45,7 @@ app.get("/", (request, response) => {
       message: "Server is running on port " + port
   });
 });
+
+
 // Start the server
 app.listen(port, () => console.log(`Server running on port ${port}`));

@@ -2,50 +2,18 @@ const mongoose = require('mongoose');
 const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
-require("dotenv").config();
-const multer = require("multer");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const multerS3 = require("multer-s3");
+const {generateUploadURL} = require('../services/s3Service')
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-const upload = multer({
-  storage: multer.memoryStorage(), // Keep files in memory before upload
-});
-
-const uploadToS3 = async (file) => {
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `profile-photos/${Date.now()}-${file.originalname}`,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: "public-read",
-  };
-
+exports.addProfilePhoto = async (req, res) => {
   try {
-    const command = new PutObjectCommand(params);
-    await s3.send(command);
-    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+    const uploadURL = await generateUploadURL();
+    res.json({ uploadURL });
   } catch (error) {
-    console.error("Error uploading file to S3:", error);
-    throw new Error("File upload failed");
+    res.status(500).send('Error generating S3 URL');
   }
 };
-
-
-
-
-
-
 exports.getUserData = async (req, res) => {
   const { userId } = req.params;
-
   if (!userId) {
     return res.status(400).send({ message: 'No userId provided.' });
   }
@@ -55,19 +23,21 @@ exports.getUserData = async (req, res) => {
   }
 
   try {
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-
-    const userData = await User.findOne({ _id: userObjectId }).lean();
-
-    if (!userData) {
+    const user = await User.findOne({ _id: userId }).lean();
+    if (!user) {
       return res.status(404).send({ message: 'User not found.' });
     }
 
-    res.status(200).json(userData);
+    const profileImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/uploads/${user.profileImage}`;
+    
+    user.profileImageUrl = profileImageUrl; // Add the full URL to user data
+
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).send({ message: 'Internal Server Error' });
   }
 };
+
 
 exports.searchUsers = async (req, res) => {
     const query = req.query.query;

@@ -5,7 +5,9 @@ export interface User {
     email: string;
     userId: string;
     bio: string;
+    profile: {
     profilePicture: string;
-    active: boolean;
+    active: boolean;}
+    
     _id: string
   }
