@@ -42,8 +42,35 @@ const EditProfile = () => {
     if (name === 'bio') setBio(value);
   };
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      try {
+        setLoading(true);
+        const response = await axios.post(
+          `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${userId}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+  
+        if (response.data && response.data.fileUrl) {
+          setProfilePicture(response.data.fileUrl);
+        }
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        alert("Error uploading file. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
+  
   
 
   const handleSaveChanges = async () => {
