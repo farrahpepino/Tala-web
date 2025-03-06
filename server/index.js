@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const fileUpload = require('express-fileupload');
 
 const cors = require('cors');
 
@@ -19,6 +20,7 @@ connection();
 
 app.use(express.json());
 
+app.use(fileUpload());
 
 app.use(cors());
 
@@ -37,6 +39,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', chatRoutes);
 app.use('/api/friends', friendsRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (request, response) => {
   console.log("GET request received at /");
