@@ -51,7 +51,13 @@ const EditProfile = () => {
       
       try {
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}/${formData}`
+          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}/${formData}`,
+          formData
+          ,{
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
         );
 
 
