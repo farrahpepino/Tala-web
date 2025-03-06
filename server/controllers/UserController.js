@@ -22,9 +22,13 @@ exports.uploadProfilePicture = async (req, res) => {
     ACL: 'public-read',
   };
 
+  console.log(s3Params);
+
   try {
     const command = new PutObjectCommand(s3Params);
-    await s3.send(command);
+const s3Response = await s3.send(command);
+console.log(s3Response); // Log response for debugging
+
 
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
