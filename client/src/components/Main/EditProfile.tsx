@@ -63,13 +63,9 @@ const EditProfile = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${userId}`,
-          {formData}
-          ,{
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
+          `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${user._id}`,
+          formData
+          
         );
   
         if (response.data && response.data.fileUrl) {
