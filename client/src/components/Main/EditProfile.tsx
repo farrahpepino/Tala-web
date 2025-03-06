@@ -50,7 +50,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
   
-      const { data } = await axios.get('https://tala-web-kohl.vercel.app/api/users/s3URL');  
+      const { data } = await axios.post('https://tala-web-kohl.vercel.app/api/users/s3URL', { userId: user?._id });
     
 
       if (!data.uploadURL) {

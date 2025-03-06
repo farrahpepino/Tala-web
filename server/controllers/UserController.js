@@ -6,7 +6,7 @@ const {generateUploadURL} = require('../services/s3Service')
 
 exports.addProfilePhoto = async (req, res) => {
   const { userId } = req.body; 
-
+  
   if (!userId) {
     return res.status(400).send({ message: 'User ID is required' });
   }
