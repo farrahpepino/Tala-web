@@ -44,8 +44,9 @@ exports.uploadProfilePicture = async (req, res) => {
       profilePicture: user.profile.profilePicture,
     });
   } catch (error) {
-    console.error('Error uploading profile picture:', error);
-    res.status(500).send({ message: 'Error uploading profile picture' });
+    // console.error('Error uploading profile picture:', error);
+    // res.status(500).send({ message: 'Error uploading profile picture' });
+    console.error("i really want to cry i dont want tosee the red anymore")
   }
 };
 

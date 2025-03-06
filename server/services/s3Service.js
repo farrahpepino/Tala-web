@@ -1,10 +1,12 @@
-require("dotenv").config();
+require('dotenv').config();
 const multer = require('multer');
-const { S3Client } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
-const storage =  multer.memoryStorage();
-const upload= multer({storage});
+// Use memory storage (stores file in RAM)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
+// Create an S3 client with your AWS credentials and region
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
@@ -13,6 +15,4 @@ const s3 = new S3Client({
   },
 });
 
-
-
-module.exports = { upload, s3 };
+module.exports = { upload, s3, PutObjectCommand };

@@ -11,7 +11,6 @@ const userRoutes = require('./routes/userRoutes');
 const friendsRoutes = require('./routes/FriendsRoutes')
 const chatRoutes = require('./routes/ChatRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
-const generateUploadURL = require('./services/s3Service');
 
 const app = express();
 
@@ -24,11 +23,10 @@ app.use(express.json());
 app.use(cors());
 
  app.use(cors({
-  //  origin: '*',
-  origin: 'http://localhost:5173',  
+   origin: '*',
    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-   allowedHeaders: ['Content-Type']
- }));
+   allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 
  const port = process.env.PORT || 5005;
 

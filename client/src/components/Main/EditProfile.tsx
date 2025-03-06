@@ -47,18 +47,12 @@ const EditProfile = () => {
       
       const formData = new FormData();
       formData.append('file', event.target.files[0]);
-      console.log(event.target.files[0])
 
       
       try {
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/update-profile-picture/${user._id}`,
           formData
-          ,{
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
         );
 
 
