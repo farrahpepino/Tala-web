@@ -10,29 +10,30 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import Footer from '../Footer';
 
 const EditProfile = () => {
-  const [user, setUser] = useState<User | null>(null);
   const [userId, setUserId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [bio, setBio] = useState('');
   const [loading, setLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string>(DefaultUserIcon);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const userData = getUserData();
+  const user = getUserData();
 
   useEffect(() => {
-    if (!userData) {
-      handleReload();
-    } else {
-      setUser(userData);
-      setUserId(userData._id || userData.userId || '');
-      setFirstName(userData.firstName || '');
-      setLastName(userData.lastName || '');
-      setBio(userData.bio || '');
-      setProfileImage(userData.profile.profileImage || DefaultUserIcon);
-    }
-  }, []);
+    
+      setUserId(user._id || user.userId || '');
+      setFirstName(user.firstName || '');
+      setLastName(user.lastName || '');
+      setBio(user.bio || '');
+
+      if (user.profile && user.profile.profilePicture) {
+        setProfilePicture(user.profile.profilePicture);
+      } else {
+        setProfilePicture(DefaultUserIcon);
+      }
+    
+  }, [user]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -40,9 +41,11 @@ const EditProfile = () => {
     if (name === 'lastName') setLastName(value);
     if (name === 'bio') setBio(value);
   };
-
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    alert(file)
+
+    
     if (!file) return;
   
     try {
@@ -50,19 +53,22 @@ const EditProfile = () => {
   
       const { data } = await axios.get('https://tala-web-kohl.vercel.app/api/users/s3URL');  
   
+      if (!data.uploadURL) {
+        throw new Error('Upload URL not received');
+      }
+  
       await axios.put(data.uploadURL, file, {
         headers: {
           'Content-Type': file.type,  
         },
       });
   
-      
       const updatedUser = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`); 
-  
-      setProfileImage(updatedUser.data.profile.profilePicture); 
+      setProfilePicture(updatedUser.data.profile.profilePicture); 
       setLoading(false);
     } catch (error) {
       console.error('Error uploading file:', error);
+      alert('Error uploading file. Please try again later.');
       setLoading(false);
     }
   };
@@ -80,7 +86,7 @@ const EditProfile = () => {
       lastName,
       bio,
       profile: {
-        profileImage,
+        profilePicture,
       },
     };
 
@@ -94,7 +100,6 @@ const EditProfile = () => {
       if (response.status === 200) {
         console.log("Profile updated:", response.data.user);
         storeUserData(null, response.data.user);
-        setUser(getUserData());
         navigate("/profile");
       } else {
         console.error("Failed to update profile:", response.statusText);
@@ -151,7 +156,7 @@ const EditProfile = () => {
               className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
             >
               <img
-                src={profileImage || DefaultUserIcon}
+                src={profilePicture || DefaultUserIcon}
                 alt="user-avatar"
                 className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
               />
@@ -161,14 +166,6 @@ const EditProfile = () => {
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}
-            />
-
-            {/* </button> */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
             />
 
             <div className="w-100 px-6 ">
