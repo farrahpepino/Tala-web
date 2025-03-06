@@ -8,7 +8,7 @@ require("dotenv").config();
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params;
 
-  const {file} = req.file?.file;
+  const {file} = req.files?.file || req.files ;
 
   if (!file) {
     return res.status(400).send({ message: "No file uploaded." });
