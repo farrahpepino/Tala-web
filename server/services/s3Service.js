@@ -1,9 +1,11 @@
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
-require('dotenv').config();
+const mime = require('mime-types'); // For determining MIME types
+require("dotenv").config();
 
-// Initialize S3 client
+const randomBytes = promisify(crypto.randomBytes);
+
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
@@ -12,22 +14,21 @@ const s3 = new S3Client({
   },
 });
 
-// Generate a signed URL for file upload
-async function generateUploadURL() {
-  const generateRandomBytes = crypto.randomBytes(16).toString('hex');
-  const imageName = generateRandomBytes;
+const allowedMimeTypes = ['image/jpeg', 'image/heic', 'image/png'];
+
+exports.generateUploadURL = async () => {
+  const rawBytes = await randomBytes(16);
+  const imageName = rawBytes.toString("hex");
+
+
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `uploads/${imageName}`,
-    Expires: 60, // URL expiration in seconds
-    ContentType: 'image/jpeg',
+    Expires: 60,
+    ContentType: allowedMimeTypes, 
   };
 
-  // Generate a signed URL
   const command = new PutObjectCommand(params);
-  const uploadURL = await getSignedUrl(s3, command, { expiresIn: 60 });
-  return uploadURL;
-}
-
-module.exports = { s3, generateUploadURL };
+  return await getSignedUrl(s3, command, { expiresIn: 60 });
+};
