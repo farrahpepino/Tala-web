@@ -30,6 +30,9 @@ app.use(cors());
    allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
+  app.use(express.urlencoded({ extended: true }));
+
+
  const port = process.env.PORT || 5005;
 
 // Routes
@@ -39,7 +42,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', chatRoutes);
 app.use('/api/friends', friendsRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (request, response) => {
   console.log("GET request received at /");
