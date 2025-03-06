@@ -24,7 +24,7 @@ exports.generateUploadURL = async () => {
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `uploads/${imageName}`,
+    Key: `${imageName}`,
     Expires: 60,
     ContentType: allowedMimeTypes, 
   };
