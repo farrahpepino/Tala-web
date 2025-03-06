@@ -49,32 +49,49 @@ const EditProfile = () => {
       formData.append('file', event.target.files[0]);
 
       
-      try {
-        const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
-          formData
-          ,{
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
+    //   try {
+    //     const response = await axios.post(
+    //       `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
+    //       formData
+    //       ,{
+    //         headers: {
+    //           'Content-Type': 'multipart/form-data',
+    //         },
+    //       }
+    //     );
+    //     console.log(response);
 
 
   
-        if (response.data && response.data.fileUrl) {
-          setProfilePicture(response.data.fileUrl); // Update profile picture
-          console.log('File uploaded successfully:', response.data);
-        } else {
-          console.error('File upload failed:', response.data);
-        }
-      } catch (error) {
-        console.error("Error uploading profile picture:", error);
-        alert("Error uploading file. Please try again.");
-      } finally {
-        setLoading(false);
+    //     if (response.data && response.data.fileUrl) {
+    //       setProfilePicture(response.data.fileUrl); // Update profile picture
+    //       console.log('File uploaded successfully:', response.data);
+    //     } else {
+    //       console.error('File upload failed:', response.data);
+    //     }
+    //   } catch (error) {
+    //     // console.error("Error uploading profile picture:", error);
+    //     alert("Error uploading file. Please try again.");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    
+    try {
+      const response = await axios.post(`/api/users/add-pfp/${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    
+      if (response.status === 200) {
+        console.log('File uploaded successfully:', response);
+      } else {
+        console.error('Failed to upload file:', response);
       }
+    } catch (error) {
+      console.error('Error uploading file:', error);
     }
+  } 
   };
   
   

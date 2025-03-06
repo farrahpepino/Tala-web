@@ -6,55 +6,66 @@ const {s3, PutObjectCommand} = require('../services/s3Service')
 require("dotenv").config();
 
 exports.uploadProfilePicture = async (req, res) => {
-  const { userId } = req.params;
-  console.log("Received files:", req.files);
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
+  // const { userId } = req.params;
+  console.log('File upload endpoint hit');
+  console.log('Received file:', req.files);
+  console.log('UserId:', req.params);
 
-  const file = req.files.file;
+  // Add further file handling logic here
+  if (req.files && req.files.file) {
+    console.log('File exists:', req.files.file);
+  } else {
+    console.log('No file uploaded.');
+  }
+  res.send('File upload successful');
+  // console.log("Received files:", req.files);
+  // if (!req.files || Object.keys(req.files).length === 0) {
+  //   return res.status(400).json({ message: "No file uploaded" });
+  // }
+
+  // const file = req.files.file;
 
   
-  console.log("Uploaded file:", file); 
-  const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
+  // console.log("Uploaded file:", file); 
+  // const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
 
-  const s3Params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: fileKey,
-    Body: file.data,
-    ContentType: file.mimetype || "image/jpeg" || "image/png",
-    ACL: 'public-read',
-  };
+  // const s3Params = {
+  //   Bucket: process.env.AWS_BUCKET_NAME,
+  //   Key: fileKey,
+  //   Body: file.data,
+  //   ContentType: file.mimetype || "image/jpeg" || "image/png",
+  //   ACL: 'public-read',
+  // };
 
-  console.log(s3Params);
+  // console.log(s3Params);
 
-  try {
-    const command = new PutObjectCommand(s3Params);
-    console.log("Uploading file to S3...");
-    await s3.send(command);
-    console.log("File uploaded successfully");
+  // try {
+  //   const command = new PutObjectCommand(s3Params);
+  //   console.log("Uploading file to S3...");
+  //   await s3.send(command);
+  //   console.log("File uploaded successfully");
     
-    // const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+  //   // const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $set: { 'profile.profilePicture': fileUrl } },
-      { new: true }
-    );
+  //   const user = await User.findByIdAndUpdate(
+  //     userId,
+  //     { $set: { 'profile.profilePicture': fileUrl } },
+  //     { new: true }
+  //   );
 
-    if (!user) {
-      return res.status(404).send({ message: 'User not found' });
-    }
+  //   if (!user) {
+  //     return res.status(404).send({ message: 'User not found' });
+  //   }
 
-    res.status(200).json({
-      message: 'Profile picture uploaded successfully',
-      fileUrl,
-      profilePicture: user.profile.profilePicture,
-    });
-  } catch (error) {
-    console.error('Error uploading profile picture:', error);
-    res.status(500).send({ message: 'Error uploading profile picture' });
-  }
+  //   res.status(200).json({
+  //     message: 'Profile picture uploaded successfully',
+  //     fileUrl,
+  //     profilePicture: user.profile.profilePicture,
+  //   });
+  // } catch (error) {
+  //   console.error('Error uploading profile picture:', error);
+  //   res.status(500).send({ message: 'Error uploading profile picture' });
+  // }
 };
 
 
