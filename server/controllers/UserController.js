@@ -30,13 +30,13 @@ exports.uploadProfilePicture = async (req, res) => {
     await s3.send(command);
     console.log("File uploaded successfully");
     
-    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+    // const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $set: { 'profile.profilePicture': fileUrl } },
-      { new: true }
-    );
+    // const user = await User.findByIdAndUpdate(
+    //   userId,
+    //   { $set: { 'profile.profilePicture': fileUrl } },
+    //   { new: true }
+    // );
 
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
