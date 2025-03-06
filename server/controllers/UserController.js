@@ -9,9 +9,7 @@ exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params; 
   const file = req.file;
 
-  
-  console.log("Uploaded file:", file); 
-  const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
+    const fileKey = `/users/${userId}/profilepictures/${Date.now()}-${file.originalname}`;
 
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,

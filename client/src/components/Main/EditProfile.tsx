@@ -1,7 +1,5 @@
 import React, { useEffect, useState, ChangeEvent, useRef } from 'react';
-import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
-import { handleReload } from '../../utils/HandleReload';
 import NavBar from '../NavBar';
 import axios from 'axios';
 import { storeUserData } from '../../utils/User/storeUserData';
@@ -21,18 +19,16 @@ const EditProfile = () => {
   const user = getUserData();
 
   useEffect(() => {
-    
-      setUserId(user._id || user.userId || '');
-      setFirstName(user.firstName || '');
-      setLastName(user.lastName || '');
-      setBio(user.bio || '');
+    setUserId(user._id || user.userId || '');
+    setFirstName(user.firstName || '');
+    setLastName(user.lastName || '');
+    setBio(user.bio || '');
 
-      if (user.profile && user.profile.profilePicture) {
-        setProfilePicture(user.profile.profilePicture);
-      } else {
-        setProfilePicture(DefaultUserIcon);
-      }
-    
+    if (user.profile && user.profile.profilePicture) {
+      setProfilePicture(user.profile.profilePicture);
+    } else {
+      setProfilePicture(DefaultUserIcon);
+    }
   }, [user]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -41,60 +37,37 @@ const EditProfile = () => {
     if (name === 'lastName') setLastName(value);
     if (name === 'bio') setBio(value);
   };
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+        if (file) {
+          setProfilePicture(URL.createObjectURL(file));
+        }
       
-      
-      const formData = new FormData();
-      formData.append('file', event.target.files[0]);
 
-      
-    //   try {
-    //     const response = await axios.post(
-    //       `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
-    //       formData
-    //       ,{
-    //         headers: {
-    //           'Content-Type': 'multipart/form-data',
-    //         },
-    //       }
-    //     );
-    //     console.log(response);
+  const formData = new FormData();
+  formData.append('pfp', file);
 
+      try {
+        const response = await axios.post(
+          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
+          {formData}
+        );
 
-  
-    //     if (response.data && response.data.fileUrl) {
-    //       setProfilePicture(response.data.fileUrl); // Update profile picture
-    //       console.log('File uploaded successfully:', response.data);
-    //     } else {
-    //       console.error('File upload failed:', response.data);
-    //     }
-    //   } catch (error) {
-    //     // console.error("Error uploading profile picture:", error);
-    //     alert("Error uploading file. Please try again.");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    
-    try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log(response)
-      if (response.status === 200) {
-        console.log('File uploaded successfully:', response);
-      } else {
-        console.error('Failed to upload file:', response);
+        if (response.data && response.data.fileUrl) {
+          setProfilePicture(response.data.fileUrl); // Update profile picture
+          console.log('File uploaded successfully:', response.data);
+        } else {
+          console.error('File upload failed:', response.data);
+        }
+      } catch (error) {
+        alert("Error uploading file. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error uploading file:', error);
     }
-  } 
   };
-  
-  
 
   const handleSaveChanges = async () => {
     if (!userId) {
@@ -163,7 +136,7 @@ const EditProfile = () => {
       console.error("Error deleting account:", error);
       alert("Something went wrong. Please try again.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -173,28 +146,27 @@ const EditProfile = () => {
       <main className="flex justify-center w-full px-4">
         <div className="w-full sm:w-[270px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
-          <form encType="multipart/form-data">
-
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
-            >
-              <img
-                src={profilePicture || DefaultUserIcon}
-                alt="user-avatar"
-                className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
+            <form action='/api/users' method="post" encType="multipart/form-data" onSubmit={(e) => e.preventDefault()}>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="p-0 m-0 bg-transparent leading-none appearance-none border-none"
+              >
+                <img
+                  src={profilePicture || DefaultUserIcon}
+                  alt="user-avatar"
+                  className="w-32 h-32 mt-20 mb-5 border-4 border-white rounded-full"
+                />
+              </button>
+              <input
+                type="file"
+                name="pfp"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+                className="hidden"
               />
-            </button>
-            <input
-              type="file"
-              name="file"              
-              ref={fileInputRef}
-              className="hidden"
-              onChange={handleFileChange}
-            />
             </form>
 
-            <div className="w-100 px-6 ">
+            <div className="w-100 px-6">
               <input
                 type="text"
                 name="firstName"
@@ -221,7 +193,7 @@ const EditProfile = () => {
               />
             </div>
             <div className="w-100 px-4 ">
-              <div className='flex justify-end mt-10'>
+              <div className="flex justify-end mt-10">
                 <button
                   onClick={handleSaveChanges}
                   disabled={loading}

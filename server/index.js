@@ -1,13 +1,10 @@
 require('dotenv').config();
 
 const express = require('express');
+
 const app = express();
 
-const fileUpload = require('express-fileupload');
-app.use(fileUpload({
-  useTempFiles: true, 
-  tempFileDir: '/tmp/' 
-}));
+
 const cors = require('cors');
 
 const connection = require('./db');
@@ -33,7 +30,6 @@ app.use(cors());
    allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
-  app.use(express.urlencoded({ extended: true }));
 
 
  const port = process.env.PORT || 5005;
@@ -56,3 +52,5 @@ app.get("/", (request, response) => {
 
 // Start the server
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+module.exports ={upload}
