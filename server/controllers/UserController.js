@@ -9,6 +9,9 @@ exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params;
   const {file} = req.file.location;
   console.log(file); 
+  console.log(req.file.location); 
+  console.log(req.file);
+
 
 
   if (!file) {
