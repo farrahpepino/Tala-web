@@ -77,12 +77,12 @@ const EditProfile = () => {
     //   }
     
     try {
-      const response = await axios.post(`/api/users/add-pfp/${userId}`, formData, {
+      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    
+      console.log(response)
       if (response.status === 200) {
         console.log('File uploaded successfully:', response);
       } else {

@@ -17,7 +17,7 @@ exports.uploadProfilePicture = async (req, res) => {
   } else {
     console.log('No file uploaded.');
   }
-  res.send('File upload successful');
+  res.send('File upload successful', req.files, req.files.file, req.file, req);
   // console.log("Received files:", req.files);
   // if (!req.files || Object.keys(req.files).length === 0) {
   //   return res.status(400).json({ message: "No file uploaded" });
