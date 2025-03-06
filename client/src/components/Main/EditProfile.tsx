@@ -57,11 +57,7 @@ const EditProfile = () => {
         throw new Error('Upload URL not received');
       }
   
-      await axios.put(data.uploadURL, file, {
-        headers: {
-          'Content-Type': file.type,  
-        },
-      });
+      await axios.put(data.uploadURL, file);
   
       const updatedUser = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`); 
       setProfilePicture(updatedUser.data.profile.profilePicture); 

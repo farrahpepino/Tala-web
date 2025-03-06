@@ -30,7 +30,7 @@ exports.getUserData = async (req, res) => {
 
     const profileImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/uploads/${user.profileImage}`;
     
-    user.profileImageUrl = profileImageUrl; // Add the full URL to user data
+    user.profileImageUrl = profileImageUrl; 
 
     res.status(200).json(user);
   } catch (error) {

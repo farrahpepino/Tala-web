@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const mime = require('mime-types'); // For determining MIME types
 require("dotenv").config();
 
-const randomBytes = promisify(crypto.randomBytes);
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
