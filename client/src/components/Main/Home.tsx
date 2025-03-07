@@ -21,7 +21,6 @@ const Home: React.FC = () => {
       setUser(userData);
     }
   }, []);
-  console.log('User:', user);
   if (!user) {
     return (
       <Loading />

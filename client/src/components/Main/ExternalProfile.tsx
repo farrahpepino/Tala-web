@@ -30,13 +30,11 @@ const ExternalProfile = () => {
       params: { currentUserId: senderId, otherUserId: receiverId },
     });
     const status = response.data.status;
-    console.log(response.data.status)
     if (status === 'pending' && response.data.senderId) {
       setFriendRequestSender(response.data.senderId);
     } else {
       setFriendRequestSender(null);
     }
-    console.log("status", status)
     setFriendStatus(status); // "friends", "pending", or "none"
   } catch (error) {
     console.error("Error fetching friend status:", error);
@@ -47,7 +45,6 @@ const ExternalProfile = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
-        console.log('Fetched user:', response.data);
         setUser(response.data);
       } catch (err: any) {
         console.error('Fetch error:', err);
@@ -69,7 +66,6 @@ const ExternalProfile = () => {
          senderId,
          receiverId
       });
-      console.log('Friend request sent:', response.data);
       fetchFriendStatus();
     } catch (err: any) {
       console.error('Add Friend Error:', err);
@@ -84,7 +80,6 @@ const ExternalProfile = () => {
         senderId: userId,
         receiverId: senderId,
      });
-     console.log('Friend request accepted:', response.data);
      fetchFriendStatus();
         }
     catch (err: any) {
@@ -102,7 +97,6 @@ const ExternalProfile = () => {
         senderId: userId,
         receiverId: senderId,
      });
-     console.log('Friend request declined:', response.data, friendRequestSender, userId);
      fetchFriendStatus();     
     }
     catch (err: any) {
