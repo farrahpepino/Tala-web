@@ -22,14 +22,11 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${user._id || user.userId}`);
+        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
         setUserData(response.data);
 
-        if (response.data.profile?.profilePicture) {
           setProfilePicture(response.data.profile.profilePicture);
-        } else {
-          setProfilePicture(DefaultUserIcon);
-        }
+        
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -56,7 +53,12 @@ const EditProfile = () => {
       try {
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
-          formData
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
         );
 
 
