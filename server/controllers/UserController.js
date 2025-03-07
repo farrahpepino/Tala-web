@@ -60,7 +60,7 @@ exports.getUserData = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ _id: userId }).lean();
+    const user = await User.findOne({ _id: userId }).lean().populate(profile);
     if (!user) {
       return res.status(404).send({ message: 'User not found.' });
     }
