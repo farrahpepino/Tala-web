@@ -40,7 +40,6 @@ const Notification = () => {
       const response = await axios.get(
         `https://tala-web-kohl.vercel.app/api/notifications/${userId}/unread`
       );
-      console.log('Fetched notifications:', response.data.notifications);
       setNotifications(response.data.notifications);
       setIsLoading(false);
     } catch (error) {
@@ -111,7 +110,6 @@ const Notification = () => {
         navigate(`/${userId}/${notification.relatedPostId}`);
     
     } else {
-      // Safely navigate to the sender's profile if senderId exists
       if (notification.senderId) {
         console.log(`/external-profile/${notification.senderId}`);
         navigate(`/external-profile/${notification.senderId}`);

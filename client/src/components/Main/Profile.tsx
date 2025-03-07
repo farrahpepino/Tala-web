@@ -14,7 +14,6 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const userData = getUserData();
-console.log(userData);
 
 if (!userData) {
   handleReload();
@@ -23,7 +22,6 @@ if (!userData) {
     try {
       const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userData.userId || userData._id}`);
       setUser(response.data);
-      console.log(user)
     } catch (error) {
       console.error("Error fetching user data:", error);
     }

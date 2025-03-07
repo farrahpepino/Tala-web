@@ -8,27 +8,34 @@ import DefaultUserIcon from '../../assets/tala/user.png';
 import Footer from '../Footer';
 
 const EditProfile = () => {
-  const [userId, setUserId] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [bio, setBio] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string>(DefaultUserIcon);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const user = getUserData();
-
+  const [userData, setUserData] = useState({});
+  const [userId, setUserId] = useState(user._id || user.userId || '');
+  const [firstName, setFirstName] = useState(user.firstName || '');
+  const [lastName, setLastName] = useState(user.lastName || '');
+  const [bio, setBio] = useState(user.bio || '');
   useEffect(() => {
-    setUserId(user._id || user.userId || '');
-    setFirstName(user.firstName || '');
-    setLastName(user.lastName || '');
-    setBio(user.bio || '');
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${user._id || user.userId}`);
+        setUserData(response.data);
 
-    if (user.profile && user.profile.profilePicture) {
-      setProfilePicture(user.profile.profilePicture);
-    } else {
-      setProfilePicture(DefaultUserIcon);
-    }
+        if (response.data.profile?.profilePicture) {
+          setProfilePicture(response.data.profile.profilePicture);
+        } else {
+          setProfilePicture(DefaultUserIcon);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
   }, [user]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -41,17 +48,14 @@ const EditProfile = () => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-        // if (file) {
-        //   setProfilePicture(URL.createObjectURL(file));
-        // }
-      console.log(file)
+      
       const formData = new FormData();
       formData.append('file', file);
 
 
       try {
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id || user.userId || userId}`,
+          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
           formData
         
 
@@ -89,7 +93,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
+        `http://localhost:5005/api/users/profile/${userId}`,
         updatedUser
       );
 

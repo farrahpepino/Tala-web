@@ -20,7 +20,6 @@ const ExternalProfile = () => {
   const [friendRequestSender, setFriendRequestSender] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  console.log('User ID for external profile:', userId);
   const senderId = (getUserData()?._id || getUserData()?.userId)?.toString();
   const receiverId = userId;
 
