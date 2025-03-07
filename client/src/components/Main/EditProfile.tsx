@@ -57,15 +57,14 @@ const EditProfile = () => {
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
           formData
-        
-
         );
 
-        if (response.data && response.data.profilePicture) {
+
+        if (response) {
           setProfilePicture(response.data.profilePicture); 
           console.log('File uploaded successfully:', response.data);
         } else {
-          console.error('File upload failed:', response.data);
+          console.error('File upload failed:', response);
         }
       } catch (error) {
         alert("Error uploading file. Please try again.");
