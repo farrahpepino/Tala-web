@@ -1,15 +1,15 @@
-require("dotenv").config();
-
+require('dotenv').config();
 const mongoose = require('mongoose'); 
 const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
+
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
@@ -17,32 +17,32 @@ const s3 = new S3Client({
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params; 
   const file = req.file;
+  const timestamp = Date.now();
+  const fileKey = `profile-pictures/${userId}/${timestamp}`;
 
   try {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: file.name,
+      Key: fileKey, 
       Body: file.buffer
     });
+
     await s3.send(command);
     
-    // const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileKey}`;
 
-    // const user = await User.findByIdAndUpdate(
-    //   userId,
-    //   { $set: { 'profile.profilePicture': fileUrl } },
-    //   { new: true }
-    // );
 
-    // if (!user) {
-    //   return res.status(404).send({ message: 'User not found' });
-    // }
+    await User.findByIdAndUpdate(
+      userId,
+      { 'profile.profilePicture': fileUrl },  
+      { new: true }  
+    );
 
     res.status(200).json({
-      message: 'Profile picture uploaded successfully',
-      // fileUrl,
-      // profilePicture: user.profile.profilePicture,
+      message: 'Profile picture uploaded and updated successfully',
+      profilePicture: fileUrl,  
     });
+    
   } catch (error) {
     console.error('Error uploading profile picture:', error);
     res.status(500).send({ message: 'Error uploading profile picture' });

@@ -48,10 +48,12 @@ const EditProfile = () => {
       const formData = new FormData();
       formData.append('file', file);
 
+
       try {
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user.userId}`,
-          formData,
+          `http://localhost:5005/api/users/add-pfp/${user._id}`,
+          formData
+        
 
         );
 
