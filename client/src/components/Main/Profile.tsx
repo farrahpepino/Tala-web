@@ -21,7 +21,7 @@ if (!userData) {
 } else {
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userData.userId}`);
+      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userData.userId || userData._id}`);
       setUser(response.data);
       console.log(user)
     } catch (error) {

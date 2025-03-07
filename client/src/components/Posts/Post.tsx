@@ -63,7 +63,7 @@ const Post = () => {
           <div className="flex space-x-3 mb-1">
             <img
               className="h-10 w-10 rounded-full object-cover"
-              src={post.postedBy.profile.profilePicture}
+              src={typeof post.postedBy === "object" ? post.postedBy.profile.profilePicture : DefaultUserIcon}
               alt={`${post.userName}'s avatar`}
             />
             <div className="text-left">
