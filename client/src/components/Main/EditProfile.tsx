@@ -51,7 +51,7 @@ const EditProfile = () => {
 
       try {
         const response = await axios.post(
-          `http://localhost:5005/api/users/add-pfp/${user._id}`,
+          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${user._id}`,
           formData
         
 
@@ -89,7 +89,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `http://localhost:5005/api/users/profile/${userId}`,
+        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
       );
 

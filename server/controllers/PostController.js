@@ -145,7 +145,7 @@ exports.createComment = async (req, res) => {
   }
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("postedBy"); 
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }
@@ -234,7 +234,7 @@ exports.createLike = async (req, res) => {
   }
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate(postedBy);
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }

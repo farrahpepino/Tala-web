@@ -5,6 +5,7 @@ import { User } from '../../utils/User/UserType';
 import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
 import NavBar from '../NavBar';
+import axios from 'axios';
 import Posts from '../Posts/Posts';
 import Footer from '../Footer';
 
@@ -12,14 +13,25 @@ const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const userData = getUserData();
-    if (!userData) {
-      handleReload();
-    } else {
-      setUser(userData);
+  const userData = getUserData();
+console.log(userData);
+
+if (!userData) {
+  handleReload();
+} else {
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userData.userId}`);
+      setUser(response.data);
+      console.log(user)
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
-  }, []);
+  };
+
+  fetchUser();
+}
+
 
 
   return (

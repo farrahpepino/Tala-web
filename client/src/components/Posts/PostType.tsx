@@ -12,6 +12,7 @@ export interface Post {
     likes: Likes;
     comments: Comment[];
     postedBy: string | User;
+    profile: string;
     postImages: string[];
   }
 
