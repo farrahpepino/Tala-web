@@ -6,7 +6,6 @@ import { getUserData } from '../../utils/User/GetUserData';
 import { handleReload } from '../../utils/HandleReload';
 import NavBar from '../NavBar';
 import Posts from '../Posts/Posts';
-import DefaultUserIcon from '../../assets/tala/user.png';
 import Footer from '../Footer';
 
 const Profile = () => {
@@ -30,7 +29,7 @@ const Profile = () => {
         <div className="w-full sm:w-[280px] md:w-[480px] lg:w-[660px] xl:w-[900px] p-6 md:p-10 shadow-lg rounded-lg">
           <div className="flex flex-col items-center -mt-16">
           <img
-            src = {DefaultUserIcon}
+            src = {user?.profile.profilePicture}
             alt="user-avatar"
             className="w-32 h-32 mt-20 border-4 border-white rounded-full"
           />

@@ -30,7 +30,7 @@ exports.sendMessage = async (req, res) => {
 
         await chat.save();
 
-        await chat.populate('messages.sender', 'firstName lastName profilePicture');
+        await chat.populate('messages.sender', 'firstName lastName profile.profilePicture');
 
         return res.status(200).json({ message: "Message sent successfully!", chat });
     } catch (error) {
@@ -78,7 +78,7 @@ exports.getMessages = async (req, res) => {
             .populate('participants', 'firstName lastName profilePicture') 
             .populate({
                 path: 'messages.sender',
-                select: 'firstName lastName profilePicture', 
+                select: 'firstName lastName profile.profilePicture', 
             });
 
         if (!chat) {
@@ -113,12 +113,12 @@ exports.getChatList = async (req, res) => {
       }
   
       const chats = await Chat.find({ participants: { $in: [currentUserId] } })
-        .populate('participants', 'firstName lastName')
+        .populate('participants', 'firstName lastName profile.profilePicture')
         .populate({
           path: 'messages',
           select: 'content sender sentAt',
           options: { sort: { sentAt: -1 }, limit: 1 },
-          populate: { path: 'sender', select: 'firstName lastName' },
+          populate: { path: 'sender', select: 'firstName lastName profile.profilePicture' },
         })
         .sort({ 'messages.sentAt': -1 })
         .limit(10)

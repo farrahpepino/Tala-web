@@ -32,17 +32,15 @@ exports.uploadProfilePicture = async (req, res) => {
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileKey}`;
 
 
-    await User.findByIdAndUpdate(
+      await User.findByIdAndUpdate(
       userId,
-      { 'profile.profilePicture': fileUrl },  
-      { new: true }  
+      { $set: { 'profile.profilePicture': fileUrl } },  
     );
-
     res.status(200).json({
       message: 'Profile picture uploaded and updated successfully',
       profilePicture: fileUrl,  
     });
-    
+
   } catch (error) {
     console.error('Error uploading profile picture:', error);
     res.status(500).send({ message: 'Error uploading profile picture' });

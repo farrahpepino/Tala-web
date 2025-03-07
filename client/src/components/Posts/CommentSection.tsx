@@ -126,7 +126,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
           <div className="flex items-center gap-3 ">
             <img
               className="h-10 w-10 rounded-full object-cover ml-7 mt-2"
-              src= {DefaultUserIcon}
+              src= {comment.commentBy?.profile.profilePicture}
               />
             <div>
               <div className="flex items-center gap-4">

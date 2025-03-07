@@ -90,7 +90,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
             <div className="flex space-x-3 mb-1">
               <img
                 className="h-10 w-10 rounded-full object-cover"
-                src= {DefaultUserIcon}
+                src= {post.postedBy.profile.profilePicture}
                 alt={`${post.userName}'s avatar`}
               />
               <div className="text-left">
@@ -227,7 +227,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
       >
         <img
           alt= 'User avatar'
-          src= {DefaultUserIcon}
+          src= {like.likedBy.profile.profilePicture}
           className="relative inline-block h-10 w-10 rounded-full object-cover object-center"
         />
         <div className="flex flex-col gap-1 ml-4">

@@ -57,12 +57,12 @@ const EditProfile = () => {
 
         );
 
-        // if (response.data && response.data.fileUrl) {
-        //   setProfilePicture(response.data.fileUrl); // Update profile picture
-        //   console.log('File uploaded successfully:', response.data);
-        // } else {
-        //   console.error('File upload failed:', response.data);
-        // }
+        if (response.data && response.data.profilePicture) {
+          setProfilePicture(response.data.profilePicture); 
+          console.log('File uploaded successfully:', response.data);
+        } else {
+          console.error('File upload failed:', response.data);
+        }
       } catch (error) {
         alert("Error uploading file. Please try again.");
       } finally {
@@ -82,15 +82,14 @@ const EditProfile = () => {
       firstName,
       lastName,
       bio,
-      profile: {
-        profilePicture,
-      },
+      profilePicture,
+     
     };
 
     try {
       setLoading(true);
       const response = await axios.patch(
-        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
+        `http://localhost:5005/api/users/profile/${userId}`,
         updatedUser
       );
 

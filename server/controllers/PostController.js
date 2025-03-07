@@ -71,7 +71,7 @@ exports.getUserPosts = async (req, res) => {
     try {
       const posts = await Post.find({ postedBy: userId })
         .populate('postedBy')
-        .populate('likes.likedBy', 'firstName lastName') 
+        .populate('likes.likedBy') 
         .sort({ createdAt: -1 })
         .exec();
 
@@ -117,7 +117,7 @@ exports.getUserPosts = async (req, res) => {
               path: 'likes',
               populate: {
                   path: 'likedBy',
-                  select: 'firstName lastName _id'  // Only select the fields you need from likedBy
+                  select: 'firstName lastName _id profile.profilePicture'  
               }
           })
           .sort({ createdAt: -1 })  
