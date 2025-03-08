@@ -25,7 +25,7 @@ const EditProfile = () => {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
         setUserData(response.data);
 
-          setProfilePicture(response.data.profile.profilePicture);
+          setProfilePicture(response.data.profilePicture);
         
       } catch (error) {
         console.error("Error fetching user data:", error);
