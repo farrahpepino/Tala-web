@@ -8,6 +8,6 @@ export interface User {
     profile: {
     profilePicture: string;
     active: boolean;}
-    
     _id: string
   }
+  

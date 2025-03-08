@@ -20,7 +20,7 @@ if (!userData) {
 } else {
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userData.userId || userData._id}`);
+      const response = await axios.get(`https://tala-web.onrender.com/api/users/${userData.userId || userData._id}`);
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);

@@ -22,7 +22,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
         setUserData(response.data);
 
           setProfilePicture(response.data.profile.profilePicture);
@@ -53,7 +53,7 @@ const EditProfile = () => {
       try {
 
         const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
+          `https://tala-web.onrender.com/api/users/add-pfp/${userId}`,
           formData,
           {
             headers: {
@@ -94,7 +94,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
+        `https://tala-web.onrender.com/api/users/profile/${userId}`,
         updatedUser
       );
 
@@ -128,7 +128,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.delete(
-        `https://tala-web-kohl.vercel.app/api/users/${userId}/delete-account`
+        `https://tala-web.onrender.com/api/users/${userId}/delete-account`
       );
       if (response.status === 200) {
         localStorage.removeItem('token');

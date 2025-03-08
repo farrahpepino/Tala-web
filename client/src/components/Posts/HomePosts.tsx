@@ -38,7 +38,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   
     let fetchUserData = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -47,7 +47,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
 
     let fetchHomePosts = async () => {
       try {
-        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/all-posts`);
+        let response = await axios.get(`https://tala-web.onrender.com/api/post/${userId}/all-posts`);
         setPosts(response.data);
         console.log('Fetched home posts:', response.data);
       } catch (error) {
@@ -70,7 +70,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
   
   const UserDetails = async (userId: string) => {
     try {
-      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+      const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
       return response.data;  
     } catch (error) {
       console.error('Error fetching user details:', error);
@@ -81,7 +81,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
     console.log(postId, 'hi')
     try {
       const response = await axios.post<{ message: string; comment: Comment }>(
-        `https://tala-web-kohl.vercel.app/api/post/${currentLoggedIn._id || currentLoggedIn.userId}/${postId}/new-comment`,
+        `https://tala-web.onrender.com/api/post/${currentLoggedIn._id || currentLoggedIn.userId}/${postId}/new-comment`,
         { content: commentText }
       );
   

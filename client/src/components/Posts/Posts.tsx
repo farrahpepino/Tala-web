@@ -35,7 +35,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
   const fetchUserData = async () => {
     if (userId) {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -46,7 +46,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
   const fetchUserPosts = async () => {
     if (userId) {
       try {
-        let response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/posts`);
+        let response = await axios.get(`https://tala-web.onrender.com/api/post/${userId}/posts`);
         setPosts(response.data);
       } catch (error) {
         console.error('Error fetching user posts:', error);
@@ -90,7 +90,7 @@ let Posts: React.FC<PostsProps> = ({ userId }) => {
             <div className="flex space-x-3 mb-1">
               <img
                 className="h-10 w-10 rounded-full object-cover"
-                src= {post.postedBy.profile.profilePicture}
+                src={post.postedBy && typeof post.postedBy !== 'string' ? post.postedBy.profile.profilePicture : DefaultUserIcon}
                 alt={`${post.userName}'s avatar`}
               />
               <div className="text-left">

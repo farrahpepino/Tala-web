@@ -26,7 +26,7 @@ const ExternalProfile = () => {
   const fetchFriendStatus = async () => {
      
     try {
-    const response = await axios.get(`https://tala-web-kohl.vercel.app/api/friends/status`, {
+    const response = await axios.get(`https://tala-web.onrender.com/api/friends/status`, {
       params: { currentUserId: senderId, otherUserId: receiverId },
     });
     const status = response.data.status;
@@ -44,7 +44,7 @@ const ExternalProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
+        const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
         setUser(response.data);
       } catch (err: any) {
         console.error('Fetch error:', err);
@@ -62,7 +62,7 @@ const ExternalProfile = () => {
 
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/send`, {
+      const response = await axios.post(`https://tala-web.onrender.com/api/friends/send`, {
          senderId,
          receiverId
       });
@@ -76,7 +76,7 @@ const ExternalProfile = () => {
   const accept = async() => {
 
     try{
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/accept`, {
+      const response = await axios.post(`https://tala-web.onrender.com/api/friends/accept`, {
         senderId: userId,
         receiverId: senderId,
      });
@@ -93,7 +93,7 @@ const ExternalProfile = () => {
   const decline = async() => {
 
     try{
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/friends/decline`, {
+      const response = await axios.post(`https://tala-web.onrender.com/api/friends/decline`, {
         senderId: userId,
         receiverId: senderId,
      });

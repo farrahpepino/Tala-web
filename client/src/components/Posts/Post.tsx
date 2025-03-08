@@ -28,7 +28,7 @@ const Post = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}`);
+        const response = await axios.get(`https://tala-web.onrender.com/api/post/${userId}/${postId}`);
         setPost(response.data);
       } catch (error) {
         console.error('Error fetching post:', error);

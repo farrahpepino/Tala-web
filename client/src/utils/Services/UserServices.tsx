@@ -4,7 +4,7 @@ import axios from "axios"
 export const addProfilePhoto = async (userId, profilePhoto) => {
     try {
         const response = await axios.post(
-            `https://tala-web-kohl.vercel.app/api/users/${userId}/add-profile-photo`, 
+            `https://tala-web.onrender.com/api/users/${userId}/add-profile-photo`, 
             { profilePhoto } 
         );
         return response.data; 
@@ -18,7 +18,7 @@ export const addProfilePhoto = async (userId, profilePhoto) => {
 export const getProfilePhoto = async (userId) => {
     try {
         const response = await axios.post(
-            `https://tala-web-kohl.vercel.app/api/users/${userId}/profile-photo`, 
+            `https://tala-web.onrender.com/api/users/${userId}/profile-photo`, 
         );
         return response.data; 
     } catch (error) {

@@ -24,7 +24,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
   const user = getUserData();
   const fetchPostData = async () => {
     try {
-      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}`);
+      const response = await axios.get(`https://tala-web.onrender.com/api/post/${userId}/${postId}`);
       setPost(response.data);
     } catch (error) {
       console.error('Error fetching post data:', error);
@@ -37,7 +37,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
     }
 
     try {
-      const response = await axios.post(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}/new-comment`, {
+      const response = await axios.post(`https://tala-web.onrender.com/api/post/${userId}/${postId}/new-comment`, {
         content: newComment
       });
 
@@ -47,10 +47,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
       console.error('Error adding comment:', error);
     }
   };
+  
 
   const deleteComment = async (commentId) => {
     try {
-      const response = await axios.delete(`https://tala-web-kohl.vercel.app/api/post/${userId}/${postId}/${commentId}/delete`);
+      const response = await axios.delete(`https://tala-web.onrender.com/api/post/${userId}/${postId}/${commentId}/delete`);
 
       fetchComments();
       }catch (error) {
@@ -60,7 +61,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`https://tala-web-kohl.vercel.app/api/post/${postId}/comments`);
+      const response = await axios.get(`https://tala-web.onrender.com/api/post/${postId}/comments`);
     if (Array.isArray(response.data) && response.data.every(comment => comment.commentedAt)) {
       const sortedComments = [...response.data].sort((a, b) => {
         const dateA = new Date(a.commentedAt).getTime();  
@@ -116,7 +117,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
     .map((comment, idx) => (
       
       <div key={idx} className="px-1 pb-2 bg-transparent rounded-md">
-        {/* Comment Container */}
         <div className="flex gap-1">
           <div className="relative ml-4">
           <div className="absolute top-0 left-0 h-6 w-0.5 bg-gray-600"></div> 
@@ -126,7 +126,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, userId, isSingl
           <div className="flex items-center gap-3 ">
             <img
               className="h-10 w-10 rounded-full object-cover ml-7 mt-2"
-              src= {comment.commentBy?.profile.profilePicture}
+              src={comment.commentBy && typeof comment.commentBy !== 'string' ? comment.commentBy.profile.profilePicture : DefaultUserIcon}
               />
             <div>
               <div className="flex items-center gap-4">

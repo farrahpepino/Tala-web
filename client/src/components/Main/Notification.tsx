@@ -38,7 +38,7 @@ const Notification = () => {
   const fetchNotifications = async (userId: string) => {
     try {
       const response = await axios.get(
-        `https://tala-web-kohl.vercel.app/api/notifications/${userId}/unread`
+        `https://tala-web.onrender.com/api/notifications/${userId}/unread`
       );
       setNotifications(response.data.notifications);
       setIsLoading(false);
