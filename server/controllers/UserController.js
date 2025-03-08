@@ -16,33 +16,6 @@ const s3 = new S3Client({
 
 exports.getPresignedUrl = async (req, res) => {
   const { userId } = req.params;
-  const { fileName, fileType } = req.query; 
-
-  if (!fileName || !fileType) {
-    return res.status(400).json({ message: 'File name and file type are required' });
-  }
-
-  const fileKey = `profile-pictures/${userId}/${Date.now()}-${fileName}`;
-
-  try {
-    const command = new GeneratePresignedUrlCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: fileKey,
-      Expires: 60 * 5, 
-      ContentType: fileType,
-    });
-
-    const url = await s3.getSignedUrl(command);
-
-    res.status(200).json({ url, fileKey });
-  } catch (error) {
-    console.error('Error generating presigned URL:', error);
-    res.status(500).json({ message: 'Error generating pre-signed URL', error: error.message });
-  }
-};
-
-exports.uploadProfilePicture = async (req, res) => {
-  const { userId } = req.params;
   const { fileName, fileType } = req.query;
 
   const s3Params = {
@@ -64,6 +37,25 @@ exports.uploadProfilePicture = async (req, res) => {
   } catch (error) {
     console.error('Error generating presigned URL:', error);
     res.status(500).json({ message: 'Failed to generate presigned URL' });
+  }
+};
+
+exports.uploadProfilePicture = async (req, res) => {
+  const { userId } = req.params;
+  const { fileUrl } = req.body;
+
+  try {
+    await User.findByIdAndUpdate(userId, {
+      $set: { 'profile.profilePicture': fileUrl }
+    });
+
+    res.status(200).json({
+      message: 'Profile picture updated successfully',
+      profilePicture: fileUrl,
+    });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: 'Error updating profile picture', error: error.message });
   }
 };
 
