@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const { User } = require('../models/userModel');
 const Chat = require('../models/ChatModel');
 const Post = require('../models/postModel'); 
-const { S3Client, GeneratePresignedUrlCommand  } = require('@aws-sdk/client-s3');
-
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -43,20 +43,27 @@ exports.getPresignedUrl = async (req, res) => {
 
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params;
-  const { fileUrl } = req.body;
+  const { fileName, fileType } = req.query;
+
+  const s3Params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `${userId}/${Date.now()}-${fileName}`,
+    Expires: 60,
+    ContentType: fileType,
+    ACL: 'public-read',
+  };
 
   try {
-    await User.findByIdAndUpdate(userId, {
-      $set: { 'profile.profilePicture': fileUrl }
-    });
+    const command = new PutObjectCommand(s3Params);
+    const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
 
     res.status(200).json({
-      message: 'Profile picture updated successfully',
-      profilePicture: fileUrl,
+      url: presignedUrl,
+      fileKey: s3Params.Key,
     });
   } catch (error) {
-    console.error('Error updating profile picture:', error);
-    res.status(500).json({ message: 'Error updating profile picture', error: error.message });
+    console.error('Error generating presigned URL:', error);
+    res.status(500).json({ message: 'Failed to generate presigned URL' });
   }
 };
 
