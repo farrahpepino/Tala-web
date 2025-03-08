@@ -14,42 +14,51 @@ const s3 = new S3Client({
   },
 });
 
-exports.uploadProfilePicture = async (req, res) => {
+exports.getPresignedUrl = async (req, res) => {
   const { userId } = req.params;
-  const file = req.file;
+  const { fileName, fileType } = req.query; 
 
-  if (!file) {
-    return res.status(400).json({ message: 'No file uploaded' });
+  if (!fileName || !fileType) {
+    return res.status(400).json({ message: 'File name and file type are required' });
   }
 
-  const timestamp = Date.now();
-  const fileKey = `profile-pictures/${userId}/${timestamp}`;
+  const fileKey = `profile-pictures/${userId}/${Date.now()}-${fileName}`;
 
   try {
-    const command = new PutObjectCommand({
+    const command = new GeneratePresignedUrlCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: fileKey,
-      Body: file.buffer, 
-      ContentType: file.mimetype, 
+      Expires: 60 * 5, 
+      ContentType: fileType,
     });
 
-    await s3.send(command);
+    const url = await s3.getSignedUrl(command);
 
-    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
-
-    await User.findByIdAndUpdate(userId, { $set: { 'profile.profilePicture': fileUrl } });
-
-    return res.status(200).json({
-      message: 'Profile picture uploaded and updated successfully',
-      profilePicture: fileUrl,
-    });
+    res.status(200).json({ url, fileKey });
   } catch (error) {
-    console.error('Error uploading profile picture:', error);
-    return res.status(500).json({ message: 'Error uploading profile picture', error: error.message });
+    console.error('Error generating presigned URL:', error);
+    res.status(500).json({ message: 'Error generating pre-signed URL', error: error.message });
   }
 };
 
+exports.uploadProfilePicture = async (req, res) => {
+  const { userId } = req.params;
+  const { fileUrl } = req.body;
 
+  try {
+    await User.findByIdAndUpdate(userId, {
+      $set: { 'profile.profilePicture': fileUrl }
+    });
+
+    res.status(200).json({
+      message: 'Profile picture updated successfully',
+      profilePicture: fileUrl,
+    });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: 'Error updating profile picture', error: error.message });
+  }
+};
 
 
 exports.getUserData = async (req, res) => {

@@ -41,33 +41,13 @@ const EditProfile = () => {
     if (name === 'lastName') setLastName(value);
     if (name === 'bio') setBio(value);
   };
-
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       
-      const formData = new FormData();
-      formData.append('file', file);
-
-
+      setLoading(true);
       try {
-
-        const response = await axios.post(
-          `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data', 
-            },
-          }
-        );
-
-        if (response.data) {
-          setProfilePicture(response.data.profilePicture); 
-          console.log('File uploaded successfully:', response.data);
-        } else {
-          console.error('File upload failed:', response);
-        }
+        await uploadProfilePicture(file, userId);
       } catch (error) {
         alert("Error uploading file. Please try again.");
       } finally {
@@ -75,6 +55,42 @@ const EditProfile = () => {
       }
     }
   };
+  
+
+
+const uploadProfilePicture = async (file, userId) => {
+  try {
+    const res = await axios.get(`https://tala-web-kohl.vercel.app/api/users/get-presigned-url/${userId}?fileName=${file.name}&fileType=${file.type}`);
+    
+    if (res.status !== 200) {
+      throw new Error(res.data.message);
+    }
+
+    const { url, fileKey } = res.data;
+
+    const uploadRes = await axios.put(url, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+
+    if (uploadRes.status !== 200) {
+      throw new Error('Failed to upload file');
+    }
+
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+    
+    const updateRes = await axios.patch(`/api/users/upload-pfp/${userId}`, { fileUrl });
+
+    if (updateRes.status !== 200) {
+      throw new Error('Failed to update profile');
+    }
+
+    console.log('Profile updated successfully:', updateRes.data.profilePicture);
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+  }
+};
 
   const handleSaveChanges = async () => {
     if (!userId) {
@@ -94,7 +110,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `http://localhost:5005/api/users/profile/${userId}`,
+        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
       );
 
