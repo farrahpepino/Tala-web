@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController'); 
 
-const multer  = require('multer')
+const multer = require('multer');
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
+
 
 router.get('/search', UserController.searchUsers);
 router.patch('/profile/:userId', UserController.updateProfile);

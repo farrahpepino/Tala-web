@@ -15,42 +15,40 @@ const s3 = new S3Client({
 });
 
 exports.uploadProfilePicture = async (req, res) => {
-  const { userId } = req.params; 
+  const { userId } = req.params;
   const file = req.file;
-  console.log('File:', file);
 
-  if(!file){
-    res.status(400).json({message: "no file"})
+  if (!file) {
+    return res.status(400).json({ message: 'No file uploaded' });
   }
+
   const timestamp = Date.now();
   const fileKey = `profile-pictures/${userId}/${timestamp}`;
 
   try {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: fileKey, 
-      Body: file.buffer
+      Key: fileKey,
+      Body: file.buffer, 
+      ContentType: file.mimetype, 
     });
 
     await s3.send(command);
-    
-    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileKey}`;
 
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
-      await User.findByIdAndUpdate(
-      userId,
-      { $set: { 'profile.profilePicture': fileUrl } },  
-    );
-    res.status(200).json({
+    await User.findByIdAndUpdate(userId, { $set: { 'profile.profilePicture': fileUrl } });
+
+    return res.status(200).json({
       message: 'Profile picture uploaded and updated successfully',
-      profilePicture: fileUrl,  
+      profilePicture: fileUrl,
     });
-
   } catch (error) {
     console.error('Error uploading profile picture:', error);
-    res.status(500).send({ message: 'Error uploading profile picture' });
+    return res.status(500).json({ message: 'Error uploading profile picture', error: error.message });
   }
 };
+
 
 
 
