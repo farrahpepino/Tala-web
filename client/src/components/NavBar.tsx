@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Button, Disclosure, Menu, Transition } from '@headlessui/react';
 import { HomeIcon, ChatBubbleLeftIcon, BellIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import TalaLogo from '../assets/tala/tala-darkbg.png'; 
@@ -38,11 +38,21 @@ export default function NavBar() {
   };
 
   const userData = getUserData();
-  if (!userData) {
-    handleReload();
-  } else if (!user) {
-    setUser(userData);
-  }
+  useEffect(() => {
+    fetchUserData(userData.userId);
+  }, [userData]);
+  
+
+  
+  
+  let fetchUserData = async (userId) => {
+    try {
+      const response = await axios.get(`https://tala-web.onrender.com/api/users/${userId}`);
+      setUser(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const handleLogout = () => {
     window.location.href = ('/login');
@@ -267,7 +277,7 @@ export default function NavBar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src= {DefaultUserIcon}
+                        src= {user.profile.profilePicture}
                         alt="user-avatar"
                       />
                     </Menu.Button>

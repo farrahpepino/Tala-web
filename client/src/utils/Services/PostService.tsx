@@ -1,8 +1,6 @@
 import axios from "axios"
-import { LikeListResponse } from "../../components/Posts/PostType";
 
 export const deletePost = async (userId, postId) => {
-
     try {
         const response = await axios.delete(`https://tala-web.onrender.com/api/post/${userId}/${postId}/delete`);
         return response.data;

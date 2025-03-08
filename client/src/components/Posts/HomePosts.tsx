@@ -113,21 +113,12 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
         posts.map((post) => (
           <div key={post.id} className="p-4 rounded-md text-white">
           
-          <button
-  className="bg-transparent w-full"
-  onClick={(event) => {
-    event.preventDefault();
-    if (typeof post.postedBy === 'object' && post.postedBy._id) {
-      navigate(`/${post.postedBy._id}/${post._id}`);
-    } else {
-      console.error('Invalid postedBy format:', post.postedBy);
-    }
-  }}
->
+         
             <div className="flex flex-col">
               <div className='text-left'>
              
             <div className="flex space-x-3 mb-1">
+              
               <img
                 className="h-10 w-10 rounded-full object-cover"
                 src={typeof post.postedBy === "object" ? post.postedBy.profile.profilePicture : DefaultUserIcon}
@@ -161,7 +152,7 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
                           className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           onClick={(e) => {
                             e.preventDefault(); 
-                            deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id); 
+                            deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id || post.id); 
                             fetchHomePosts();
                           }} >
                           <div className='flex flex-row items-center'>
@@ -180,6 +171,17 @@ let HomePosts: React.FC<PostsProps> = ({ userId }) => {
             </div>
 
             </div>
+            <button
+  className="bg-transparent w-full"
+  onClick={(event) => {
+    event.preventDefault();
+    if (typeof post.postedBy === 'object' && post.postedBy._id) {
+      navigate(`/${post.postedBy._id}/${post._id}`);
+    } else {
+      console.error('Invalid postedBy format:', post.postedBy);
+    }
+  }}
+>
             <p className="mt-4 text-gray-300 text-left ml-14">{post.description}</p>
             </button>
             <div className="flex space-x-4 mt-4">

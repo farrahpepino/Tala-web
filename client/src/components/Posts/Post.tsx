@@ -94,7 +94,7 @@ const Post = () => {
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                         onClick={(e) => {
                           e.preventDefault();
-                          deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id);
+                          deletePost((currentLoggedIn._id || currentLoggedIn.userId), post._id || post.id);
                         }}
                       >
                         <div className="flex flex-row items-center">
