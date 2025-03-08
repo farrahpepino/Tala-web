@@ -80,7 +80,7 @@ const uploadProfilePicture = async (file, userId) => {
 
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
     
-    const updateRes = await axios.patch(`/api/users/upload-pfp/${userId}`, { fileUrl });
+    const updateRes = await axios.patch(`https://tala-web-kohl.vercel.app/api/users/upload-pfp/${userId}`, { fileUrl });
 
     if (updateRes.status !== 200) {
       throw new Error('Failed to update profile');
