@@ -28,7 +28,7 @@ const s3 = new S3Client({
         cb(null, { fieldName: file.fieldname });
       },
       key: (req, file, cb) => {
-        const userId = req.params.userId;
+        const userId = req.params;
         const fileName = `${userId}/${Date.now()}-${file.originalname}`;
         cb(null, fileName);
       },
