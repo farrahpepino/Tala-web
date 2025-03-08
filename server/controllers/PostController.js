@@ -32,7 +32,7 @@ exports.deletePost = async (req, res) =>{
     if (!post) {
       return res.status(404).json({ message: "Post not found." });
     }
-    if (post.postedBy.toString() !== userId) {
+    if (post.postedBy._id.toString() !== userId) {
       return res.status(403).json({ message: "You are not authorized to delete this post." });
     }
 
@@ -159,7 +159,7 @@ exports.createComment = async (req, res) => {
     const user = await User.findById(userId);
     const fullName = `${user.firstName} ${user.lastName}`;
 
-    if (post.postedBy.toString() !== userId) {
+    if (post.postedBy._id.toString() !== userId) {
       await User.findByIdAndUpdate(post.postedBy, {
           $push: {
               notifications: {
@@ -194,7 +194,7 @@ exports.deleteComment = async (req, res) => {
       return res.status(404).json({ message: 'Comment not found.' });
     }
 
-    if (comment.commentBy.toString() !== userId) {
+    if (comment.commentBy._id.toString() !== userId) {
       return res.status(403).json({ message: 'You are not authorized to delete this comment.' });
     }
 
@@ -253,7 +253,7 @@ exports.createLike = async (req, res) => {
     const user = await User.findById(userId);
     const fullName = `${user.firstName} ${user.lastName}`;
 
-    if (post.postedBy.toString() !== userId) {
+    if (post.postedBy._id.toString() !== userId) {
       await User.findByIdAndUpdate(post.postedBy, {
           $push: {
               notifications: {

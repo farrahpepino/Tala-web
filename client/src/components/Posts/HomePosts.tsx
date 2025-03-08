@@ -265,7 +265,7 @@ Array.isArray(post.likes) && post.likes.length > 0 ? (
       >
         <img
           alt= 'User avatar'
-          src={DefaultUserIcon}
+          src={like.likedBy.profilePicture}
           className="relative inline-block h-10 w-10 rounded-full object-cover object-center"
         />
         <div className="flex flex-col gap-1 ml-4">
