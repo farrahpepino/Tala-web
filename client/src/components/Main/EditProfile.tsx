@@ -25,7 +25,7 @@ const EditProfile = () => {
         const response = await axios.get(`https://tala-web-kohl.vercel.app/api/users/${userId}`);
         setUserData(response.data);
 
-          setProfilePicture(response.data.profilePicture);
+          setProfilePicture(response.data.profile.profilePicture);
         
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -53,16 +53,11 @@ const EditProfile = () => {
       try {
         const response = await axios.post(
           `https://tala-web-kohl.vercel.app/api/users/add-pfp/${userId}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
+          formData
+          
         );
 
-
-        if (response) {
+        if (response.data) {
           setProfilePicture(response.data.profilePicture); 
           console.log('File uploaded successfully:', response.data);
         } else {
@@ -94,7 +89,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `http://localhost:5005/api/users/profile/${userId}`,
+        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
         updatedUser
       );
 
