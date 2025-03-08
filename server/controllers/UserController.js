@@ -16,7 +16,8 @@ const s3 = new S3Client({
 
 exports.uploadProfilePicture = async (req, res) => {
   const { userId } = req.params; 
-  const file = req.file;
+  const {file} = req.file;
+  
   if(!file){
     res.status(404).json({message: "no file"})
   }
