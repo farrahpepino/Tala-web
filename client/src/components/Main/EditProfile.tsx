@@ -94,7 +94,7 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const response = await axios.patch(
-        `https://tala-web-kohl.vercel.app/api/users/profile/${userId}`,
+        `http://localhost:5005/api/users/profile/${userId}`,
         updatedUser
       );
 
